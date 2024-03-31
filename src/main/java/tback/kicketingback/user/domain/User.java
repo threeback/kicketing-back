@@ -13,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import tback.kicketingback.user.exception.exceptions.AlreadySamePasswordException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
 import tback.kicketingback.user.exception.exceptions.EmailFormatException;
@@ -96,6 +97,13 @@ public class User {
 	}
 
 	public void changePassword(final String newPassword) {
+		isSamePassword(newPassword);
 		this.password = newPassword;
+	}
+
+	private void isSamePassword(final String password) {
+		if (this.password.equals(password)) {
+			throw new AlreadySamePasswordException();
+		}
 	}
 }
