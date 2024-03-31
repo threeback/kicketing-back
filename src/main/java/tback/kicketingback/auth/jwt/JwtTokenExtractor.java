@@ -3,6 +3,7 @@ package tback.kicketingback.auth.jwt;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import jakarta.servlet.http.HttpServletRequest;
 import tback.kicketingback.auth.exception.exceptions.AuthenticationFailException;
@@ -22,8 +23,7 @@ public class JwtTokenExtractor {
 		throw new AuthenticationFailException(JwtTokenType.ACCESS_TOKEN);
 	}
 
-	public String extractRefreshToken(final HttpServletRequest request) {
-		final String refreshToken = request.getHeader(REFRESH_TOKEN_HEADER);
+	public String extractRefreshToken(final String refreshToken) {
 		if (StringUtils.hasText(refreshToken) && refreshToken.startsWith(PREFIX_BEARER)) {
 			return refreshToken.substring(PREFIX_BEARER.length());
 		}
