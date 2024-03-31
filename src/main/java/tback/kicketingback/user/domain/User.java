@@ -1,6 +1,7 @@
 package tback.kicketingback.user.domain;
 
 import java.time.LocalDateTime;
+import java.util.regex.Pattern;
 
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,6 +13,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
+import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
+import tback.kicketingback.user.exception.exceptions.EmailFormatException;
+import tback.kicketingback.user.exception.exceptions.UserPasswordEmptyException;
 
 @Entity
 @Getter
@@ -44,4 +49,53 @@ public class User {
 	@Column(nullable = false)
 	@Comment("수정일")
 	private LocalDateTime modifiedAt;
+
+	protected User() {
+	}
+
+	private User(final Long id, final String email, final String password, final String name) {
+		this.id = id;
+		this.email = email;
+		this.password = password;
+		this.name = name;
+	}
+
+	public static User of(final String email, final String password, final String name) {
+		validateCreateMember(email, password);
+		return new User(null, email, password, name);
+	}
+
+	private static void validateCreateMember(final String email, final String password) {
+		if (!isEmailFormat(email)) {
+			throw new EmailFormatException();
+		}
+
+		if (isEmpty(password)) {
+			throw new UserPasswordEmptyException();
+		}
+	}
+
+	private static boolean isEmailFormat(final String email) {
+		return Pattern.matches("^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$", email);
+	}
+
+	private static boolean isEmpty(final String password) {
+		return password == null || password.isBlank();
+	}
+
+	public void validatePassword(final String password) {
+		if (!this.password.equals(password)) {
+			throw new AuthInvalidPasswordException();
+		}
+	}
+
+	public void validateEmail(final String email) {
+		if (!this.email.equals(email)) {
+			throw new AuthInvalidEmailException();
+		}
+	}
+
+	public void changePassword(final String newPassword) {
+		this.password = newPassword;
+	}
 }
