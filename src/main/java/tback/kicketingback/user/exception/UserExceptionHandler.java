@@ -1,17 +1,18 @@
 package tback.kicketingback.user.exception;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import tback.kicketingback.global.AbstractExceptionHandler;
+import tback.kicketingback.user.exception.exceptions.AlreadySamePasswordException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
 import tback.kicketingback.user.exception.exceptions.EmailFormatException;
 import tback.kicketingback.user.exception.exceptions.UserPasswordEmptyException;
 
 @RestControllerAdvice
-public class UserExceptionHandler {
+public class UserExceptionHandler extends AbstractExceptionHandler {
 
 	@ExceptionHandler(AuthInvalidEmailException.class)
 	public ResponseEntity<String> authInvalidEmailException(AuthInvalidEmailException exception) {
@@ -33,18 +34,8 @@ public class UserExceptionHandler {
 		return getBadRequestResponseEntity(exception.getMessage());
 	}
 
-	private ResponseEntity<String> getNotFoundResponseEntity(final String message) {
-		return ResponseEntity.status(HttpStatus.NOT_FOUND)
-			.body(message);
-	}
-
-	private ResponseEntity<String> getBadRequestResponseEntity(final String message) {
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-			.body(message);
-	}
-
-	private ResponseEntity<String> getForbiddenResponseEntity(final String message) {
-		return ResponseEntity.status(HttpStatus.FORBIDDEN)
-			.body(message);
+	@ExceptionHandler(AlreadySamePasswordException.class)
+	public ResponseEntity<String> alreadySamePasswordException(AlreadySamePasswordException exception) {
+		return getForbiddenResponseEntity(exception.getMessage());
 	}
 }
