@@ -4,22 +4,32 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import tback.kicketingback.global.AbstractExceptionHandler;
+import tback.kicketingback.auth.exception.exceptions.AuthenticationFailException;
+import tback.kicketingback.auth.exception.exceptions.ExpiredTokenException;
 import tback.kicketingback.auth.exception.exceptions.InvalidJwtTokenException;
 import tback.kicketingback.auth.exception.exceptions.PayloadEmailMissingException;
-import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
+import tback.kicketingback.global.AbstractExceptionHandler;
 
 @RestControllerAdvice
 public class AuthenticationExceptionHandler extends AbstractExceptionHandler {
 
-	@ExceptionHandler(AuthInvalidEmailException.class)
-	public ResponseEntity<String> PayloadEmailMissingException(PayloadEmailMissingException exception) {
+	@ExceptionHandler(AuthenticationFailException.class)
+	public ResponseEntity<String> AuthenticationFailException(AuthenticationFailException exception) {
 		return getBadRequestResponseEntity(exception.getMessage());
 	}
 
-	@ExceptionHandler(ExpiredJwtException.class)
+	@ExceptionHandler(ExpiredTokenException.class)
+	public ResponseEntity<String> ExpiredTokenException(ExpiredTokenException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
+
+	@ExceptionHandler(InvalidJwtTokenException.class)
 	public ResponseEntity<String> InvalidJwtTokenException(InvalidJwtTokenException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
+
+	@ExceptionHandler(PayloadEmailMissingException.class)
+	public ResponseEntity<String> PayloadEmailMissingException(PayloadEmailMissingException exception) {
 		return getBadRequestResponseEntity(exception.getMessage());
 	}
 }

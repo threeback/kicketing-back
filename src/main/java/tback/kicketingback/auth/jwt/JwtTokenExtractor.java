@@ -3,7 +3,6 @@ package tback.kicketingback.auth.jwt;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import jakarta.servlet.http.HttpServletRequest;
 import tback.kicketingback.auth.exception.exceptions.AuthenticationFailException;
