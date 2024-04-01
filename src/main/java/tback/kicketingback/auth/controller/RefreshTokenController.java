@@ -26,7 +26,7 @@ public class RefreshTokenController {
 	private final RedisRepository redisRepository;
 
 	@PostMapping("/refresh")
-	public ResponseEntity refreshAccessToken(
+	public ResponseEntity<String> refreshAccessToken(
 		@RequestBody final String refreshToken,
 		HttpServletResponse response
 	) {
