@@ -1,6 +1,7 @@
 package tback.kicketingback.auth.jwt;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
@@ -17,11 +18,14 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
+import lombok.RequiredArgsConstructor;
 import tback.kicketingback.auth.exception.exceptions.ExpiredTokenException;
 import tback.kicketingback.auth.exception.exceptions.InvalidJwtTokenException;
 import tback.kicketingback.auth.exception.exceptions.PayloadEmailMissingException;
+import tback.kicketingback.global.repository.RedisRepository;
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 	private final String EMAIL_KEY = "email";
 
@@ -113,5 +117,9 @@ public class JwtTokenProvider {
 		} catch (ExpiredJwtException e) {
 			throw new ExpiredTokenException(JwtTokenType.REFRESH_TOKEN);
 		}
+	}
+
+	public Duration getRefreshTokenExpiryDurationFromNow() {
+		return Duration.ofMillis(jwtRefreshTokenExpirationInMs);
 	}
 }
