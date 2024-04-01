@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import tback.kicketingback.auth.dto.TokenResponse;
 import tback.kicketingback.auth.jwt.JwtTokenProvider;
+import tback.kicketingback.global.repository.RedisRepository;
 import tback.kicketingback.user.domain.User;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
 import tback.kicketingback.user.exception.exceptions.NoSuchUserException;
@@ -23,14 +24,19 @@ import tback.kicketingback.user.signin.service.SignInService;
 public class userSignInTest {
 
 	private SignInService signInService;
+
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
+
+	@Autowired
+	private RedisRepository redisRepository;
 
 	@BeforeEach
 	void initRepository() {
 		ConcurrentHashMap concurrentHashMap = new ConcurrentHashMap();
 		concurrentHashMap.put("test@test.com", User.of("test@test.com", "1234", "test"));
-		signInService = new SignInService(new FakeUserRepository(concurrentHashMap), jwtTokenProvider);
+		signInService = new SignInService(new FakeUserRepository(concurrentHashMap), jwtTokenProvider, redisRepository);
+		redisRepository.deleteValues("test@test.com");
 	}
 
 	@Test
@@ -68,5 +74,27 @@ public class userSignInTest {
 		String extractEmailFromRefreshToken = jwtTokenProvider.extractEmailFromRefreshToken(
 			tokenResponse.refreshToken());
 		assertThat(extractEmailFromRefreshToken).isEqualTo(email);
+	}
+
+	@Test
+	@DisplayName("로그인에 성공하면 레프레시 토큰을 저장한다.")
+	void 로그인_성공시_리프레시_토큰_저장() {
+		SignInRequest signInRequest = new SignInRequest("test@test.com", "1234");
+		signInService.signInUser(signInRequest);
+
+		System.out.println(redisRepository.getValues("test@test.com").orElse("empty"));
+		assertThat(redisRepository.getValues("test@test.com").isEmpty()).isFalse();
+	}
+
+	@Test
+	@DisplayName("로그인에 실패하면 레프레시 토큰을 저장하지 않는다.")
+	void 로그인_실패시_리프레시_토큰_저장안함() {
+		SignInRequest signInRequest = new SignInRequest("test@test.com", "1111111");
+		assertThatThrownBy(() -> {
+			signInService.signInUser(signInRequest);
+		}).isInstanceOf(AuthInvalidPasswordException.class);
+
+		System.out.println(redisRepository.getValues("test@test.com").orElse("empty"));
+		assertThat(redisRepository.getValues("test@test.com").isEmpty()).isTrue();
 	}
 }
