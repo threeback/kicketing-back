@@ -17,7 +17,7 @@ import tback.kicketingback.auth.jwt.JwtTokenType;
 import tback.kicketingback.global.repository.RedisRepository;
 
 @RestController
-@RequestMapping("api")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class RefreshTokenController {
 

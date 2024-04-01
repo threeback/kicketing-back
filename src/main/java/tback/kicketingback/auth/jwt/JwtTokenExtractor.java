@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
-import tback.kicketingback.auth.exception.exceptions.AuthenticationFailException;
+import tback.kicketingback.auth.exception.exceptions.TokenExtractionException;
 
 @Component
 public class JwtTokenExtractor {
@@ -19,13 +19,13 @@ public class JwtTokenExtractor {
 		if (StringUtils.hasText(accessToken) && accessToken.startsWith(PREFIX_BEARER)) {
 			return accessToken.substring(PREFIX_BEARER.length());
 		}
-		throw new AuthenticationFailException(JwtTokenType.ACCESS_TOKEN);
+		throw new TokenExtractionException(JwtTokenType.ACCESS_TOKEN);
 	}
 
 	public String extractRefreshToken(final String refreshToken) {
 		if (StringUtils.hasText(refreshToken) && refreshToken.startsWith(PREFIX_BEARER)) {
 			return refreshToken.substring(PREFIX_BEARER.length());
 		}
-		throw new AuthenticationFailException(JwtTokenType.REFRESH_TOKEN);
+		throw new TokenExtractionException(JwtTokenType.REFRESH_TOKEN);
 	}
 }

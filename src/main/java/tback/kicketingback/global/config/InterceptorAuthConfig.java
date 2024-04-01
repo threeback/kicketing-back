@@ -12,7 +12,7 @@ import tback.kicketingback.auth.interceptor.UserInterceptor;
 
 @RequiredArgsConstructor
 @Configuration
-public class WebConfig implements WebMvcConfigurer {
+public class InterceptorAuthConfig implements WebMvcConfigurer {
 
 	private final UserInterceptor userInterceptor;
 	private final UserArgumentResolver userArgumentResolver;
@@ -27,6 +27,6 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addInterceptor(userInterceptor)
 			.order(1)
 			.addPathPatterns("/**")
-			.excludePathPatterns("/", "api/user/sign-in", "api/user/sign-up");
+			.excludePathPatterns("/", "/api/user/sign-in", "/api/user/sign-up");
 	}
 }
