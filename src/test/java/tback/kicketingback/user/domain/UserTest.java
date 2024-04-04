@@ -3,6 +3,8 @@ package tback.kicketingback.user.domain;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,15 +13,33 @@ import org.junit.jupiter.params.provider.ValueSource;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidNameException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
+import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
 import tback.kicketingback.user.exception.exceptions.EmailFormatException;
 import tback.kicketingback.user.exception.exceptions.UserPasswordEmptyException;
+import tback.kicketingback.user.repository.FakeUserRepository;
+import tback.kicketingback.user.signup.dto.request.SignUpRequest;
+import tback.kicketingback.user.signup.service.SignUpService;
 
 public class UserTest {
+
+	private SignUpService signUpService;
 
 	@Test
 	@DisplayName("유저 생성 테스트")
 	public void createUser() {
 		assertDoesNotThrow(() -> User.of("test@test.com", "123!@jjsjs4", "test"));
+	}
+
+	@Test
+	@DisplayName("유저 이메일 중복이면 예외가 발생한다.")
+	public void throwExceptionIfEmailIsDuplicated() {
+		ConcurrentHashMap map = new ConcurrentHashMap();
+		map.put("test@test.com", User.of("test@test.com", "123456a!!", "beach"));
+		signUpService = new SignUpService(new FakeUserRepository(map));
+		SignUpRequest signUpRequest = new SignUpRequest("john", "test@test.com", "1234abc!@");
+
+		assertThrows(EmailDuplicatedException.class, () -> signUpService.signUp(signUpRequest));
+
 	}
 
 	@ParameterizedTest
@@ -67,10 +87,31 @@ public class UserTest {
 	}
 
 	@Test
-	@DisplayName("이름이 한글/영어가 아니면 예외가 발생한다.")
+	@DisplayName("비밀번호 정규식이 아니면 예외가 발생한다")
+	public void throwExceptionIfPasswordIsNotValid6() {
+		assertDoesNotThrow(
+			() -> User.of("test@test.com", "1234abc!@", "test"));
+	}
+
+	@Test
+	@DisplayName("이름이 한글/영어가 아니면 예외가 발생한다: 한자")
 	public void throwExceptionIfNameIsNotValid() {
 		assertThrows(AuthInvalidNameException.class,
 			() -> User.of("test@test.com", "test!test12", "習近平"));
+	}
+
+	@Test
+	@DisplayName("이름이 한글/영어가 아니면 예외가 발생한다: 한글")
+	public void throwExceptionIfNameIsNotValid2() {
+		assertDoesNotThrow(
+			() -> User.of("test@test.com", "test!test12", "시진핑"));
+	}
+
+	@Test
+	@DisplayName("이름이 한글/영어가 아니면 예외가 발생한다: 영어")
+	public void throwExceptionIfNameIsNotValid3() {
+		assertDoesNotThrow(
+			() -> User.of("test@test.com", "test!test12", "jinping"));
 	}
 
 	@Test
