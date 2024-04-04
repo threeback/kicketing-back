@@ -117,15 +117,15 @@ public class UserTest {
 	@Test
 	@DisplayName("비밀번호가 user의 비밀번호와 일치하면 예외가 발생하지 않는다.")
 	public void throwExceptionIfPasswordIsMatch() {
-		User user = User.of("test@test.com", "1234", "test");
+		User user = User.of("test@test.com", "1234abc!@", "test");
 
-		assertDoesNotThrow(() -> user.validatePassword("1234"));
+		assertDoesNotThrow(() -> user.validatePassword("1234abc!@"));
 	}
 
 	@Test
 	@DisplayName("비밀번호가 user의 비밀번호와 일치하지 않으면 예외가 발생한다.")
 	public void throwExceptionIfPasswordIsNotMatch() {
-		User user = User.of("test@test.com", "1234", "test");
+		User user = User.of("test@test.com", "1234abc!@", "test");
 
 		assertThrows(AuthInvalidPasswordException.class, () -> user.validatePassword(""));
 	}
@@ -133,7 +133,7 @@ public class UserTest {
 	@Test
 	@DisplayName("이메일이 user의 이메일과 일치하면 예외가 발생하지 않는다.")
 	public void throwExceptionIfEmailIsMatch() {
-		User user = User.of("test@test.com", "1234", "test");
+		User user = User.of("test@test.com", "1234abc!@", "test");
 
 		assertDoesNotThrow(() -> user.validateEmail("test@test.com"));
 	}
@@ -141,15 +141,15 @@ public class UserTest {
 	@Test
 	@DisplayName("이메일이 user의 이메일과 일치하지 않으면 예외가 발생한다.")
 	public void throwExceptionIfEmailIsNotMatch() {
-		User user = User.of("test@test.com", "1234", "test");
+		User user = User.of("test@test.com", "1234abc!@", "test");
 		assertThrows(AuthInvalidEmailException.class, () -> user.validateEmail("nontest@test.com"));
 	}
 
 	@Test
 	@DisplayName("유저 비밀 번호 변경 테스트")
 	public void changePassword() {
-		User user = User.of("test@test.com", "1234", "test");
-		String newPassword = "5678";
+		User user = User.of("test@test.com", "1234abc!@", "test");
+		String newPassword = "1234abc!@1";
 		user.changePassword(newPassword);
 
 		assertThat(user.getPassword()).isEqualTo(newPassword);
