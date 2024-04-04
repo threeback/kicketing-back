@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tback.kicketingback.global.AbstractExceptionHandler;
 import tback.kicketingback.user.exception.exceptions.AlreadySamePasswordException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
+import tback.kicketingback.user.exception.exceptions.AuthInvalidNameException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
+import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
 import tback.kicketingback.user.exception.exceptions.EmailFormatException;
 import tback.kicketingback.user.exception.exceptions.UserPasswordEmptyException;
 
@@ -38,4 +40,15 @@ public class UserExceptionHandler extends AbstractExceptionHandler {
 	public ResponseEntity<String> alreadySamePasswordException(AlreadySamePasswordException exception) {
 		return getForbiddenResponseEntity(exception.getMessage());
 	}
+
+	@ExceptionHandler(EmailDuplicatedException.class)
+	public ResponseEntity<String> emailDuplicatedException(EmailDuplicatedException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
+
+	@ExceptionHandler(AuthInvalidNameException.class)
+	public ResponseEntity<String> authInvalidNameException(AuthInvalidNameException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
+
 }
