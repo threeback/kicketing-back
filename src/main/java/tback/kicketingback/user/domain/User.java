@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import tback.kicketingback.user.exception.exceptions.AlreadySamePasswordException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
+import tback.kicketingback.user.exception.exceptions.AuthInvalidNameException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
 import tback.kicketingback.user.exception.exceptions.EmailFormatException;
 import tback.kicketingback.user.exception.exceptions.UserPasswordEmptyException;
@@ -62,11 +63,11 @@ public class User {
 	}
 
 	public static User of(final String email, final String password, final String name) {
-		validateCreateMember(email, password);
+		validateCreateMember(email, password, name);
 		return new User(null, email, password, name);
 	}
 
-	private static void validateCreateMember(final String email, final String password) {
+	private static void validateCreateMember(final String email, final String password, final String name) {
 		if (!isEmailFormat(email)) {
 			throw new EmailFormatException();
 		}
@@ -74,10 +75,18 @@ public class User {
 		if (isEmpty(password)) {
 			throw new UserPasswordEmptyException();
 		}
+
+		if (!isNameFormat(name)) {
+			throw new AuthInvalidNameException();
+		}
 	}
 
 	private static boolean isEmailFormat(final String email) {
 		return Pattern.matches("^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$", email);
+	}
+
+	private static boolean isNameFormat(final String name) {
+		return Pattern.matches("^[가-힣a-zA-Z]{2,20}$", name);
 	}
 
 	private static boolean isEmpty(final String password) {
