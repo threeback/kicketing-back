@@ -26,7 +26,7 @@ public class RefreshTokenController {
 	private final RedisRepository redisRepository;
 
 	@PostMapping("/refresh")
-	public ResponseEntity<String> refreshAccessToken(
+	public ResponseEntity<Void> refreshAccessToken(
 		@RequestBody final String refreshToken,
 		HttpServletResponse response
 	) {
@@ -44,7 +44,7 @@ public class RefreshTokenController {
 		String newAccessToken = jwtTokenProvider.generateAccessToken(email);
 
 		response.setHeader(HttpHeaders.AUTHORIZATION, newAccessToken);
-		return ResponseEntity.ok().body("액서스 토큰 재발급 성공");
+		return ResponseEntity.ok().build();
 	}
 }
 
