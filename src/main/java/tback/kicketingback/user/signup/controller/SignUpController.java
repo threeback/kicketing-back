@@ -6,21 +6,34 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.user.signup.dto.request.SignUpRequest;
 import tback.kicketingback.user.signup.service.DefaultSignUpService;
+import tback.kicketingback.user.signup.service.SignUpEmailService;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/user/sign-up")
 @RequiredArgsConstructor
 public class SignUpController {
 
 	private final DefaultSignUpService defaultSignUpService;
+	private final SignUpEmailService signUpEmailService;
 
-	@PostMapping("/sign-up")
+	@PostMapping("/")
 	public ResponseEntity<Void> signUp(@RequestBody SignUpRequest signUpRequest) {
 
 		defaultSignUpService.signUp(signUpRequest);
+
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/auth-code")
+	public ResponseEntity<Void> emailConfirm(@RequestBody String email) {
+		// 메일 전송에 필요한 정보 설정
+		MimeMessage message = signUpEmailService.createMail(email);
+
+		signUpEmailService.sendMail(message);
 
 		return ResponseEntity.ok().build();
 	}

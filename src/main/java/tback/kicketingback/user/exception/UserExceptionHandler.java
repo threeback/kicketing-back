@@ -9,8 +9,10 @@ import tback.kicketingback.user.exception.exceptions.AlreadySamePasswordExceptio
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidNameException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
+import tback.kicketingback.user.exception.exceptions.EmailCreateException;
 import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
 import tback.kicketingback.user.exception.exceptions.EmailFormatException;
+import tback.kicketingback.user.exception.exceptions.EmailSendException;
 import tback.kicketingback.user.exception.exceptions.UserPasswordEmptyException;
 
 @RestControllerAdvice
@@ -51,4 +53,13 @@ public class UserExceptionHandler extends AbstractExceptionHandler {
 		return getBadRequestResponseEntity(exception.getMessage());
 	}
 
+	@ExceptionHandler(EmailCreateException.class)
+	public ResponseEntity<String> emailCreateException(EmailCreateException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
+
+	@ExceptionHandler(EmailSendException.class)
+	public ResponseEntity<String> emailSendException(EmailSendException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
 }
