@@ -1,26 +1,27 @@
 package tback.kicketingback.user.signup.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
 import tback.kicketingback.user.signup.dto.request.SignUpRequest;
-import tback.kicketingback.user.signup.service.SignUpService;
+import tback.kicketingback.user.signup.service.DefaultSignUpService;
 
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class SignUpController {
 
-    private final SignUpService signUpService;
+	private final DefaultSignUpService defaultSignUpService;
 
-    @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(@RequestBody SignUpRequest signUpRequest) {
+	@PostMapping("/sign-up")
+	public ResponseEntity<Void> signUp(@RequestBody SignUpRequest signUpRequest) {
 
-        signUpService.signUp(signUpRequest);
+		defaultSignUpService.signUp(signUpRequest);
 
-        return ResponseEntity.ok("Sign up successful");
-    }
+		return ResponseEntity.ok().build();
+	}
 }
