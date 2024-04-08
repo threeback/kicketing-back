@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import tback.kicketingback.user.signup.dto.request.EmailRequest;
 import tback.kicketingback.user.signup.dto.request.SignUpRequest;
 import tback.kicketingback.user.signup.service.DefaultSignUpService;
 import tback.kicketingback.user.signup.service.SignUpEmailService;
@@ -29,9 +30,9 @@ public class SignUpController {
 	}
 
 	@PostMapping("/auth-code")
-	public ResponseEntity<Void> emailConfirm(@RequestBody String email) {
+	public ResponseEntity<Void> emailConfirm(@RequestBody EmailRequest emailRequest) {
 		// 메일 전송에 필요한 정보 설정
-		MimeMessage message = signUpEmailService.createMail(email);
+		MimeMessage message = signUpEmailService.createMail(emailRequest.email());
 
 		signUpEmailService.sendMail(message);
 
