@@ -8,12 +8,10 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-@Component
 @RequiredArgsConstructor
 public class RedisRepository {
 
