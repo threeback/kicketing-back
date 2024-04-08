@@ -2,9 +2,9 @@ package tback.kicketingback.user.signin.service;
 
 import java.time.Duration;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
 import tback.kicketingback.auth.dto.TokenResponse;
 import tback.kicketingback.auth.jwt.JwtTokenProvider;
 import tback.kicketingback.global.repository.RedisRepository;
@@ -14,7 +14,6 @@ import tback.kicketingback.user.repository.UserRepository;
 import tback.kicketingback.user.signin.dto.SignInRequest;
 
 @Service
-@RequiredArgsConstructor
 public class SignInService {
 
 	private final UserRepository userRepository;
@@ -22,6 +21,16 @@ public class SignInService {
 	private final JwtTokenProvider jwtTokenProvider;
 
 	private final RedisRepository redisRepository;
+
+	public SignInService(
+		UserRepository userRepository,
+		JwtTokenProvider jwtTokenProvider,
+		@Qualifier("refreshRedisRepository") RedisRepository refreshRedisRepository
+	) {
+		this.userRepository = userRepository;
+		this.jwtTokenProvider = jwtTokenProvider;
+		this.redisRepository = refreshRedisRepository;
+	}
 
 	public TokenResponse signInUser(SignInRequest signInRequest) {
 		String email = signInRequest.email();

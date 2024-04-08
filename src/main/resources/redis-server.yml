@@ -1,0 +1,22 @@
+version: '3.7'
+services:
+  refresh-redis:
+    image: redis:alpine
+    command: redis-server --port 6379
+    container_name: kicketing-refresh-redis
+    hostname: redis_boot
+    labels:
+      - "name=refresh-redis"
+      - "mode=standalone"
+    ports:
+      - 6379:6379
+  signup-redis:
+    image: redis:alpine
+    command: redis-server --port 6380
+    container_name: kicketing-signup-redis
+    hostname: redis_boot
+    labels:
+      - "name=signup-redis"
+      - "mode=standalone"
+    ports:
+      - 6380:6380
