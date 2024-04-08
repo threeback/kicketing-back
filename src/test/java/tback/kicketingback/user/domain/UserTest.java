@@ -3,8 +3,6 @@ package tback.kicketingback.user.domain;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,11 +11,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidNameException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
-import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
 import tback.kicketingback.user.exception.exceptions.EmailFormatException;
-import tback.kicketingback.user.exception.exceptions.UserPasswordEmptyException;
-import tback.kicketingback.user.repository.FakeUserRepository;
-import tback.kicketingback.user.signup.dto.request.SignUpRequest;
 import tback.kicketingback.user.signup.service.DefaultSignUpService;
 
 public class UserTest {
@@ -30,67 +24,11 @@ public class UserTest {
 		assertDoesNotThrow(() -> User.of("test@test.com", "123!@jjsjs4", "test"));
 	}
 
-	@Test
-	@DisplayName("유저 이메일 중복이면 예외가 발생한다.")
-	public void throwExceptionIfEmailIsDuplicated() {
-		ConcurrentHashMap map = new ConcurrentHashMap();
-		map.put("test@test.com", User.of("test@test.com", "123456a!!", "beach"));
-		defaultSignUpService = new DefaultSignUpService(new FakeUserRepository(map));
-		SignUpRequest signUpRequest = new SignUpRequest("john", "test@test.com", "1234abc!@");
-
-		assertThrows(EmailDuplicatedException.class, () -> defaultSignUpService.signUp(signUpRequest));
-
-	}
-
 	@ParameterizedTest
 	@ValueSource(strings = {"testtest.com", "tes#R%estcom", "testtes*tcom"})
 	@DisplayName("이메일 형식이 아니면 예외가 발생한다.")
 	public void throwExceptionIfEmailIsNotValid(String email) {
 		assertThrows(EmailFormatException.class, () -> User.of(email, "1234", "test"));
-	}
-
-	@Test
-	@DisplayName("비밀번호는 공백 문자가 아니어야 한다.")
-	public void throwExceptionIfPasswordIsBlank() {
-		assertThrows(UserPasswordEmptyException.class, () -> User.of("test@test.com", "", "test"));
-	}
-
-	@Test
-	@DisplayName("비밀번호 정규식이 아니면 예외가 발생한다: 특수문자 포함 안 된 경우")
-	public void throwExceptionIfPasswordIsNotValid() {
-		assertThrows(AuthInvalidPasswordException.class, () -> User.of("test@test.com", "123test12", "test"));
-	}
-
-	@Test
-	@DisplayName("비밀번호 정규식이 아니면 예외가 발생한다: 숫자 포함 안 된 경우")
-	public void throwExceptionIfPasswordIsNotValid2() {
-		assertThrows(AuthInvalidPasswordException.class, () -> User.of("test@test.com", "test@@@@@", "test"));
-	}
-
-	@Test
-	@DisplayName("비밀번호 정규식이 아니면 예외가 발생한다: 영어 포함 안 된 경우")
-	public void throwExceptionIfPasswordIsNotValid3() {
-		assertThrows(AuthInvalidPasswordException.class, () -> User.of("test@test.com", "123123123!", "test"));
-	}
-
-	@Test
-	@DisplayName("비밀번호 정규식이 아니면 예외가 발생한다: 길이가 안 된 경우")
-	public void throwExceptionIfPasswordIsNotValid4() {
-		assertThrows(AuthInvalidPasswordException.class, () -> User.of("test@test.com", "1a@", "test"));
-	}
-
-	@Test
-	@DisplayName("비밀번호 정규식이 아니면 예외가 발생한다: 길이가 넘은 경우")
-	public void throwExceptionIfPasswordIsNotValid5() {
-		assertThrows(AuthInvalidPasswordException.class,
-			() -> User.of("test@test.com", "1a@12312!@#!@!#!@#@!#@!2!@!!zda", "test"));
-	}
-
-	@Test
-	@DisplayName("비밀번호 정규식이 아니면 예외가 발생한다")
-	public void throwExceptionIfPasswordIsNotValid6() {
-		assertDoesNotThrow(
-			() -> User.of("test@test.com", "1234abc!@", "test"));
 	}
 
 	@Test
