@@ -1,26 +1,46 @@
 package tback.kicketingback.user.signup.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
+import tback.kicketingback.user.signup.dto.request.EmailRequest;
 import tback.kicketingback.user.signup.dto.request.SignUpRequest;
-import tback.kicketingback.user.signup.service.SignUpService;
+import tback.kicketingback.user.signup.service.DefaultSignUpService;
+import tback.kicketingback.user.signup.service.SignUpEmailService;
+import tback.kicketingback.user.signup.utils.NumberUtil;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/user/sign-up")
 @RequiredArgsConstructor
 public class SignUpController {
 
-    private final SignUpService signUpService;
+	private final DefaultSignUpService defaultSignUpService;
+	private final SignUpEmailService signUpEmailService;
 
-    @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(@RequestBody SignUpRequest signUpRequest) {
+	@PostMapping("/")
+	public ResponseEntity<Void> signUp(@RequestBody SignUpRequest signUpRequest) {
 
-        signUpService.signUp(signUpRequest);
+		defaultSignUpService.signUp(signUpRequest);
 
-        return ResponseEntity.ok("Sign up successful");
-    }
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/auth-code")
+	public ResponseEntity<Void> emailConfirm(@RequestBody EmailRequest emailRequest) {
+
+		int number = NumberUtil.createNumber();
+		// 메일 서식 만들기
+		String body = signUpEmailService.createBody(number);
+		// 메일 전송에 필요한 정보 설정
+		MimeMessage message = signUpEmailService.createMail(emailRequest.email(), body);
+
+		signUpEmailService.sendMail(message, number);
+
+		return ResponseEntity.ok().build();
+	}
 }

@@ -18,11 +18,11 @@ import tback.kicketingback.user.exception.exceptions.EmailFormatException;
 import tback.kicketingback.user.exception.exceptions.UserPasswordEmptyException;
 import tback.kicketingback.user.repository.FakeUserRepository;
 import tback.kicketingback.user.signup.dto.request.SignUpRequest;
-import tback.kicketingback.user.signup.service.SignUpService;
+import tback.kicketingback.user.signup.service.DefaultSignUpService;
 
 public class UserTest {
 
-	private SignUpService signUpService;
+	private DefaultSignUpService defaultSignUpService;
 
 	@Test
 	@DisplayName("유저 생성 테스트")
@@ -35,10 +35,10 @@ public class UserTest {
 	public void throwExceptionIfEmailIsDuplicated() {
 		ConcurrentHashMap map = new ConcurrentHashMap();
 		map.put("test@test.com", User.of("test@test.com", "123456a!!", "beach"));
-		signUpService = new SignUpService(new FakeUserRepository(map));
+		defaultSignUpService = new DefaultSignUpService(new FakeUserRepository(map));
 		SignUpRequest signUpRequest = new SignUpRequest("john", "test@test.com", "1234abc!@");
 
-		assertThrows(EmailDuplicatedException.class, () -> signUpService.signUp(signUpRequest));
+		assertThrows(EmailDuplicatedException.class, () -> defaultSignUpService.signUp(signUpRequest));
 
 	}
 
