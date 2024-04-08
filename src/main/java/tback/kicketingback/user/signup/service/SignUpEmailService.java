@@ -14,8 +14,10 @@ import jakarta.transaction.Transactional;
 import tback.kicketingback.email.service.EmailAuthService;
 import tback.kicketingback.email.service.EmailService;
 import tback.kicketingback.global.repository.RedisRepository;
+import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
 import tback.kicketingback.user.exception.exceptions.EmailCreateException;
 import tback.kicketingback.user.exception.exceptions.EmailSendException;
+import tback.kicketingback.user.exception.exceptions.MismatchEmailAuthCodeException;
 
 @Service
 public class SignUpEmailService implements EmailService, EmailAuthService {
@@ -28,8 +30,11 @@ public class SignUpEmailService implements EmailService, EmailAuthService {
 	@Value("${spring.mail.username}")
 	private String senderEmail;
 
-	@Value("${spring.data.redis.timeout.signup}")
-	private int expireTime;
+	@Value("${spring.data.redis.timeout.signup.code}")
+	private int codeExpireTime;
+
+	@Value("${spring.data.redis.timeout.signup.access}")
+	private int accessExpireTime;
 
 	public SignUpEmailService(
 		JavaMailSender javaMailSender,
@@ -85,7 +90,7 @@ public class SignUpEmailService implements EmailService, EmailAuthService {
 
 	@Override
 	public void saveCode(String email, String code) {
-		signupRedisRepository.setValues(email, code, Duration.ofMillis(expireTime));
+		signupRedisRepository.setValues(email, code, Duration.ofMillis(codeExpireTime));
 	}
 
 	@Override
@@ -95,7 +100,13 @@ public class SignUpEmailService implements EmailService, EmailAuthService {
 	}
 
 	@Override
-	public boolean emailVerificationCode(String email, String inputCode) {
-		return false;
+	public void checkCode(String email, String inputCode) {
+		String code = signupRedisRepository.getValues(email).orElseThrow(AuthInvalidEmailException::new);
+
+		if (!code.equals(inputCode)) {
+			throw new MismatchEmailAuthCodeException();
+		}
+
+		signupRedisRepository.setValues(email, EMAIL_AUTH_ACCESS, Duration.ofMillis(accessExpireTime));
 	}
 }

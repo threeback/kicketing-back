@@ -5,5 +5,5 @@ public interface EmailAuthService {
 
 	boolean isCompleteEmailAuth(String email);
 
-	boolean emailVerificationCode(String email, String inputCode);
+	void checkCode(String email, String inputCode);
 }

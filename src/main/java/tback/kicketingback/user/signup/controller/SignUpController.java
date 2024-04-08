@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.user.exception.exceptions.AlreadyEmailAuthCompleteException;
-import tback.kicketingback.user.signup.dto.request.EmailRequest;
+import tback.kicketingback.user.signup.dto.request.EmailCodeRequest;
+import tback.kicketingback.user.signup.dto.request.EmailConfirmRequest;
 import tback.kicketingback.user.signup.dto.request.SignUpRequest;
 import tback.kicketingback.user.signup.service.DefaultSignUpService;
 import tback.kicketingback.user.signup.service.SignUpEmailService;
@@ -30,9 +31,9 @@ public class SignUpController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PostMapping("/auth-code")
-	public ResponseEntity<Void> emailConfirm(@RequestBody EmailRequest emailRequest) {
-		String email = emailRequest.email();
+	@PostMapping("/email/code")
+	public ResponseEntity<Void> emailCode(@RequestBody EmailCodeRequest emailCodeRequest) {
+		String email = emailCodeRequest.email();
 
 		if (signUpEmailService.isCompleteEmailAuth(email)) {
 			throw new AlreadyEmailAuthCompleteException();
@@ -44,6 +45,17 @@ public class SignUpController {
 
 		signUpEmailService.sendMail(message);
 		signUpEmailService.saveCode(email, String.valueOf(code));
+
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/email/confirm")
+	public ResponseEntity<Void> emailConfirm(@RequestBody EmailConfirmRequest emailConfirmRequest) {
+		if (signUpEmailService.isCompleteEmailAuth(emailConfirmRequest.email())) {
+			throw new AlreadyEmailAuthCompleteException();
+		}
+		
+		signUpEmailService.checkCode(emailConfirmRequest.email(), emailConfirmRequest.code());
 
 		return ResponseEntity.ok().build();
 	}
