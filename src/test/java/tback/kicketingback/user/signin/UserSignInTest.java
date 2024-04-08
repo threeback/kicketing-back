@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import tback.kicketingback.auth.dto.TokenResponse;
@@ -21,7 +22,7 @@ import tback.kicketingback.user.signin.dto.SignInRequest;
 import tback.kicketingback.user.signin.service.SignInService;
 
 @SpringBootTest
-public class userSignInTest {
+public class UserSignInTest {
 
 	private SignInService signInService;
 
@@ -29,6 +30,7 @@ public class userSignInTest {
 	private JwtTokenProvider jwtTokenProvider;
 
 	@Autowired
+	@Qualifier("refreshRedisRepository")
 	private RedisRepository redisRepository;
 
 	@BeforeEach
@@ -89,12 +91,14 @@ public class userSignInTest {
 	@Test
 	@DisplayName("로그인에 실패하면 레프레시 토큰을 저장하지 않는다.")
 	void 로그인_실패시_리프레시_토큰_저장안함() {
-		SignInRequest signInRequest = new SignInRequest("test@test.com", "1111111");
+		String email = new String("test@test.com");
+		SignInRequest signInRequest = new SignInRequest(email, "1111111");
 		assertThatThrownBy(() -> {
 			signInService.signInUser(signInRequest);
 		}).isInstanceOf(AuthInvalidPasswordException.class);
 
-		System.out.println(redisRepository.getValues("test@test.com").orElse("empty"));
+		String assertEmail = "test@test.com";
+		System.out.println(redisRepository.getValues(assertEmail).orElse("empty"));
 		assertThat(redisRepository.getValues("test@test.com").isEmpty()).isTrue();
 	}
 }
