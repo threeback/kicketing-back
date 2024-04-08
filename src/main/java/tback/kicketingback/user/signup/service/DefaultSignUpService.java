@@ -7,7 +7,9 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import tback.kicketingback.email.service.EmailAuthService;
 import tback.kicketingback.user.domain.User;
+import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
 import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
 import tback.kicketingback.user.repository.UserRepository;
@@ -18,19 +20,20 @@ import tback.kicketingback.user.signup.dto.request.SignUpRequest;
 public class DefaultSignUpService implements SignUpService {
 
 	private final UserRepository userRepository;
+	private final EmailAuthService emailAuthService;
 
 	@Override
 	public void signUp(SignUpRequest signUpRequest) {
-
-		final String email = signUpRequest.email();
-		final String password = encode(signUpRequest.password());
-		final String username = signUpRequest.username();
-
 		if (!isPasswordFormat(signUpRequest.password())) {
 			throw new AuthInvalidPasswordException();
 		}
-		User user = User.of(email, password, username);
-		if (userRepository.existsByEmail(email)) {
+
+		if (!emailAuthService.isCompleteEmailAuth(signUpRequest.email())) {
+			throw new AuthInvalidEmailException();
+		}
+
+		User user = User.of(signUpRequest.email(), encode(signUpRequest.password()), signUpRequest.username());
+		if (userRepository.existsByEmail(signUpRequest.email())) {
 			throw new EmailDuplicatedException();
 		}
 
