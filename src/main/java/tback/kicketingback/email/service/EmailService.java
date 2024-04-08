@@ -3,7 +3,7 @@ package tback.kicketingback.email.service;
 import jakarta.mail.internet.MimeMessage;
 
 public interface EmailService {
-	MimeMessage createMail(String email);
+	MimeMessage createMail(String email, String body);
 
-	void sendMail(MimeMessage message);
+	void sendMail(MimeMessage message, int number);
 }
