@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import tback.kicketingback.user.exception.exceptions.AlreadyEmailAuthCompleteException;
 import tback.kicketingback.user.signup.dto.request.EmailRequest;
 import tback.kicketingback.user.signup.dto.request.SignUpRequest;
 import tback.kicketingback.user.signup.service.DefaultSignUpService;
@@ -24,7 +25,6 @@ public class SignUpController {
 
 	@PostMapping("/")
 	public ResponseEntity<Void> signUp(@RequestBody SignUpRequest signUpRequest) {
-
 		defaultSignUpService.signUp(signUpRequest);
 
 		return ResponseEntity.ok().build();
@@ -32,14 +32,18 @@ public class SignUpController {
 
 	@PostMapping("/auth-code")
 	public ResponseEntity<Void> emailConfirm(@RequestBody EmailRequest emailRequest) {
+		String email = emailRequest.email();
 
-		int number = NumberUtil.createNumber();
-		// 메일 서식 만들기
-		String body = signUpEmailService.createBody(number);
-		// 메일 전송에 필요한 정보 설정
-		MimeMessage message = signUpEmailService.createMail(emailRequest.email(), body);
+		if (signUpEmailService.isCompleteEmailAuth(email)) {
+			throw new AlreadyEmailAuthCompleteException();
+		}
 
-		signUpEmailService.sendMail(message, number);
+		int code = NumberUtil.createRandomCode6();
+		String body = signUpEmailService.createBody(email, String.valueOf(code));
+		MimeMessage message = signUpEmailService.createMail(email, body);
+
+		signUpEmailService.sendMail(message);
+		signUpEmailService.saveCode(email, String.valueOf(code));
 
 		return ResponseEntity.ok().build();
 	}

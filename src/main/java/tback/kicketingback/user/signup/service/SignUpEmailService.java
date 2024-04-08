@@ -19,6 +19,9 @@ import tback.kicketingback.user.exception.exceptions.EmailSendException;
 
 @Service
 public class SignUpEmailService implements EmailService, EmailAuthService {
+	public static final String AUTH_CODE_EMAIL_SUBJECT = "Kicketing 회원가입을 위한 이메일 인증";
+	public static final String NO_SIGNUP_VERIFICATION_REQUEST = "empty";
+	public static final String EMAIL_AUTH_ACCESS = "access";
 	private final JavaMailSender javaMailSender;
 	private final RedisRepository signupRedisRepository;
 
@@ -43,7 +46,7 @@ public class SignUpEmailService implements EmailService, EmailAuthService {
 		try {
 			message.setFrom(senderEmail);
 			message.addRecipients(MimeMessage.RecipientType.TO, email);
-			message.setSubject("Kicketing 회원가입을 위한 이메일 인증");  // 제목 설정
+			message.setSubject(AUTH_CODE_EMAIL_SUBJECT);  // 제목 설정
 			message.setText(body, "UTF-8", "html");
 		} catch (MessagingException e) {
 			throw new EmailCreateException();
@@ -52,43 +55,47 @@ public class SignUpEmailService implements EmailService, EmailAuthService {
 		return message;
 	}
 
-	public String createBody(int number) {
-		StringBuilder body = new StringBuilder();
-		body.append("<h1>" + "Welcome to Kicketing!" + "</h1>");
-		body.append("<h3>" + "회원가입을 위한 요청하신 인증 번호입니다." + "</h3><br>");
-		body.append("<h2>" + "아래 코드를 회원가입 창으로 돌아가 입력해주세요." + "</h2>");
+	@Override
+	public String createBody(String... args) {
+		String email = args[0];
+		String code = args[1];
 
+		StringBuilder body = new StringBuilder();
+		body.append("<h1> Welcome to Kicketing! </h1>");
+		body.append("<h3> %s 회원가입을 위한 요청하신 인증 번호입니다. </h3><br>".formatted(email));
+		body.append("<h2> 아래 코드를 회원가입 창으로 돌아가 입력해주세요. </h2>");
 		body.append("<div align='center' style='border:1px solid black; font-family:verdana;'>");
-		body.append("<h2>" + "회원가입 인증 코드입니다." + "</h2>");
-		body.append("<h1 style='color:blue'>" + number + "</h1>");
+		body.append("<h2> 회원가입 인증 코드입니다. </h2>");
+		body.append("<h1 style='color:blue'> %s </h1>".formatted(code));
 		body.append("</div><br>");
-		body.append("<h3>" + "감사합니다." + "</h3>");
+		body.append("<h3> 감사합니다. </h3>");
+
 		return body.toString();
 	}
 
 	@Override
 	@Transactional
-	public void sendMail(MimeMessage message, int number) {
-		// 실제 메일 전송
+	public void sendMail(MimeMessage message) {
 		try {
 			javaMailSender.send(message);
 		} catch (MailException e) {
-			e.printStackTrace();
 			throw new EmailSendException();
 		}
-
-		try {
-			String email = message.getRecipients(MimeMessage.RecipientType.TO)[0].toString();
-			signupRedisRepository.setValues(email, String.valueOf(number), Duration.ofMillis(expireTime));
-		} catch (MessagingException e) {
-			throw new RuntimeException(e);
-		}
-
 	}
 
 	@Override
-	public boolean emailVerificationCode() {
-		return false;
+	public void saveCode(String email, String code) {
+		signupRedisRepository.setValues(email, code, Duration.ofMillis(expireTime));
 	}
 
+	@Override
+	public boolean isCompleteEmailAuth(String email) {
+		String state = signupRedisRepository.getValues(email).orElse(NO_SIGNUP_VERIFICATION_REQUEST);
+		return state.equals(EMAIL_AUTH_ACCESS);
+	}
+
+	@Override
+	public boolean emailVerificationCode(String email, String inputCode) {
+		return false;
+	}
 }

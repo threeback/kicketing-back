@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import tback.kicketingback.global.AbstractExceptionHandler;
+import tback.kicketingback.user.exception.exceptions.AlreadyEmailAuthCompleteException;
 import tback.kicketingback.user.exception.exceptions.AlreadySamePasswordException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidNameException;
@@ -60,6 +61,11 @@ public class UserExceptionHandler extends AbstractExceptionHandler {
 
 	@ExceptionHandler(EmailSendException.class)
 	public ResponseEntity<String> emailSendException(EmailSendException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
+
+	@ExceptionHandler(AlreadyEmailAuthCompleteException.class)
+	public ResponseEntity<String> AlreadyEmailAuthCompleteException(AlreadyEmailAuthCompleteException exception) {
 		return getBadRequestResponseEntity(exception.getMessage());
 	}
 }
