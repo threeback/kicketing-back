@@ -1,6 +1,7 @@
 package tback.kicketingback.user.signup.service;
 
 import java.time.Duration;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,8 +23,6 @@ import tback.kicketingback.user.exception.exceptions.MismatchEmailAuthCodeExcept
 @Service
 public class SignUpEmailService implements EmailService, EmailAuthService {
 	public static final String AUTH_CODE_EMAIL_SUBJECT = "Kicketing 회원가입을 위한 이메일 인증";
-	public static final String NO_SIGNUP_VERIFICATION_REQUEST = "empty";
-	public static final String EMAIL_AUTH_ACCESS = "access";
 	private final JavaMailSender javaMailSender;
 	private final RedisRepository signupRedisRepository;
 
@@ -95,8 +94,8 @@ public class SignUpEmailService implements EmailService, EmailAuthService {
 
 	@Override
 	public boolean isCompleteEmailAuth(String email) {
-		String state = signupRedisRepository.getValues(email).orElse(NO_SIGNUP_VERIFICATION_REQUEST);
-		return state.equals(EMAIL_AUTH_ACCESS);
+		Optional<String> state = signupRedisRepository.getValues(email);
+		return state.map(s -> s.equals(EMAIL_AUTH_ACCESS)).orElse(false);
 	}
 
 	@Override
@@ -108,5 +107,10 @@ public class SignUpEmailService implements EmailService, EmailAuthService {
 		}
 
 		signupRedisRepository.setValues(email, EMAIL_AUTH_ACCESS, Duration.ofMillis(accessExpireTime));
+	}
+
+	@Override
+	public void expireEmailAuth(String email) {
+		signupRedisRepository.deleteValues(email);
 	}
 }

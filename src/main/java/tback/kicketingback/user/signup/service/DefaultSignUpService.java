@@ -38,6 +38,7 @@ public class DefaultSignUpService implements SignUpService {
 		}
 
 		userRepository.save(user);
+		emailAuthService.expireEmailAuth(signUpRequest.email());
 	}
 
 	private boolean isPasswordFormat(final String password) {

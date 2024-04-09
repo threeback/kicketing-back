@@ -11,9 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import tback.kicketingback.email.service.EmailAuthService;
+import tback.kicketingback.global.repository.RedisRepository;
 import tback.kicketingback.user.domain.User;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
@@ -26,6 +28,10 @@ import tback.kicketingback.user.signup.service.DefaultSignUpService;
 public class SignupTest {
 	@Autowired
 	private EmailAuthService emailAuthService;
+
+	@Autowired
+	@Qualifier("signupRedisRepository")
+	private RedisRepository signupRedisRepository;
 
 	private ConcurrentHashMap<String, User> map = new ConcurrentHashMap();
 	private FakeUserRepository fakeUserRepository;
@@ -41,14 +47,26 @@ public class SignupTest {
 	}
 
 	@Test
-	@DisplayName("회원가입 정상 처리")
-	public void 회원가입_정상_처리() {
+	@DisplayName("회원가입 정상 처리 후 디비에 유저가 존재한다.")
+	public void 회원가입_정상_처리_디비() {
 		SignUpRequest signUpRequest = new SignUpRequest("john", TEST_EMAIL, "1234abc!@");
 
 		emailAuthService.saveCode(TEST_EMAIL, "access");
 		defaultSignUpService.signUp(signUpRequest);
 
 		assertThat(fakeUserRepository.existsByEmail(TEST_EMAIL)).isTrue();
+	}
+
+	@Test
+	@DisplayName("회원가입 정상 처리 후 회원가입 레디스에 인증 정보가 삭제된다.")
+	public void 회원가입_정상_처리_레디스() {
+		SignUpRequest signUpRequest = new SignUpRequest("john", TEST_EMAIL, "1234abc!@");
+
+		emailAuthService.saveCode(TEST_EMAIL, "access");
+		defaultSignUpService.signUp(signUpRequest);
+
+		assertThat(fakeUserRepository.existsByEmail(TEST_EMAIL)).isTrue();
+		assertThat(signupRedisRepository.getValues(TEST_EMAIL).isEmpty()).isTrue();
 	}
 
 	@Test
