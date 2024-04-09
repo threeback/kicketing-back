@@ -33,7 +33,7 @@ public class SignupTest {
 	@Qualifier("signupRedisRepository")
 	private RedisRepository signupRedisRepository;
 
-	private ConcurrentHashMap<String, User> map = new ConcurrentHashMap();
+	private final ConcurrentHashMap<String, User> map = new ConcurrentHashMap();
 	private FakeUserRepository fakeUserRepository;
 	private DefaultSignUpService defaultSignUpService;
 
