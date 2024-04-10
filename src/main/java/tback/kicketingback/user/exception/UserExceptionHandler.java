@@ -15,6 +15,7 @@ import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
 import tback.kicketingback.user.exception.exceptions.EmailFormatException;
 import tback.kicketingback.user.exception.exceptions.EmailSendException;
 import tback.kicketingback.user.exception.exceptions.MismatchEmailAuthCodeException;
+import tback.kicketingback.user.exception.exceptions.PasswordEncodeException;
 import tback.kicketingback.user.exception.exceptions.UserPasswordEmptyException;
 
 @RestControllerAdvice
@@ -72,6 +73,11 @@ public class UserExceptionHandler extends AbstractExceptionHandler {
 
 	@ExceptionHandler(MismatchEmailAuthCodeException.class)
 	public ResponseEntity<String> MismatchEmailAuthCodeException(MismatchEmailAuthCodeException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
+
+	@ExceptionHandler(PasswordEncodeException.class)
+	public ResponseEntity<String> PasswordEncodeException(PasswordEncodeException exception) {
 		return getBadRequestResponseEntity(exception.getMessage());
 	}
 }
