@@ -1,27 +1,21 @@
 package tback.kicketingback.user.signup;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import jakarta.mail.internet.MimeMessage;
 import tback.kicketingback.global.repository.RedisRepository;
 import tback.kicketingback.user.exception.exceptions.AlreadyEmailAuthCompleteException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
-import tback.kicketingback.user.exception.exceptions.EmailSendException;
 import tback.kicketingback.user.exception.exceptions.MismatchEmailAuthCodeException;
 import tback.kicketingback.user.signup.controller.SignUpController;
 import tback.kicketingback.user.signup.dto.request.EmailCodeRequest;
 import tback.kicketingback.user.signup.dto.request.EmailConfirmRequest;
-import tback.kicketingback.user.signup.service.SignUpEmailService;
 import tback.kicketingback.user.signup.utils.NumberUtil;
 
 @SpringBootTest
@@ -43,7 +37,7 @@ public class UserSignUpEmailAuthTest {
 
 	@Test
 	@DisplayName("이미 이메일 인증을 완료하면 예외를 던진다.")
-	public void alreadyCompleteEmailAuth() {
+	public void 이미_이메일_인증_완료() {
 		EmailCodeRequest emailCodeRequest = new EmailCodeRequest(TEST_EMAIL);
 
 		signupRedisRepository.setValues(TEST_EMAIL, "access");
@@ -54,7 +48,7 @@ public class UserSignUpEmailAuthTest {
 
 	@Test
 	@DisplayName("인증 코드가 일치하면 상태가 변경된다.")
-	public void signupAuthComplete() {
+	public void 회원가입_인증_완료() {
 		String code = NumberUtil.createRandomCode6();
 		EmailConfirmRequest emailConfirmRequest = new EmailConfirmRequest(TEST_EMAIL, code);
 

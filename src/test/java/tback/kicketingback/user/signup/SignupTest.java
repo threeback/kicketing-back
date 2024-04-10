@@ -71,7 +71,7 @@ public class SignupTest {
 
 	@Test
 	@DisplayName("유저 이메일 중복이면 예외가 발생한다.")
-	public void throwExceptionIfEmailIsDuplicated() {
+	public void 이메일_중복일_경우_예외() {
 		map.put("test@test.com", User.of(TEST_EMAIL, "123456a!!", "beach"));
 		SignUpRequest signUpRequest = new SignUpRequest("john", TEST_EMAIL, "1234abc!@");
 

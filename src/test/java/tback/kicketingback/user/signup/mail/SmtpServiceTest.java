@@ -38,7 +38,7 @@ class SmtpServiceTest {
 
 	@Test
 	@DisplayName("유저 이메일에게 인증 코드를 전송할 수 있다.")
-	public void emailVerificationTest() {
+	public void 이메일_정상_전송() {
 		String code = NumberUtil.createRandomCode6();
 		assertDoesNotThrow(() -> {
 			smtpService.sendVerification(TEST_EMAIL, code);
@@ -48,7 +48,7 @@ class SmtpServiceTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"123d", "82fhaueir", "1", "!$#$^#$^"})
 	@DisplayName("이메일 형식이 아니라면 예외를 던진다.")
-	public void emailVerificationTest2(String email) {
+	public void 이메일_형식이_아닐경우_예외(String email) {
 		String code = NumberUtil.createRandomCode6();
 
 		assertThrows(EmailFormatException.class, () -> smtpService.sendVerification(email, code));
@@ -56,7 +56,7 @@ class SmtpServiceTest {
 
 	@Test
 	@DisplayName("이메일 전송에 성공하면 레디스에 인증코드가 있다.")
-	public void emailCodeInRedis() {
+	public void 이메일_전송_성공시_레디스_확인() {
 		String code = NumberUtil.createRandomCode6();
 
 		smtpService.sendVerification(TEST_EMAIL, code);
