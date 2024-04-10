@@ -62,6 +62,9 @@ public class User {
 		this.name = name;
 	}
 
+	private static final String DEFAULT_PASSWORD_REGEX = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
+	private static final String DEFAULT_NAME_REGEX = "^[가-힣a-zA-Z]{2,20}$";
+
 	public static User of(final String email, final String password, final String name) {
 		validateCreateMember(email, password, name);
 		return new User(null, email, password, name);
@@ -82,11 +85,11 @@ public class User {
 	}
 
 	private static boolean isEmailFormat(final String email) {
-		return Pattern.matches("^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$", email);
+		return Pattern.matches(DEFAULT_PASSWORD_REGEX, email);
 	}
 
 	private static boolean isNameFormat(final String name) {
-		return Pattern.matches("^[가-힣a-zA-Z]{2,20}$", name);
+		return Pattern.matches(DEFAULT_NAME_REGEX, name);
 	}
 
 	private static boolean isEmpty(final String password) {
