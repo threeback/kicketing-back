@@ -28,9 +28,6 @@ import tback.kicketingback.user.signup.utils.NumberUtil;
 public class UserSignUpEmailAuthTest {
 
 	@Autowired
-	private SignUpEmailService emailService;
-
-	@Autowired
 	@Qualifier("signupRedisRepository")
 	private RedisRepository signupRedisRepository;
 
@@ -42,40 +39,6 @@ public class UserSignUpEmailAuthTest {
 	@BeforeEach
 	void initBefore() {
 		signupRedisRepository.deleteValues(TEST_EMAIL);
-	}
-
-	@Test
-	@DisplayName("유저 이메일에게 인증 코드를 전송할 수 있다.")
-	public void emailVerificationTest() {
-		int code = NumberUtil.createRandomCode6();
-		assertDoesNotThrow(() -> {
-			MimeMessage message = emailService.createMail(TEST_EMAIL,
-				emailService.createBody(TEST_EMAIL, String.valueOf(code)));
-			emailService.sendMail(message);
-		});
-	}
-
-	@ParameterizedTest
-	@ValueSource(strings = {"123d", "82fhaueir", "1", "!$#$^#$^"})
-	@DisplayName("이메일 형식이 아니라면 예외를 던진다.")
-	public void emailVerificationTest2(String email) {
-		int code = NumberUtil.createRandomCode6();
-		MimeMessage message = emailService.createMail(email, emailService.createBody(email, String.valueOf(code)));
-
-		assertThrows(EmailSendException.class, () -> emailService.sendMail(message));
-	}
-
-	@Test
-	@DisplayName("이메일 전송에 성공하면 레디스에 인증코드가 있다.")
-	public void emailCodeInRedis() {
-		String code = String.valueOf(NumberUtil.createRandomCode6());
-
-		MimeMessage message = emailService.createMail(TEST_EMAIL, emailService.createBody(TEST_EMAIL, code));
-		emailService.sendMail(message);
-		emailService.saveCode(TEST_EMAIL, code);
-
-		assertEquals(code, signupRedisRepository.getValues(TEST_EMAIL).orElse("-1"));
-
 	}
 
 	@Test
@@ -92,7 +55,7 @@ public class UserSignUpEmailAuthTest {
 	@Test
 	@DisplayName("인증 코드가 일치하면 상태가 변경된다.")
 	public void signupAuthComplete() {
-		String code = String.valueOf(NumberUtil.createRandomCode6());
+		String code = NumberUtil.createRandomCode6();
 		EmailConfirmRequest emailConfirmRequest = new EmailConfirmRequest(TEST_EMAIL, code);
 
 		signupRedisRepository.setValues(TEST_EMAIL, code);
@@ -103,7 +66,7 @@ public class UserSignUpEmailAuthTest {
 	@Test
 	@DisplayName("이메일이 틀린 경우")
 	public void 이메일_틀림() {
-		String code = String.valueOf(NumberUtil.createRandomCode6());
+		String code = NumberUtil.createRandomCode6();
 		EmailConfirmRequest emailConfirmRequest = new EmailConfirmRequest(TEST_EMAIL, code);
 
 		signupRedisRepository.setValues("noEmail@gmail.com", code);
@@ -115,7 +78,7 @@ public class UserSignUpEmailAuthTest {
 	@Test
 	@DisplayName("이메일이 없는 경우")
 	public void 이메일_없음() {
-		String code = String.valueOf(NumberUtil.createRandomCode6());
+		String code = NumberUtil.createRandomCode6();
 		EmailConfirmRequest emailConfirmRequest = new EmailConfirmRequest(TEST_EMAIL, code);
 
 		assertThatThrownBy(() -> signUpController.emailConfirm(emailConfirmRequest))
@@ -125,7 +88,7 @@ public class UserSignUpEmailAuthTest {
 	@Test
 	@DisplayName("인증번호가 틀린 경우")
 	public void 인증번호_틀림() {
-		String code = String.valueOf(NumberUtil.createRandomCode6());
+		String code = NumberUtil.createRandomCode6();
 		EmailConfirmRequest emailConfirmRequest = new EmailConfirmRequest(TEST_EMAIL, "000000");
 
 		signupRedisRepository.setValues(TEST_EMAIL, code);

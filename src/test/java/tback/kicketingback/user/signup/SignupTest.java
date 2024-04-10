@@ -26,7 +26,6 @@ import tback.kicketingback.user.signup.service.DefaultSignUpService;
 
 @SpringBootTest
 public class SignupTest {
-
 	@Autowired
 	private EmailAuthService emailAuthService;
 
