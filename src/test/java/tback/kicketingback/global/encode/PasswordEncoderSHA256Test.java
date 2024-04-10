@@ -12,10 +12,9 @@ public class PasswordEncoderSHA256Test {
 		// Given
 
 		final String rawPassword = "123413f";
-		String encoded = "";
 
 		// When
-		encoded = PasswordEncoderSHA256.encode(rawPassword);
+		String encoded = PasswordEncoderSHA256.encode(rawPassword);
 
 		// Then
 		Assertions.assertThat(encoded).isEqualTo(PasswordEncoderSHA256.encode(rawPassword));
