@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import tback.kicketingback.user.signup.dto.request.EmailCodeRequest;
 import tback.kicketingback.user.signup.dto.request.EmailConfirmRequest;
 import tback.kicketingback.user.signup.dto.request.SignUpRequest;
+import tback.kicketingback.user.signup.mail.SmtpMailSender;
+import tback.kicketingback.user.signup.mail.SmtpService;
 import tback.kicketingback.user.signup.service.DefaultSignUpService;
 import tback.kicketingback.user.signup.service.SignUpEmailService;
 import tback.kicketingback.user.signup.utils.NumberUtil;
@@ -22,6 +24,7 @@ public class SignUpController {
 
 	private final DefaultSignUpService defaultSignUpService;
 	private final SignUpEmailService signUpEmailService;
+	private final SmtpService smtpService;
 
 	@PostMapping("/")
 	public ResponseEntity<Void> signUp(@RequestBody SignUpRequest signUpRequest) {
@@ -36,12 +39,10 @@ public class SignUpController {
 
 		signUpEmailService.validateEmailAuthCompletion(email);
 
-		int code = NumberUtil.createRandomCode6();
-		String body = signUpEmailService.createBody(email, String.valueOf(code));
-		MimeMessage message = signUpEmailService.createMail(email, body);
+		String code = NumberUtil.createRandomCode6();
 
-		signUpEmailService.sendMail(message);
-		signUpEmailService.saveCode(email, String.valueOf(code));
+		smtpService.sendVerification(email, code);
+		signUpEmailService.saveCode(email, code);
 
 		return ResponseEntity.ok().build();
 	}
