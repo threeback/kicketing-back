@@ -1,7 +1,6 @@
 package tback.kicketingback.user.signup.mail;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -26,7 +25,6 @@ public class SmtpMailSender {
 		MimeMessage message = javaMailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
 		setContent(mail, helper);
-		System.out.println("message = " + message);
 		javaMailSender.send(message);
 	}
 

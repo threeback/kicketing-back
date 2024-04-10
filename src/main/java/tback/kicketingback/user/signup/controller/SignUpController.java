@@ -6,12 +6,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.user.signup.dto.request.EmailCodeRequest;
 import tback.kicketingback.user.signup.dto.request.EmailConfirmRequest;
 import tback.kicketingback.user.signup.dto.request.SignUpRequest;
-import tback.kicketingback.user.signup.mail.SmtpMailSender;
 import tback.kicketingback.user.signup.mail.SmtpService;
 import tback.kicketingback.user.signup.service.DefaultSignUpService;
 import tback.kicketingback.user.signup.service.SignUpEmailService;
