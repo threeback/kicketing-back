@@ -20,7 +20,7 @@ public class SmtpMailSender {
 
 	private final JavaMailSender javaMailSender;
 
-	@Async
+	@Async("mailExecutor")
 	public void send(Mail mail) {
 		MimeMessage message = javaMailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
