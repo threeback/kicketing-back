@@ -15,7 +15,9 @@ import jakarta.transaction.Transactional;
 import tback.kicketingback.email.service.EmailAuthService;
 import tback.kicketingback.email.service.EmailService;
 import tback.kicketingback.global.repository.RedisRepository;
+import tback.kicketingback.user.exception.exceptions.AlreadyEmailAuthCompleteException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
+import tback.kicketingback.user.exception.exceptions.EmailAuthIncompleteException;
 import tback.kicketingback.user.exception.exceptions.EmailCreateException;
 import tback.kicketingback.user.exception.exceptions.EmailSendException;
 import tback.kicketingback.user.exception.exceptions.MismatchEmailAuthCodeException;
@@ -93,9 +95,24 @@ public class SignUpEmailService implements EmailService, EmailAuthService {
 	}
 
 	@Override
-	public boolean isCompleteEmailAuth(String email) {
+	public void validateEmailAuthCompletion(String email) {
 		Optional<String> state = signupRedisRepository.getValues(email);
-		return state.map(s -> s.equals(EMAIL_AUTH_ACCESS)).orElse(false);
+
+		if (state.isEmpty()) {
+			throw new AuthInvalidEmailException();
+		}
+		if (state.get().equals(EMAIL_AUTH_ACCESS)) {
+			throw new AlreadyEmailAuthCompleteException();
+		}
+	}
+
+	@Override
+	public void validateEmailAuthAttempt(String email) {
+		Optional<String> state = signupRedisRepository.getValues(email);
+
+		if (state.isEmpty() || !state.get().equals(EMAIL_AUTH_ACCESS)) {
+			throw new EmailAuthIncompleteException();
+		}
 	}
 
 	@Override

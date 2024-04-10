@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.email.service.EmailAuthService;
 import tback.kicketingback.user.domain.User;
-import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
 import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
 import tback.kicketingback.user.repository.UserRepository;
@@ -28,9 +27,7 @@ public class DefaultSignUpService implements SignUpService {
 			throw new AuthInvalidPasswordException();
 		}
 
-		if (!emailAuthService.isCompleteEmailAuth(signUpRequest.email())) {
-			throw new AuthInvalidEmailException();
-		}
+		emailAuthService.validateEmailAuthAttempt(signUpRequest.email());
 
 		User user = User.of(signUpRequest.email(), encode(signUpRequest.password()), signUpRequest.username());
 		if (userRepository.existsByEmail(signUpRequest.email())) {

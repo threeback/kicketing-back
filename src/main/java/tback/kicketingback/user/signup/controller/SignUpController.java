@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import tback.kicketingback.user.exception.exceptions.AlreadyEmailAuthCompleteException;
 import tback.kicketingback.user.signup.dto.request.EmailCodeRequest;
 import tback.kicketingback.user.signup.dto.request.EmailConfirmRequest;
 import tback.kicketingback.user.signup.dto.request.SignUpRequest;
@@ -35,9 +34,7 @@ public class SignUpController {
 	public ResponseEntity<Void> emailCode(@RequestBody EmailCodeRequest emailCodeRequest) {
 		String email = emailCodeRequest.email();
 
-		if (signUpEmailService.isCompleteEmailAuth(email)) {
-			throw new AlreadyEmailAuthCompleteException();
-		}
+		signUpEmailService.validateEmailAuthCompletion(email);
 
 		int code = NumberUtil.createRandomCode6();
 		String body = signUpEmailService.createBody(email, String.valueOf(code));
@@ -51,10 +48,8 @@ public class SignUpController {
 
 	@PostMapping("/email/confirm")
 	public ResponseEntity<Void> emailConfirm(@RequestBody EmailConfirmRequest emailConfirmRequest) {
-		if (signUpEmailService.isCompleteEmailAuth(emailConfirmRequest.email())) {
-			throw new AlreadyEmailAuthCompleteException();
-		}
-		
+		signUpEmailService.validateEmailAuthCompletion(emailConfirmRequest.email());
+
 		signUpEmailService.checkCode(emailConfirmRequest.email(), emailConfirmRequest.code());
 
 		return ResponseEntity.ok().build();

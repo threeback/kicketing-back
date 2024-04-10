@@ -10,6 +10,7 @@ import tback.kicketingback.user.exception.exceptions.AlreadySamePasswordExceptio
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidNameException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
+import tback.kicketingback.user.exception.exceptions.EmailAuthIncompleteException;
 import tback.kicketingback.user.exception.exceptions.EmailCreateException;
 import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
 import tback.kicketingback.user.exception.exceptions.EmailFormatException;
@@ -67,17 +68,22 @@ public class UserExceptionHandler extends AbstractExceptionHandler {
 	}
 
 	@ExceptionHandler(AlreadyEmailAuthCompleteException.class)
-	public ResponseEntity<String> AlreadyEmailAuthCompleteException(AlreadyEmailAuthCompleteException exception) {
+	public ResponseEntity<String> alreadyEmailAuthCompleteException(AlreadyEmailAuthCompleteException exception) {
 		return getBadRequestResponseEntity(exception.getMessage());
 	}
 
 	@ExceptionHandler(MismatchEmailAuthCodeException.class)
-	public ResponseEntity<String> MismatchEmailAuthCodeException(MismatchEmailAuthCodeException exception) {
+	public ResponseEntity<String> mismatchEmailAuthCodeException(MismatchEmailAuthCodeException exception) {
 		return getBadRequestResponseEntity(exception.getMessage());
 	}
 
 	@ExceptionHandler(PasswordEncodeException.class)
-	public ResponseEntity<String> PasswordEncodeException(PasswordEncodeException exception) {
+	public ResponseEntity<String> passwordEncodeException(PasswordEncodeException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
+
+	@ExceptionHandler(EmailAuthIncompleteException.class)
+	public ResponseEntity<String> emailAuthIncompleteException(PasswordEncodeException exception) {
 		return getBadRequestResponseEntity(exception.getMessage());
 	}
 }

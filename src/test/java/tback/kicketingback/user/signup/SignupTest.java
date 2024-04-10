@@ -17,8 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import tback.kicketingback.email.service.EmailAuthService;
 import tback.kicketingback.global.repository.RedisRepository;
 import tback.kicketingback.user.domain.User;
-import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
+import tback.kicketingback.user.exception.exceptions.EmailAuthIncompleteException;
 import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
 import tback.kicketingback.user.repository.FakeUserRepository;
 import tback.kicketingback.user.signup.dto.request.SignUpRequest;
@@ -26,6 +26,7 @@ import tback.kicketingback.user.signup.service.DefaultSignUpService;
 
 @SpringBootTest
 public class SignupTest {
+
 	@Autowired
 	private EmailAuthService emailAuthService;
 
@@ -97,7 +98,7 @@ public class SignupTest {
 	public void 회원가입_전_이메일_인증_안함() {
 		SignUpRequest signUpRequest = new SignUpRequest("john", TEST_EMAIL, "1234abc!@");
 
-		assertThrows(AuthInvalidEmailException.class, () -> defaultSignUpService.signUp(signUpRequest));
+		assertThrows(EmailAuthIncompleteException.class, () -> defaultSignUpService.signUp(signUpRequest));
 	}
 
 	@Test
@@ -107,6 +108,6 @@ public class SignupTest {
 
 		emailAuthService.saveCode(TEST_EMAIL, "123123");
 
-		assertThrows(AuthInvalidEmailException.class, () -> defaultSignUpService.signUp(signUpRequest));
+		assertThrows(EmailAuthIncompleteException.class, () -> defaultSignUpService.signUp(signUpRequest));
 	}
 }
