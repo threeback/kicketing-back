@@ -50,7 +50,7 @@ public class SignUpEmailService implements EmailService, EmailAuthService {
 		try {
 			message.setFrom(senderEmail);
 			message.addRecipients(MimeMessage.RecipientType.TO, email);
-			message.setSubject(AUTH_CODE_EMAIL_SUBJECT);  // 제목 설정
+			message.setSubject(AUTH_CODE_EMAIL_SUBJECT);
 			message.setText(body, "UTF-8", "html");
 		} catch (MessagingException e) {
 			throw new EmailCreateException();
