@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 public class OauthClientProvider {
 	private final Map<String, OauthClient> oauthClients;
 
-	public Optional<OauthClient> provideOauthClient(final String name) {
+	public Optional<OauthClient> getOauthClient(final String name) {
 		return Optional.ofNullable(oauthClients.get(name));
 	}
 }
