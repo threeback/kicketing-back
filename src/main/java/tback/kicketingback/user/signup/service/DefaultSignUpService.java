@@ -11,7 +11,6 @@ import tback.kicketingback.user.domain.User;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
 import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
 import tback.kicketingback.user.repository.UserRepository;
-import tback.kicketingback.user.signup.dto.request.SignUpRequest;
 
 @Service
 public class DefaultSignUpService implements SignUpService {
@@ -25,24 +24,24 @@ public class DefaultSignUpService implements SignUpService {
 		this.emailAuthService = emailAuthService;
 	}
 
+	private boolean isPasswordFormat(final String password) {
+		return Pattern.matches(DEFAULT_PASSWORD_REGEX, password);
+	}
+
 	@Override
-	public void signUp(SignUpRequest signUpRequest) {
-		if (!isPasswordFormat(signUpRequest.password())) {
+	public void signUp(String username, String email, String password) {
+		if (!isPasswordFormat(password)) {
 			throw new AuthInvalidPasswordException();
 		}
 
-		emailAuthService.validateEmailAuthAttempt(signUpRequest.email());
+		emailAuthService.validateEmailAuthAttempt(email);
 
-		User user = User.of(signUpRequest.email(), encode(signUpRequest.password()), signUpRequest.username());
-		if (userRepository.existsByEmail(signUpRequest.email())) {
+		User user = User.of(email, encode(password), username);
+		if (userRepository.existsByEmail(email)) {
 			throw new EmailDuplicatedException();
 		}
 
 		userRepository.save(user);
-		emailAuthService.expireEmailAuth(signUpRequest.email());
-	}
-
-	private boolean isPasswordFormat(final String password) {
-		return Pattern.matches(DEFAULT_PASSWORD_REGEX, password);
+		emailAuthService.expireEmailAuth(email);
 	}
 }

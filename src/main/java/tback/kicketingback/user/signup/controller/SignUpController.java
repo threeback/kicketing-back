@@ -26,7 +26,7 @@ public class SignUpController {
 
 	@PostMapping("/")
 	public ResponseEntity<Void> signUp(@RequestBody SignUpRequest signUpRequest) {
-		defaultSignUpService.signUp(signUpRequest);
+		defaultSignUpService.signUp(signUpRequest.username(), signUpRequest.email(), signUpRequest.password());
 
 		return ResponseEntity.ok().build();
 	}
