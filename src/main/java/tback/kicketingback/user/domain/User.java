@@ -62,6 +62,8 @@ public class User {
 		this.name = name;
 	}
 
+	public final static String DEFAULT_PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[^a-zA-Z0-9]).{8,12}$";
+	
 	private static final String DEFAULT_EMAIL_REGEX = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
 	private static final String DEFAULT_NAME_REGEX = "^[가-힣a-zA-Z]{2,20}$";
 

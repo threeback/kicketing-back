@@ -16,7 +16,7 @@ import tback.kicketingback.user.exception.exceptions.MismatchEmailAuthCodeExcept
 import tback.kicketingback.user.signup.controller.SignUpController;
 import tback.kicketingback.user.signup.dto.request.EmailCodeRequest;
 import tback.kicketingback.user.signup.dto.request.EmailConfirmRequest;
-import tback.kicketingback.user.signup.utils.NumberUtil;
+import tback.kicketingback.utils.NumberCodeUtil;
 
 @SpringBootTest
 public class UserSignUpEmailAuthTest {
@@ -49,7 +49,7 @@ public class UserSignUpEmailAuthTest {
 	@Test
 	@DisplayName("인증 코드가 일치하면 상태가 변경된다.")
 	public void 회원가입_인증_완료() {
-		String code = NumberUtil.createRandomCode6();
+		String code = NumberCodeUtil.createRandomCode6();
 		EmailConfirmRequest emailConfirmRequest = new EmailConfirmRequest(TEST_EMAIL, code);
 
 		signupRedisRepository.setValues(TEST_EMAIL, code);
@@ -60,7 +60,7 @@ public class UserSignUpEmailAuthTest {
 	@Test
 	@DisplayName("이메일이 틀린 경우")
 	public void 이메일_틀림() {
-		String code = NumberUtil.createRandomCode6();
+		String code = NumberCodeUtil.createRandomCode6();
 		EmailConfirmRequest emailConfirmRequest = new EmailConfirmRequest(TEST_EMAIL, code);
 
 		signupRedisRepository.setValues("noEmail@gmail.com", code);
@@ -72,7 +72,7 @@ public class UserSignUpEmailAuthTest {
 	@Test
 	@DisplayName("이메일이 없는 경우")
 	public void 이메일_없음() {
-		String code = NumberUtil.createRandomCode6();
+		String code = NumberCodeUtil.createRandomCode6();
 		EmailConfirmRequest emailConfirmRequest = new EmailConfirmRequest(TEST_EMAIL, code);
 
 		assertThatThrownBy(() -> signUpController.emailConfirm(emailConfirmRequest))
@@ -82,7 +82,7 @@ public class UserSignUpEmailAuthTest {
 	@Test
 	@DisplayName("인증번호가 틀린 경우")
 	public void 인증번호_틀림() {
-		String code = NumberUtil.createRandomCode6();
+		String code = NumberCodeUtil.createRandomCode6();
 		EmailConfirmRequest emailConfirmRequest = new EmailConfirmRequest(TEST_EMAIL, "000000");
 
 		signupRedisRepository.setValues(TEST_EMAIL, code);
