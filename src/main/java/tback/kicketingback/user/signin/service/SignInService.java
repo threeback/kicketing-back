@@ -1,5 +1,7 @@
 package tback.kicketingback.user.signin.service;
 
+import static tback.kicketingback.global.encode.PasswordEncoderSHA256.*;
+
 import java.time.Duration;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,8 +39,8 @@ public class SignInService {
 		User user = userRepository.findByEmail(email)
 			.orElseThrow(NoSuchUserException::new);
 
-		String password = signInRequest.password();
-		user.validatePassword(password);
+		String encodedPassword = encode(signInRequest.password());
+		user.validatePassword(encodedPassword);
 
 		String accessToken = jwtTokenProvider.generateAccessToken(email);
 		String refreshToken = jwtTokenProvider.generateRefreshToken(email);
