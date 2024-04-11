@@ -29,14 +29,14 @@ public class DefaultSignUpService implements SignUpService {
 	}
 
 	@Override
-	public void signUp(String username, String email, String password) {
+	public void signUp(String name, String email, String password) {
 		if (!isPasswordFormat(password)) {
 			throw new AuthInvalidPasswordException();
 		}
 
 		emailAuthService.validateEmailAuthAttempt(email);
 
-		User user = User.of(email, encode(password), username);
+		User user = User.of(email, encode(password), name);
 		if (userRepository.existsByEmail(email)) {
 			throw new EmailDuplicatedException();
 		}

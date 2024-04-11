@@ -37,6 +37,8 @@ public class SignupTest {
 	private DefaultSignUpService defaultSignUpService;
 
 	private final String TEST_EMAIL = "test@test.com";
+	private final String TEST_NAME = "john";
+	private final String TEST_PASSWORD = "1234abc!@";
 
 	@BeforeEach
 	void initBefore() {
@@ -48,11 +50,8 @@ public class SignupTest {
 	@Test
 	@DisplayName("회원가입 정상 처리 후 디비에 유저가 존재한다.")
 	public void 회원가입_정상_처리_디비() {
-		String username = "john";
-		String password = "1234abc!@";
-
 		emailAuthService.saveCode(TEST_EMAIL, "access");
-		defaultSignUpService.signUp(username, TEST_EMAIL, password);
+		defaultSignUpService.signUp(TEST_NAME, TEST_EMAIL, TEST_PASSWORD);
 
 		assertThat(fakeUserRepository.existsByEmail(TEST_EMAIL)).isTrue();
 	}
@@ -60,11 +59,8 @@ public class SignupTest {
 	@Test
 	@DisplayName("회원가입 정상 처리 후 회원가입 레디스에 인증 정보가 삭제된다.")
 	public void 회원가입_정상_처리_레디스() {
-		String username = "john";
-		String password = "1234abc!@";
-
 		emailAuthService.saveCode(TEST_EMAIL, "access");
-		defaultSignUpService.signUp(username, TEST_EMAIL, password);
+		defaultSignUpService.signUp(TEST_NAME, TEST_EMAIL, TEST_PASSWORD);
 
 		assertThat(fakeUserRepository.existsByEmail(TEST_EMAIL)).isTrue();
 		assertThat(signupRedisRepository.getValues(TEST_EMAIL).isEmpty()).isTrue();
@@ -74,12 +70,10 @@ public class SignupTest {
 	@DisplayName("유저 이메일 중복이면 예외가 발생한다.")
 	public void 이메일_중복일_경우_예외() {
 		map.put("test@test.com", User.of(TEST_EMAIL, "123456a!!", "beach"));
-		String username = "john";
-		String password = "1234abc!@";
-
 		emailAuthService.saveCode(TEST_EMAIL, "access");
 
-		assertThrows(EmailDuplicatedException.class, () -> defaultSignUpService.signUp(username, TEST_EMAIL, password));
+		assertThrows(EmailDuplicatedException.class,
+			() -> defaultSignUpService.signUp(TEST_NAME, TEST_EMAIL, TEST_PASSWORD));
 	}
 
 	@ParameterizedTest
@@ -87,33 +81,25 @@ public class SignupTest {
 		"1a@12312!@#!@!#!@#@!#@!2!@!!zda"})
 	@DisplayName("비밀번호가 형식에 맞지 않는 경우")
 	public void 비밀번호_형식_맞지않음(String password) {
-		String username = "john";
-
 		emailAuthService.saveCode(TEST_EMAIL, "access");
 
 		assertThrows(AuthInvalidPasswordException.class,
-			() -> defaultSignUpService.signUp(username, TEST_EMAIL, password));
+			() -> defaultSignUpService.signUp(TEST_NAME, TEST_EMAIL, password));
 	}
 
 	@Test
 	@DisplayName("이메일 인증을 시도하지 않은 경우")
 	public void 회원가입_전_이메일_인증_안함() {
-		String username = "john";
-		String password = "1234abc!@";
-
 		assertThrows(EmailAuthIncompleteException.class,
-			() -> defaultSignUpService.signUp(username, TEST_EMAIL, password));
+			() -> defaultSignUpService.signUp(TEST_NAME, TEST_EMAIL, TEST_PASSWORD));
 	}
 
 	@Test
 	@DisplayName("이메일 인증을 완료하지 않은 경우")
 	public void 회원가입_전_이메일_인증_완료_안함() {
-		String username = "john";
-		String password = "1234abc!@";
-
 		emailAuthService.saveCode(TEST_EMAIL, "123123");
 
 		assertThrows(EmailAuthIncompleteException.class,
-			() -> defaultSignUpService.signUp(username, TEST_EMAIL, password));
+			() -> defaultSignUpService.signUp(TEST_NAME, TEST_EMAIL, TEST_PASSWORD));
 	}
 }
