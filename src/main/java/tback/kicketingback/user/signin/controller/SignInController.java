@@ -14,7 +14,7 @@ import tback.kicketingback.user.signin.dto.SignInRequest;
 import tback.kicketingback.user.signin.service.SignInService;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class SignInController {
 
