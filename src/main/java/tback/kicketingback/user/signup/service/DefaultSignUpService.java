@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
 import tback.kicketingback.email.service.EmailAuthService;
 import tback.kicketingback.user.domain.User;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
@@ -15,11 +14,16 @@ import tback.kicketingback.user.repository.UserRepository;
 import tback.kicketingback.user.signup.dto.request.SignUpRequest;
 
 @Service
-@RequiredArgsConstructor
 public class DefaultSignUpService implements SignUpService {
 
 	private final UserRepository userRepository;
 	private final EmailAuthService emailAuthService;
+	private final static String DEFAULT_PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[^a-zA-Z0-9]).{8,12}$";
+
+	public DefaultSignUpService(UserRepository userRepository, EmailAuthService emailAuthService) {
+		this.userRepository = userRepository;
+		this.emailAuthService = emailAuthService;
+	}
 
 	@Override
 	public void signUp(SignUpRequest signUpRequest) {
@@ -39,6 +43,6 @@ public class DefaultSignUpService implements SignUpService {
 	}
 
 	private boolean isPasswordFormat(final String password) {
-		return Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[^a-zA-Z0-9]).{8,12}$", password);
+		return Pattern.matches(DEFAULT_PASSWORD_REGEX, password);
 	}
 }
