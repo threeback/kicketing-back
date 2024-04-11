@@ -5,10 +5,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import tback.kicketingback.global.AbstractExceptionHandler;
+import tback.kicketingback.user.exception.exceptions.AlreadyEmailAuthCompleteException;
 import tback.kicketingback.user.exception.exceptions.AlreadySamePasswordException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
+import tback.kicketingback.user.exception.exceptions.AuthInvalidNameException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
+import tback.kicketingback.user.exception.exceptions.EmailAuthIncompleteException;
+import tback.kicketingback.user.exception.exceptions.EmailCreateException;
+import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
 import tback.kicketingback.user.exception.exceptions.EmailFormatException;
+import tback.kicketingback.user.exception.exceptions.EmailSendException;
+import tback.kicketingback.user.exception.exceptions.MismatchEmailAuthCodeException;
+import tback.kicketingback.user.exception.exceptions.PasswordEncodeException;
 import tback.kicketingback.user.exception.exceptions.UserPasswordEmptyException;
 
 @RestControllerAdvice
@@ -37,5 +45,45 @@ public class UserExceptionHandler extends AbstractExceptionHandler {
 	@ExceptionHandler(AlreadySamePasswordException.class)
 	public ResponseEntity<String> alreadySamePasswordException(AlreadySamePasswordException exception) {
 		return getForbiddenResponseEntity(exception.getMessage());
+	}
+
+	@ExceptionHandler(EmailDuplicatedException.class)
+	public ResponseEntity<String> emailDuplicatedException(EmailDuplicatedException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
+
+	@ExceptionHandler(AuthInvalidNameException.class)
+	public ResponseEntity<String> authInvalidNameException(AuthInvalidNameException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
+
+	@ExceptionHandler(EmailCreateException.class)
+	public ResponseEntity<String> emailCreateException(EmailCreateException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
+
+	@ExceptionHandler(EmailSendException.class)
+	public ResponseEntity<String> emailSendException(EmailSendException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
+
+	@ExceptionHandler(AlreadyEmailAuthCompleteException.class)
+	public ResponseEntity<String> alreadyEmailAuthCompleteException(AlreadyEmailAuthCompleteException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
+
+	@ExceptionHandler(MismatchEmailAuthCodeException.class)
+	public ResponseEntity<String> mismatchEmailAuthCodeException(MismatchEmailAuthCodeException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
+
+	@ExceptionHandler(PasswordEncodeException.class)
+	public ResponseEntity<String> passwordEncodeException(PasswordEncodeException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
+
+	@ExceptionHandler(EmailAuthIncompleteException.class)
+	public ResponseEntity<String> emailAuthIncompleteException(PasswordEncodeException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
 	}
 }
