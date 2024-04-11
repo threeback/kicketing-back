@@ -4,5 +4,5 @@ import tback.kicketingback.auth.oauth.dto.OauthUser;
 
 public interface OauthClient {
 
-	OauthUser getOauthUser(String authCode);
+	OauthUser getOauthUser(String authCode, String state);
 }

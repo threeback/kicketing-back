@@ -13,6 +13,6 @@ public class OauthClientProvider {
 	private final Map<String, OauthClient> oauthClients;
 
 	public Optional<OauthClient> getOauthClient(final String name) {
-		return Optional.ofNullable(oauthClients.get(name));
+		return Optional.ofNullable(oauthClients.get(name + "OauthClient"));
 	}
 }
