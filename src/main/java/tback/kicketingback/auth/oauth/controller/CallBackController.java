@@ -24,15 +24,15 @@ public class CallBackController {
 
 	private final OauthClientService oauthClientService;
 
-	private final SignUpService ouathSignupService;
+	private final SignUpService oauthSignupService;
 
 	private final OauthSignInService oauthSignInService;
 
 	public CallBackController(OauthClientService oauthClientService,
-		@Qualifier("OuathSignupService") SignUpService ouathSignupService,
+		@Qualifier("OauthSignupService") SignUpService oauthSignupService,
 		OauthSignInService oauthSignInService) {
 		this.oauthClientService = oauthClientService;
-		this.ouathSignupService = ouathSignupService;
+		this.oauthSignupService = oauthSignupService;
 		this.oauthSignInService = oauthSignInService;
 	}
 
@@ -46,9 +46,9 @@ public class CallBackController {
 			domain,
 			requestCallBack.authCode(),
 			requestCallBack.state());
-		
+
 		if (!oauthClientService.checkOurUser(oauthUser)) {
-			ouathSignupService.signUp(oauthUser.name(), oauthUser.email(), PasswordUtil.createRandomPassword());
+			oauthSignupService.signUp(oauthUser.name(), oauthUser.email(), PasswordUtil.createRandomPassword());
 		}
 
 		TokenResponse tokenResponse = oauthSignInService.signInUser(oauthUser.email());

@@ -12,9 +12,9 @@ import tback.kicketingback.user.signup.mail.SmtpService;
 import tback.kicketingback.user.signup.service.SignUpService;
 
 @Service
-@Qualifier("OuathSignupService")
+@Qualifier("OauthSignupService")
 @RequiredArgsConstructor
-public class OuathSignupService implements SignUpService {
+public class OauthSignupService implements SignUpService {
 
 	private final UserRepository userRepository;
 	private final SmtpService smtpService;
