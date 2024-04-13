@@ -35,7 +35,7 @@ public class SignUpController {
 	public ResponseEntity<Void> emailCode(@RequestBody EmailCodeRequest emailCodeRequest) {
 		String email = emailCodeRequest.email();
 
-		signUpEmailService.validateEmailAuthCompletion(email);
+		signUpEmailService.checkStateAccess(email);
 
 		String code = NumberUtil.createRandomCode6();
 

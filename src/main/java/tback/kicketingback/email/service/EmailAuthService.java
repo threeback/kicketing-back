@@ -12,5 +12,7 @@ public interface EmailAuthService {
 
 	void validateEmailAuthAttempt(String email);
 
+	void checkStateAccess(String email);
+
 	void checkCode(String email, String inputCode);
 }
