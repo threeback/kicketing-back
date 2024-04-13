@@ -14,9 +14,8 @@ import tback.kicketingback.auth.dto.TokenResponse;
 import tback.kicketingback.auth.oauth.dto.OauthUser;
 import tback.kicketingback.auth.oauth.dto.RequestCallBack;
 import tback.kicketingback.auth.oauth.service.OauthClientService;
+import tback.kicketingback.auth.oauth.service.OauthSignInService;
 import tback.kicketingback.auth.oauth.util.PasswordUtil;
-import tback.kicketingback.user.signin.dto.SignInRequest;
-import tback.kicketingback.user.signin.service.SignInService;
 import tback.kicketingback.user.signup.service.SignUpService;
 
 @RestController
@@ -27,14 +26,14 @@ public class CallBackController {
 
 	private final SignUpService ouathSignupService;
 
-	private final SignInService signInService;
+	private final OauthSignInService oauthSignInService;
 
 	public CallBackController(OauthClientService oauthClientService,
 		@Qualifier("OuathSignupService") SignUpService ouathSignupService,
-		SignInService signInService) {
+		OauthSignInService oauthSignInService) {
 		this.oauthClientService = oauthClientService;
 		this.ouathSignupService = ouathSignupService;
-		this.signInService = signInService;
+		this.oauthSignInService = oauthSignInService;
 	}
 
 	@PostMapping("/{domain}")
@@ -47,17 +46,14 @@ public class CallBackController {
 			domain,
 			requestCallBack.authCode(),
 			requestCallBack.state());
-
-		String password = PasswordUtil.createRandomPassword();
-		//1. 회원 아니면 db저장 회원가입처리 (비밀번호는 난수 생성 후 이메일 발송)
+		
 		if (!oauthClientService.checkOurUser(oauthUser)) {
-			ouathSignupService.signUp(oauthUser.name(), oauthUser.email(), password);
+			ouathSignupService.signUp(oauthUser.name(), oauthUser.email(), PasswordUtil.createRandomPassword());
 		}
 
-		TokenResponse tokenResponse = signInService.signInUser(new SignInRequest(oauthUser.email(), password));
+		TokenResponse tokenResponse = oauthSignInService.signInUser(oauthUser.email());
 		response.setHeader(HttpHeaders.AUTHORIZATION, tokenResponse.accessToken());
 
 		return ResponseEntity.ok().body(tokenResponse.refreshToken());
-		// return ResponseEntity.ok().build(); //프론트에서 응답받고 로그인 api로 요청
 	}
 }

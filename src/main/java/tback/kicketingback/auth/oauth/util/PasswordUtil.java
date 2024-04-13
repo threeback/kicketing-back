@@ -23,7 +23,6 @@ public class PasswordUtil {
 		char randomSpecialChar = getRandomSpecialChar();
 
 		String randomPassword = randomString + randomCode6 + randomSpecialChar;
-		System.out.println("randomPassword = " + randomPassword);
 		if (!isPasswordFormat(randomPassword)) {
 			throw new AuthInvalidPasswordException();
 		}
