@@ -60,6 +60,11 @@ public class User {
 		this.email = email;
 		this.password = password;
 		this.name = name;
+		//
+		// 디비 설정과 별개.
+		this.state = 0;
+		this.createdAt = LocalDateTime.now();
+		this.modifiedAt = LocalDateTime.now();
 	}
 
 	private static final String DEFAULT_EMAIL_REGEX = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";

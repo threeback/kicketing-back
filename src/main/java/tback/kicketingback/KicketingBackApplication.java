@@ -3,7 +3,9 @@ package tback.kicketingback;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+@EnableJpaAuditing
 @SpringBootApplication(exclude = RedisReactiveAutoConfiguration.class)
 public class KicketingBackApplication {
 
