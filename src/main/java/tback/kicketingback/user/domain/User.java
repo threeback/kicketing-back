@@ -1,11 +1,8 @@
 package tback.kicketingback.user.domain;
 
-import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
-import org.hibernate.annotations.Comment;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.DynamicInsert;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import tback.kicketingback.global.dto.BaseTimeEntity;
 import tback.kicketingback.user.exception.exceptions.AlreadySamePasswordException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidNameException;
@@ -22,7 +20,8 @@ import tback.kicketingback.user.exception.exceptions.UserPasswordEmptyException;
 
 @Entity
 @Getter
-public class User {
+@DynamicInsert
+public class User extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -39,18 +38,8 @@ public class User {
 	@Column(nullable = false, length = 100)
 	private String name;
 
-	@Column(nullable = false, columnDefinition = "tinyint default 0")
+	@Column(nullable = false)
 	private Short state;
-
-	@CreatedDate
-	@Column(nullable = false)
-	@Comment("생성일")
-	private LocalDateTime createdAt;
-
-	@LastModifiedDate
-	@Column(nullable = false)
-	@Comment("수정일")
-	private LocalDateTime modifiedAt;
 
 	protected User() {
 	}
@@ -60,6 +49,7 @@ public class User {
 		this.email = email;
 		this.password = password;
 		this.name = name;
+		this.state = 0;
 	}
 
 	private static final String DEFAULT_EMAIL_REGEX = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
