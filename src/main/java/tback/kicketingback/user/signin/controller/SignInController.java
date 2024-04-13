@@ -22,7 +22,6 @@ public class SignInController {
 
 	@PostMapping("/sign-in")
 	public ResponseEntity<String> signIn(@RequestBody SignInRequest signInRequest, HttpServletResponse response) {
-		//로그인 가능한지
 		TokenResponse tokenResponse = signInService.signInUser(signInRequest);
 
 		response.setHeader(HttpHeaders.AUTHORIZATION, tokenResponse.accessToken());

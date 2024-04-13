@@ -16,6 +16,7 @@ import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
 import tback.kicketingback.user.exception.exceptions.EmailFormatException;
 import tback.kicketingback.user.exception.exceptions.EmailSendException;
 import tback.kicketingback.user.exception.exceptions.MismatchEmailAuthCodeException;
+import tback.kicketingback.user.exception.exceptions.NoSuchUserException;
 import tback.kicketingback.user.exception.exceptions.PasswordEncodeException;
 import tback.kicketingback.user.exception.exceptions.UserPasswordEmptyException;
 
@@ -84,6 +85,11 @@ public class UserExceptionHandler extends AbstractExceptionHandler {
 
 	@ExceptionHandler(EmailAuthIncompleteException.class)
 	public ResponseEntity<String> emailAuthIncompleteException(PasswordEncodeException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
+
+	@ExceptionHandler(NoSuchUserException.class)
+	public ResponseEntity<String> noSuchUserException(NoSuchUserException exception) {
 		return getBadRequestResponseEntity(exception.getMessage());
 	}
 }

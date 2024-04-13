@@ -15,7 +15,7 @@ import tback.kicketingback.user.exception.exceptions.EmailAuthIncompleteExceptio
 import tback.kicketingback.user.exception.exceptions.MismatchEmailAuthCodeException;
 
 @Service
-public class SignUpEmailService implements EmailAuthService {
+public class SignUpEmailAuthService implements EmailAuthService {
 	private final RedisRepository signupRedisRepository;
 
 	@Value("${spring.data.redis.timeout.signup.code}")
@@ -24,11 +24,12 @@ public class SignUpEmailService implements EmailAuthService {
 	@Value("${spring.data.redis.timeout.signup.access}")
 	private int accessExpireTime;
 
-	public SignUpEmailService(
+	public SignUpEmailAuthService(
 		@Qualifier("signupRedisRepository") RedisRepository signupRedisRepository
 	) {
 		this.signupRedisRepository = signupRedisRepository;
 	}
+
 	@Override
 	public void saveCode(String email, String code) {
 		signupRedisRepository.setValues(email, code, Duration.ofMillis(codeExpireTime));
