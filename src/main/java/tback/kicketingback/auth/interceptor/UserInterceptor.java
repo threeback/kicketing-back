@@ -5,6 +5,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.auth.jwt.JwtTokenExtractor;
 import tback.kicketingback.auth.jwt.JwtTokenProvider;
@@ -21,14 +22,22 @@ public class UserInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(
-		final HttpServletRequest request,
-		final HttpServletResponse response,
-		final Object handler
+		@NonNull final HttpServletRequest request,
+		@NonNull final HttpServletResponse response,
+		@NonNull final Object handler
 	) {
+		if (isOptionRequest(request)) {
+			return true;
+		}
+
 		final String accessToken = jwtTokenExtractor.extractAccessToken(request);
 		String email = jwtTokenProvider.extractEmailFromAccessToken(accessToken);
 		validateMemberExist(email);
 		return true;
+	}
+
+	private boolean isOptionRequest(HttpServletRequest request) {
+		return request.getMethod().equals("OPTIONS");
 	}
 
 	private void validateMemberExist(final String email) {
