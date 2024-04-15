@@ -1,5 +1,6 @@
 package tback.kicketingback.user.signin.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,8 @@ import tback.kicketingback.user.signin.service.SignInService;
 @RequiredArgsConstructor
 public class SignInController {
 
-	private static final int SECONDS_PER_DAY = 60 * 60 * 24;
+	@Value("${jwt.access.expiration}")
+	private int EXPIRATION_TIME;
 
 	private final SignInService signInService;
 
@@ -31,9 +33,10 @@ public class SignInController {
 		accessTokenCookie.setHttpOnly(true);
 		accessTokenCookie.setSecure(true);
 		accessTokenCookie.setPath("/");
-		accessTokenCookie.setMaxAge(SECONDS_PER_DAY);
+		accessTokenCookie.setMaxAge(EXPIRATION_TIME);
 
 		response.addCookie(accessTokenCookie);
 		return ResponseEntity.ok().body(tokenResponse.refreshToken());
 	}
 }
+
