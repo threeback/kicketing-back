@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import tback.kicketingback.auth.oauth.domain.OauthClient;
 import tback.kicketingback.auth.oauth.domain.OauthClientProvider;
 import tback.kicketingback.auth.oauth.dto.OauthUser;
-import tback.kicketingback.auth.oauth.exception.exceptions.OAuthResourceAccessFailureException;
+import tback.kicketingback.auth.oauth.exception.exceptions.UnsupportedOAuthDomainException;
 import tback.kicketingback.user.repository.UserRepository;
 
 @Service
@@ -17,7 +17,7 @@ public class OauthClientService {
 
 	public OauthUser getOauthUser(final String domain, final String authCode, final String state) {
 		OauthClient oauthClient = oauthClientProvider.getOauthClient(domain)
-			.orElseThrow(OAuthResourceAccessFailureException::new);
+			.orElseThrow(() -> new UnsupportedOAuthDomainException(domain));
 		return oauthClient.getOauthUser(authCode, state);
 	}
 

@@ -32,7 +32,7 @@ public class NaverOauthClient implements OauthClient {
 	@Value("${naver.client_secret}")
 	String clientSecret;
 
-	@Value("${naver.get.user.token}")
+	@Value("${naver.get.user.token.uri}")
 	String getTokenApiUrl;
 
 	@Value("${naver.get.user.url}")
@@ -40,19 +40,18 @@ public class NaverOauthClient implements OauthClient {
 
 	@Override
 	public OauthUser getOauthUser(String authCode, String state) {
-		String requestTokenURL = tokenRequestURL(authCode, state);
-		ResponseNaverToken token = getToken(requestTokenURL);
-
+		ResponseNaverToken token = getToken(authCode, state);
 		return getUser(token.accessToken());
 	}
 
-	private ResponseNaverToken getToken(String requestTokenURL) {
+	private ResponseNaverToken getToken(String authCode, String state) {
+		String requestTokenURI = tokenRequestURI(authCode, state);
 		ResponseEntity<ResponseNaverToken> response =
-			restTemplate.exchange(requestTokenURL, HttpMethod.GET, null, ResponseNaverToken.class);
+			restTemplate.exchange(requestTokenURI, HttpMethod.GET, null, ResponseNaverToken.class);
 		return response.getBody();
 	}
 
-	public String tokenRequestURL(String code, String state) {
+	private String tokenRequestURI(String code, String state) {
 		return UriComponentsBuilder.fromHttpUrl(getTokenApiUrl)
 			.queryParam("grant_type", GET_TOKEN)
 			.queryParam("client_id", clientId)
@@ -63,21 +62,25 @@ public class NaverOauthClient implements OauthClient {
 	}
 
 	private OauthUser getUser(String accessToken) {
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", "Bearer " + accessToken);
-
-		HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
+		HttpEntity<String> requestEntity = userRequestEntity(accessToken);
 
 		ResponseEntity<ResponseNaverUser> responseEntity =
 			restTemplate.exchange(getUserApiUrl, HttpMethod.GET, requestEntity, ResponseNaverUser.class);
 
 		if (responseEntity.getStatusCode() != HttpStatus.OK) {
-			throw new OAuthResourceAccessFailureException();
+			throw new OAuthResourceAccessFailureException(this, accessToken);
 		}
 
 		ResponseNaverUser body = responseEntity.getBody();
 		NaverUserInfo naverUserInfo = body.naverUserInfo();
-
 		return new OauthUser(naverUserInfo.name(), naverUserInfo.email());
+	}
+
+	private HttpEntity<String> userRequestEntity(String accessToken) {
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("Authorization", "Bearer " + accessToken);
+
+		HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
+		return requestEntity;
 	}
 }

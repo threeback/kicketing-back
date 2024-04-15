@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import tback.kicketingback.auth.oauth.exception.exceptions.OAuthResourceAccessFailureException;
+import tback.kicketingback.auth.oauth.exception.exceptions.UnsupportedOAuthDomainException;
 import tback.kicketingback.global.AbstractExceptionHandler;
 
 @RestControllerAdvice
@@ -15,4 +16,8 @@ public class OauthExceptionHandler extends AbstractExceptionHandler {
 		return getBadRequestResponseEntity(exception.getMessage());
 	}
 
+	@ExceptionHandler(UnsupportedOAuthDomainException.class)
+	public ResponseEntity<String> UnsupportedOAuthDomainException(UnsupportedOAuthDomainException exception) {
+		return getBadRequestResponseEntity(exception.getMessage());
+	}
 }
