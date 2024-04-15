@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import tback.kicketingback.auth.exception.exceptions.ExpiredTokenException;
 import tback.kicketingback.auth.exception.exceptions.InvalidJwtTokenException;
@@ -20,10 +21,12 @@ import tback.kicketingback.global.repository.RedisRepository;
 @RequestMapping("/api")
 public class RefreshTokenController {
 
+	private static final int SECONDS_PER_DAY = 60 * 60 * 24;
+
 	private final JwtTokenExtractor jwtTokenExtractor;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final RedisRepository redisRepository;
-	
+
 	public RefreshTokenController(
 		JwtTokenExtractor jwtTokenExtractor,
 		JwtTokenProvider jwtTokenProvider,
@@ -52,7 +55,13 @@ public class RefreshTokenController {
 
 		String newAccessToken = jwtTokenProvider.generateAccessToken(email);
 
-		response.setHeader(HttpHeaders.AUTHORIZATION, newAccessToken);
+		Cookie newAccessTokenCookie = new Cookie(HttpHeaders.AUTHORIZATION, newAccessToken);
+		newAccessTokenCookie.setHttpOnly(true);
+		newAccessTokenCookie.setSecure(true);
+		newAccessTokenCookie.setPath("/");
+		newAccessTokenCookie.setMaxAge(SECONDS_PER_DAY);
+
+		response.addCookie(newAccessTokenCookie);
 		return ResponseEntity.ok().build();
 	}
 }
