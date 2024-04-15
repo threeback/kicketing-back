@@ -78,9 +78,8 @@ public class NaverOauthClient implements OauthClient {
 
 	private HttpEntity<String> userRequestEntity(String accessToken) {
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.set("Authorization", "Bearer " + accessToken);
+		httpHeaders.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 
-		HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
-		return requestEntity;
+		return new HttpEntity<>(httpHeaders);
 	}
 }

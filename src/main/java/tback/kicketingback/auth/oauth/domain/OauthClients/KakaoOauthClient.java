@@ -55,8 +55,7 @@ public class KakaoOauthClient implements OauthClient {
 	private HttpEntity<String> getTokenRequestEntity() {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		addHeaderContentType(httpHeaders);
-		HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
-		return requestEntity;
+		return new HttpEntity<>(httpHeaders);
 	}
 
 	private String tokenRequestURI(String code, String state) {
@@ -87,11 +86,11 @@ public class KakaoOauthClient implements OauthClient {
 	private HttpEntity<String> userRequestURL(String accessToken) {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		addHeaderContentType(httpHeaders);
-		httpHeaders.set("Authorization", "Bearer " + accessToken);
+		httpHeaders.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 		return new HttpEntity<>(httpHeaders);
 	}
 
 	private void addHeaderContentType(HttpHeaders httpHeaders) {
-		httpHeaders.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+		httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded;charset=utf-8");
 	}
 }

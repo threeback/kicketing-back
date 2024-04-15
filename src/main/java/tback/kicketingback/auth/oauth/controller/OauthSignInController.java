@@ -20,7 +20,7 @@ import tback.kicketingback.user.signup.service.SignUpService;
 
 @RestController
 @RequestMapping("/api/oauth")
-public class CallBackController {
+public class OauthSignInController {
 
 	private final OauthClientService oauthClientService;
 
@@ -28,7 +28,7 @@ public class CallBackController {
 
 	private final OauthSignInService oauthSignInService;
 
-	public CallBackController(OauthClientService oauthClientService,
+	public OauthSignInController(OauthClientService oauthClientService,
 		@Qualifier("OauthSignupService") SignUpService oauthSignupService,
 		OauthSignInService oauthSignInService) {
 		this.oauthClientService = oauthClientService;
