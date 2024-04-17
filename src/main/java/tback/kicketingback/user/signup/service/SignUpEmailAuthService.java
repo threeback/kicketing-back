@@ -39,8 +39,16 @@ public class SignUpEmailAuthService implements EmailAuthService {
 	public void validateEmailAuthCompletion(String email) {
 		Optional<String> state = signupRedisRepository.getValues(email);
 
+		if (state.orElseThrow(AuthInvalidEmailException::new).equals(EMAIL_AUTH_ACCESS)) {
+			throw new AlreadyEmailAuthCompleteException();
+		}
+	}
+
+	public void checkStateAccess(String email) {
+		Optional<String> state = signupRedisRepository.getValues(email);
+
 		if (state.isEmpty()) {
-			throw new AuthInvalidEmailException();
+			return;
 		}
 		if (state.get().equals(EMAIL_AUTH_ACCESS)) {
 			throw new AlreadyEmailAuthCompleteException();

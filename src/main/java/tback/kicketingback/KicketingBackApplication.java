@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableJpaAuditing
 @SpringBootApplication(exclude = RedisReactiveAutoConfiguration.class)
+@EnableJpaAuditing
 public class KicketingBackApplication {
 
 	public static void main(String[] args) {
