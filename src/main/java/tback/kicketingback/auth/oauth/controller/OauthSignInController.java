@@ -1,6 +1,7 @@
 package tback.kicketingback.auth.oauth.controller;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import tback.kicketingback.auth.dto.TokenResponse;
 import tback.kicketingback.auth.oauth.dto.OauthUser;
@@ -21,6 +23,9 @@ import tback.kicketingback.user.signup.service.SignUpService;
 @RestController
 @RequestMapping("/api/oauth")
 public class OauthSignInController {
+
+	@Value("${jwt.access.expiration}")
+	private int EXPIRATION_TIME;
 
 	private final OauthClientService oauthClientService;
 
@@ -52,7 +57,14 @@ public class OauthSignInController {
 		}
 
 		TokenResponse tokenResponse = oauthSignInService.signInUser(oauthUser.email());
-		response.setHeader(HttpHeaders.AUTHORIZATION, tokenResponse.accessToken());
+
+		Cookie accessTokenCookie = new Cookie(HttpHeaders.AUTHORIZATION, tokenResponse.accessToken());
+		accessTokenCookie.setHttpOnly(true);
+		accessTokenCookie.setSecure(true);
+		accessTokenCookie.setPath("/");
+		accessTokenCookie.setMaxAge(EXPIRATION_TIME);
+
+		response.addCookie(accessTokenCookie);
 
 		return ResponseEntity.ok().body(tokenResponse.refreshToken());
 	}
