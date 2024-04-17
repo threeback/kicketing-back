@@ -51,16 +51,6 @@ public class NaverOauthClient implements OauthClient {
 		return response.getBody();
 	}
 
-	private String tokenRequestURI(String code, String state) {
-		return UriComponentsBuilder.fromHttpUrl(getTokenApiUrl)
-			.queryParam("grant_type", GET_TOKEN)
-			.queryParam("client_id", clientId)
-			.queryParam("client_secret", clientSecret)
-			.queryParam("code", code)
-			.queryParam("state", state)
-			.toUriString();
-	}
-
 	private OauthUser getUser(String accessToken) {
 		HttpEntity<String> requestEntity = userRequestEntity(accessToken);
 
@@ -74,6 +64,16 @@ public class NaverOauthClient implements OauthClient {
 		ResponseNaverUser body = responseEntity.getBody();
 		NaverUserInfo naverUserInfo = body.naverUserInfo();
 		return new OauthUser(naverUserInfo.name(), naverUserInfo.email());
+	}
+
+	private String tokenRequestURI(String code, String state) {
+		return UriComponentsBuilder.fromHttpUrl(getTokenApiUrl)
+			.queryParam("grant_type", GET_TOKEN)
+			.queryParam("client_id", clientId)
+			.queryParam("client_secret", clientSecret)
+			.queryParam("code", code)
+			.queryParam("state", state)
+			.toUriString();
 	}
 
 	private HttpEntity<String> userRequestEntity(String accessToken) {

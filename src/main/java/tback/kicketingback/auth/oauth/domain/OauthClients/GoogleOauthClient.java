@@ -49,24 +49,10 @@ public class GoogleOauthClient implements OauthClient {
 	}
 
 	private ResponseGoogleToken getToken(String authCode) {
-		HttpEntity<MultiValueMap<String, String>> googleRequestEntity = getGoogleRequestEntity(authCode);
+		HttpEntity<MultiValueMap<String, String>> googleRequestEntity = getTokenRequestEntity(authCode);
 		ResponseEntity<ResponseGoogleToken> response =
 			restTemplate.exchange(getTokenApiUrl, HttpMethod.POST, googleRequestEntity, ResponseGoogleToken.class);
 		return response.getBody();
-	}
-
-	private HttpEntity<MultiValueMap<String, String>> getGoogleRequestEntity(String authCode) {
-		MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-		requestBody.add("client_id", clientId);
-		requestBody.add("client_secret", clientSecret);
-		requestBody.add("code", authCode);
-		requestBody.add("grant_type", GET_TOKEN);
-		requestBody.add("redirect_uri", redirectUri);
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-		return new HttpEntity<>(requestBody, headers);
 	}
 
 	private OauthUser getUser(String accessToken) {
@@ -81,6 +67,20 @@ public class GoogleOauthClient implements OauthClient {
 
 		ResponseGoogleUser body = responseEntity.getBody();
 		return new OauthUser(body.name(), body.email());
+	}
+
+	private HttpEntity<MultiValueMap<String, String>> getTokenRequestEntity(String authCode) {
+		MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+		requestBody.add("client_id", clientId);
+		requestBody.add("client_secret", clientSecret);
+		requestBody.add("code", authCode);
+		requestBody.add("grant_type", GET_TOKEN);
+		requestBody.add("redirect_uri", redirectUri);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+		return new HttpEntity<>(requestBody, headers);
 	}
 
 	private HttpEntity<String> userRequestEntity(String accessToken) {

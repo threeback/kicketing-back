@@ -52,6 +52,21 @@ public class KakaoOauthClient implements OauthClient {
 		return response.getBody();
 	}
 
+	private OauthUser getUser(String accessToken) {
+		HttpEntity<String> requestEntity = userRequestURL(accessToken);
+
+		ResponseEntity<ResponseKakaoUser> responseEntity =
+			restTemplate.exchange(getUserApiUrl, HttpMethod.GET, requestEntity, ResponseKakaoUser.class);
+
+		if (responseEntity.getStatusCode() != HttpStatus.OK) {
+			throw new OAuthResourceAccessFailureException(this, accessToken);
+		}
+
+		ResponseKakaoUser body = responseEntity.getBody();
+		KakaoUserInfo kakaoUserInfo = body.kakaoUserInfo();
+		return new OauthUser(kakaoUserInfo.kakaoProfile().nickname(), kakaoUserInfo.email());
+	}
+
 	private HttpEntity<String> getTokenRequestEntity() {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		addHeaderContentType(httpHeaders);
@@ -66,21 +81,6 @@ public class KakaoOauthClient implements OauthClient {
 			.queryParam("code", code)
 			.queryParam("state", state)
 			.toUriString();
-	}
-
-	private OauthUser getUser(String accessToken) {
-		HttpEntity<String> requestEntity = userRequestURL(accessToken);
-
-		ResponseEntity<ResponseKakaoUser> responseEntity =
-			restTemplate.exchange(getUserApiUrl, HttpMethod.GET, requestEntity, ResponseKakaoUser.class);
-
-		if (responseEntity.getStatusCode() != HttpStatus.OK) {
-			throw new OAuthResourceAccessFailureException(this, accessToken);
-		}
-
-		ResponseKakaoUser body = responseEntity.getBody();
-		KakaoUserInfo kakaoUserInfo = body.kakaoUserInfo();
-		return new OauthUser(kakaoUserInfo.kakaoProfile().nickname(), kakaoUserInfo.email());
 	}
 
 	private HttpEntity<String> userRequestURL(String accessToken) {
