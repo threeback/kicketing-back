@@ -12,6 +12,7 @@ import tback.kicketingback.user.domain.User;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
 import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
 import tback.kicketingback.user.repository.UserRepository;
+import tback.kicketingback.user.signup.dto.request.SignUpRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -22,19 +23,19 @@ public class DefaultSignUpService implements SignUpService {
 	private final EmailAuthService emailAuthService;
 
 	@Override
-	public void signUp(String name, String email, String password) {
-		if (!isPasswordFormat(password)) {
+	public void signUp(SignUpRequest signUpRequest) {
+		if (!isPasswordFormat(signUpRequest.password())) {
 			throw new AuthInvalidPasswordException();
 		}
 
-		emailAuthService.validateEmailAuthAttempt(email);
+		emailAuthService.validateEmailAuthAttempt(signUpRequest.email());
 
-		User user = User.of(email, encode(password), name);
-		if (userRepository.existsByEmail(email)) {
+		User user = User.of(signUpRequest.email(), encode(signUpRequest.password()), signUpRequest.name());
+		if (userRepository.existsByEmail(signUpRequest.email())) {
 			throw new EmailDuplicatedException();
 		}
 
 		userRepository.save(user);
-		emailAuthService.expireEmailAuth(email);
+		emailAuthService.expireEmailAuth(signUpRequest.email());
 	}
 }

@@ -19,6 +19,7 @@ import tback.kicketingback.auth.oauth.service.OauthClientService;
 import tback.kicketingback.auth.oauth.util.PasswordUtil;
 import tback.kicketingback.user.signin.dto.SignInRequest;
 import tback.kicketingback.user.signin.service.SignInService;
+import tback.kicketingback.user.signup.dto.request.SignUpRequest;
 import tback.kicketingback.user.signup.service.SignUpService;
 
 @RestController
@@ -55,7 +56,7 @@ public class OauthSignInController {
 
 		String password = PasswordUtil.createRandomPassword();
 		if (!oauthClientService.checkOurUser(oauthUser)) {
-			oauthSignupService.signUp(oauthUser.name(), oauthUser.email(), password);
+			oauthSignupService.signUp(new SignUpRequest(oauthUser.name(), oauthUser.email(), password));
 		}
 
 		TokenResponse tokenResponse = signInService.signInUser(new SignInRequest(oauthUser.email(), password));

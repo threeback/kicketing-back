@@ -1,5 +1,7 @@
 package tback.kicketingback.user.signup.service;
 
+import tback.kicketingback.user.signup.dto.request.SignUpRequest;
+
 public interface SignUpService {
-	void signUp(String name, String email, String password);
+	void signUp(SignUpRequest signUpRequest);
 }

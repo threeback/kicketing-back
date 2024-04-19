@@ -35,7 +35,8 @@ public class SignUpController {
 
 	@PostMapping("/")
 	public ResponseEntity<Void> signUp(@RequestBody SignUpRequest signUpRequest) {
-		defaultSignUpService.signUp(signUpRequest.name(), signUpRequest.email(), signUpRequest.password());
+		defaultSignUpService.signUp(
+			new SignUpRequest(signUpRequest.name(), signUpRequest.email(), signUpRequest.password()));
 
 		return ResponseEntity.ok().build();
 	}
@@ -44,7 +45,7 @@ public class SignUpController {
 	public ResponseEntity<Void> emailCode(@RequestBody EmailCodeRequest emailCodeRequest) {
 		String email = emailCodeRequest.email();
 
-		signUpEmailAuthService.validateEmailAuthCompletion(email);
+		signUpEmailAuthService.checkStateAccess(email);
 
 		String code = NumberCodeUtil.createRandomCode6();
 

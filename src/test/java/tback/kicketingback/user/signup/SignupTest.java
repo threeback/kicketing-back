@@ -21,6 +21,7 @@ import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordExceptio
 import tback.kicketingback.user.exception.exceptions.EmailAuthIncompleteException;
 import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
 import tback.kicketingback.user.repository.FakeUserRepository;
+import tback.kicketingback.user.signup.dto.request.SignUpRequest;
 import tback.kicketingback.user.signup.service.DefaultSignUpService;
 
 @SpringBootTest
@@ -51,7 +52,7 @@ public class SignupTest {
 	@DisplayName("회원가입 정상 처리 후 디비에 유저가 존재한다.")
 	public void 회원가입_정상_처리_디비() {
 		emailAuthService.saveCode(TEST_EMAIL, "access");
-		defaultSignUpService.signUp(TEST_NAME, TEST_EMAIL, TEST_PASSWORD);
+		defaultSignUpService.signUp(new SignUpRequest(TEST_NAME, TEST_EMAIL, TEST_PASSWORD));
 
 		assertThat(fakeUserRepository.existsByEmail(TEST_EMAIL)).isTrue();
 	}
@@ -60,7 +61,7 @@ public class SignupTest {
 	@DisplayName("회원가입 정상 처리 후 회원가입 레디스에 인증 정보가 삭제된다.")
 	public void 회원가입_정상_처리_레디스() {
 		emailAuthService.saveCode(TEST_EMAIL, "access");
-		defaultSignUpService.signUp(TEST_NAME, TEST_EMAIL, TEST_PASSWORD);
+		defaultSignUpService.signUp(new SignUpRequest(TEST_NAME, TEST_EMAIL, TEST_PASSWORD));
 
 		assertThat(fakeUserRepository.existsByEmail(TEST_EMAIL)).isTrue();
 		assertThat(signupRedisRepository.getValues(TEST_EMAIL).isEmpty()).isTrue();
@@ -73,7 +74,7 @@ public class SignupTest {
 		emailAuthService.saveCode(TEST_EMAIL, "access");
 
 		assertThrows(EmailDuplicatedException.class,
-			() -> defaultSignUpService.signUp(TEST_NAME, TEST_EMAIL, TEST_PASSWORD));
+			() -> defaultSignUpService.signUp(new SignUpRequest(TEST_NAME, TEST_EMAIL, TEST_PASSWORD)));
 	}
 
 	@ParameterizedTest
@@ -84,14 +85,14 @@ public class SignupTest {
 		emailAuthService.saveCode(TEST_EMAIL, "access");
 
 		assertThrows(AuthInvalidPasswordException.class,
-			() -> defaultSignUpService.signUp(TEST_NAME, TEST_EMAIL, password));
+			() -> defaultSignUpService.signUp(new SignUpRequest(TEST_NAME, TEST_EMAIL, password)));
 	}
 
 	@Test
 	@DisplayName("이메일 인증을 시도하지 않은 경우")
 	public void 회원가입_전_이메일_인증_안함() {
 		assertThrows(EmailAuthIncompleteException.class,
-			() -> defaultSignUpService.signUp(TEST_NAME, TEST_EMAIL, TEST_PASSWORD));
+			() -> defaultSignUpService.signUp(new SignUpRequest(TEST_NAME, TEST_EMAIL, TEST_PASSWORD)));
 	}
 
 	@Test
@@ -100,6 +101,6 @@ public class SignupTest {
 		emailAuthService.saveCode(TEST_EMAIL, "123123");
 
 		assertThrows(EmailAuthIncompleteException.class,
-			() -> defaultSignUpService.signUp(TEST_NAME, TEST_EMAIL, TEST_PASSWORD));
+			() -> defaultSignUpService.signUp(new SignUpRequest(TEST_NAME, TEST_EMAIL, TEST_PASSWORD)));
 	}
 }
