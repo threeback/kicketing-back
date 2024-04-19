@@ -3,6 +3,7 @@ package tback.kicketingback.auth.oauth.controller;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,14 +11,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import tback.kicketingback.auth.dto.TokenResponse;
 import tback.kicketingback.auth.oauth.dto.OauthUser;
 import tback.kicketingback.auth.oauth.dto.RequestCallBack;
 import tback.kicketingback.auth.oauth.service.OauthClientService;
-import tback.kicketingback.auth.oauth.service.OauthSignInService;
 import tback.kicketingback.auth.oauth.util.PasswordUtil;
+import tback.kicketingback.user.signin.dto.SignInRequest;
+import tback.kicketingback.user.signin.service.SignInService;
 import tback.kicketingback.user.signup.service.SignUpService;
 
 @RestController
@@ -31,14 +32,14 @@ public class OauthSignInController {
 
 	private final SignUpService oauthSignupService;
 
-	private final OauthSignInService oauthSignInService;
+	private final SignInService signInService;
 
 	public OauthSignInController(OauthClientService oauthClientService,
 		@Qualifier("OauthSignupService") SignUpService oauthSignupService,
-		OauthSignInService oauthSignInService) {
+		SignInService signInService) {
 		this.oauthClientService = oauthClientService;
 		this.oauthSignupService = oauthSignupService;
-		this.oauthSignInService = oauthSignInService;
+		this.signInService = signInService;
 	}
 
 	@PostMapping("/{domain}")
@@ -52,20 +53,21 @@ public class OauthSignInController {
 			requestCallBack.authCode(),
 			requestCallBack.state());
 
+		String password = PasswordUtil.createRandomPassword();
 		if (!oauthClientService.checkOurUser(oauthUser)) {
-			oauthSignupService.signUp(oauthUser.name(), oauthUser.email(), PasswordUtil.createRandomPassword());
+			oauthSignupService.signUp(oauthUser.name(), oauthUser.email(), password);
 		}
 
-		TokenResponse tokenResponse = oauthSignInService.signInUser(oauthUser.email());
+		TokenResponse tokenResponse = signInService.signInUser(new SignInRequest(oauthUser.email(), password));
 
-		Cookie accessTokenCookie = new Cookie(HttpHeaders.AUTHORIZATION, tokenResponse.accessToken());
-		accessTokenCookie.setHttpOnly(true);
-		accessTokenCookie.setSecure(true);
-		accessTokenCookie.setPath("/");
-		accessTokenCookie.setMaxAge(EXPIRATION_TIME);
+		ResponseCookie accessTokenCookie = ResponseCookie.from(HttpHeaders.AUTHORIZATION, tokenResponse.accessToken())
+			.httpOnly(true)
+			.secure(true)
+			.path("/")
+			.maxAge(EXPIRATION_TIME)
+			.build();
 
-		response.addCookie(accessTokenCookie);
-
+		response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
 		return ResponseEntity.ok().body(tokenResponse.refreshToken());
 	}
 }
