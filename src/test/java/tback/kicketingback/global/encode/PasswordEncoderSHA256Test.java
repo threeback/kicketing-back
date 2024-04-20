@@ -11,7 +11,7 @@ public class PasswordEncoderSHA256Test {
 	public void 인코딩_테스트() {
 		// Given
 
-		final String rawPassword = "123413f";
+		final String rawPassword = "1234abc!@";
 
 		// When
 		String encoded = PasswordEncoderSHA256.encode(rawPassword);

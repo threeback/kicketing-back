@@ -5,8 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@SpringBootApplication(exclude = RedisReactiveAutoConfiguration.class)
 @EnableJpaAuditing
+@SpringBootApplication(exclude = RedisReactiveAutoConfiguration.class)
 public class KicketingBackApplication {
 
 	public static void main(String[] args) {

@@ -17,4 +17,10 @@ public class SmtpService {
 		smtpMailSender.send(mail);
 		log.info("Verification email sent to {}", email);
 	}
+
+	public void sendRandomPassword(String email, String password) {
+		Mail mail = Mail.randomPassword(email, password);
+		smtpMailSender.send(mail);
+		log.info("Random Password email sent to {}", email);
+	}
 }

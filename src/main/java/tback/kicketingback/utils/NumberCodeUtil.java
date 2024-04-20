@@ -1,8 +1,8 @@
-package tback.kicketingback.user.signup.utils;
+package tback.kicketingback.utils;
 
 import java.security.SecureRandom;
 
-public class NumberUtil {
+public class NumberCodeUtil {
 
 	private static final SecureRandom RANDOM = new SecureRandom();
 	private static final int START_ASCII = 48;

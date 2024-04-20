@@ -25,6 +25,10 @@ public class Mail {
 		return new Mail(to, EMAIL_VERIFICATION.subject(), EMAIL_VERIFICATION.content(certification));
 	}
 
+	public static Mail randomPassword(String to, String certification) {
+		return new Mail(to, EMAIL_RANDOM_PASSWORD.subject(), EMAIL_RANDOM_PASSWORD.content(certification));
+	}
+
 	private void validationTo(String to) {
 		if (!isValidEmailFormat(to)) {
 			throw new EmailFormatException();
