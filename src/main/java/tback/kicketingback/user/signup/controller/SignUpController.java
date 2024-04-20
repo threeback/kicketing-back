@@ -21,7 +21,6 @@ import tback.kicketingback.utils.NumberCodeUtil;
 public class SignUpController {
 
 	private final SignUpService defaultSignUpService;
-
 	private final EmailAuthService signUpEmailAuthService;
 	private final SmtpService smtpService;
 

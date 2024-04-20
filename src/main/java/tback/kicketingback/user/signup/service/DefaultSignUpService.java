@@ -30,7 +30,7 @@ public class DefaultSignUpService implements SignUpService {
 
 		emailAuthService.validateEmailAuthAttempt(signUpRequest.email());
 
-		User user = User.of(signUpRequest.email(), encode(signUpRequest.password()), signUpRequest.name());
+		User user = User.of(signUpRequest.email(), signUpRequest.password(), signUpRequest.name());
 		if (userRepository.existsByEmail(signUpRequest.email())) {
 			throw new EmailDuplicatedException();
 		}
