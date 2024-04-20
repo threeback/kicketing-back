@@ -1,4 +1,4 @@
-package tback.kicketingback.global;
+package tback.kicketingback.global.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

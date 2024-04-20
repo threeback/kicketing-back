@@ -8,7 +8,7 @@ import tback.kicketingback.auth.exception.exceptions.TokenExtractionException;
 import tback.kicketingback.auth.exception.exceptions.ExpiredTokenException;
 import tback.kicketingback.auth.exception.exceptions.InvalidJwtTokenException;
 import tback.kicketingback.auth.exception.exceptions.PayloadEmailMissingException;
-import tback.kicketingback.global.AbstractExceptionHandler;
+import tback.kicketingback.global.exception.AbstractExceptionHandler;
 
 @RestControllerAdvice
 public class AuthenticationExceptionHandler extends AbstractExceptionHandler {
