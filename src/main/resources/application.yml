@@ -1,0 +1,88 @@
+spring:
+  config:
+    import:
+      - classpath:config/application-db.properties
+      - classpath:config/application-jwt.properties
+      - classpath:config/application-oauth.properties
+      - classpath:config/application-redis.properties
+      - classpath:config/application-smtp.properties
+  datasource:
+    url: ${spring.datasource.url}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    driver-class-name: ${spring.datasource.driver-class-name}
+  jpa:
+    properties:
+      hibernate:
+        format_sql: ${spring.jpa.properties.hibernate.format_sql}
+        show_sql: ${spring.jpa.properties.hibernate.show_sql}
+    hibernate:
+      ddl-auto: ${spring.jpa.hibernate.ddl-auto}
+    database-platform: ${spring.jpa.database-platform}
+  data:
+    redis:
+      repositories:
+        enabled: false
+      connection:
+        refresh:
+          host: ${spring.data.redis.host.refresh}
+          port: ${spring.data.redis.port.refresh}
+        signup:
+          host: ${spring.data.redis.host.signup}
+          port: ${spring.data.redis.port.signup}
+          timeout:
+            code: ${spring.data.redis.timeout.code}
+            access: ${spring.data.redis.timeout.signup.access}
+  mail:
+    host: ${spring.mail.hosts}
+    port: ${spring.mail.port}
+    username: ${spring.mail.username}
+    password: ${spring.mail.password}
+    properties:
+      mail:
+        smtp:
+          auth: ${spring.mail.properties.mail.smtp.auth}
+          timeout: ${spring.mail.properties.mail.smtp.timeout}
+          starttls:
+            enable: ${spring.mail.properties.mail.smtp.starttls.enable}
+            ssl:
+              enable: ${spring.mail.properties.mail.smtp.ssl.enable}
+
+jwt:
+  access:
+    secret: ${jwt.access.secret}
+    expiration: ${jwt.access.expiration}
+  refresh:
+    secret: ${jwt.refresh.secret}
+    expiration: ${jwt.refresh.expiration}
+
+oauth:
+  naver:
+    get:
+      user:
+        token:
+          uri: ${oauth.naver.get.user.token.uri}
+        url: ${oauth.naver.get.user.url}
+      client_id: ${oauth.naver.client_id}
+      client_secret: ${oauth.naver.client_secret}
+  kakao:
+    get:
+      user:
+        token:
+          uri: ${oauth.kakao.get.user.token.uri}
+        url: ${oauth.kakao.get.user.url}
+      client_id: ${oauth.kakao.client_id}
+      token:
+        redirect:
+          uri: ${oauth.kakao.token.redirect.uri}
+  google:
+    get:
+      user:
+        token:
+          uri: ${oauth.google.get.user.token.uri}
+        url: ${oauth.google.get.user.url}
+      client_id: ${oauth.google.client_id}
+      client_secret: ${oauth.google.client_secret}
+      token:
+        redirect:
+          uri: ${oauth.google.token.redirect.uri}
