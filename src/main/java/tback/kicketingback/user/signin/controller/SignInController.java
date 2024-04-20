@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.auth.dto.TokenResponse;
 import tback.kicketingback.user.signin.dto.SignInRequest;
@@ -26,7 +27,7 @@ public class SignInController {
 	private final SignInService signInService;
 
 	@PostMapping("/sign-in")
-	public ResponseEntity<String> signIn(@RequestBody SignInRequest signInRequest, HttpServletResponse response) {
+	public ResponseEntity<String> signIn(@RequestBody @Valid SignInRequest signInRequest, HttpServletResponse response) {
 		TokenResponse tokenResponse = signInService.signInUser(signInRequest);
 
 		ResponseCookie accessTokenCookie = ResponseCookie.from(HttpHeaders.AUTHORIZATION, tokenResponse.accessToken())

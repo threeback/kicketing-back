@@ -39,8 +39,7 @@ public class SignInService {
 		User user = userRepository.findByEmail(email)
 			.orElseThrow(NoSuchUserException::new);
 
-		String encodedPassword = encode(signInRequest.password());
-		user.validatePassword(encodedPassword);
+		user.validatePassword(signInRequest.password());
 
 		String accessToken = jwtTokenProvider.generateAccessToken(email);
 		String refreshToken = jwtTokenProvider.generateRefreshToken(email);

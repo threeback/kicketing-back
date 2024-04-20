@@ -1,5 +1,7 @@
 package tback.kicketingback.user.domain;
 
+import static tback.kicketingback.global.encode.PasswordEncoderSHA256.*;
+
 import java.util.regex.Pattern;
 
 import org.hibernate.annotations.DynamicInsert;
@@ -57,7 +59,7 @@ public class User extends BaseTimeEntity {
 
 	public static User of(final String email, final String password, final String name) {
 		validateCreateMember(email, password, name);
-		return new User(null, email, password, name);
+		return new User(null, email, encode(password), name);
 	}
 
 	private static void validateCreateMember(final String email, final String password, final String name) {
@@ -83,11 +85,11 @@ public class User extends BaseTimeEntity {
 	}
 
 	private static boolean isEmpty(final String password) {
-		return password == null || password.isBlank();
+		return password.isBlank();
 	}
 
 	public void validatePassword(final String password) {
-		if (!this.password.equals(password)) {
+		if (!this.password.equals(encode(password))) {
 			throw new AuthInvalidPasswordException();
 		}
 	}
@@ -104,7 +106,7 @@ public class User extends BaseTimeEntity {
 	}
 
 	private void isSamePassword(final String password) {
-		if (this.password.equals(password)) {
+		if (this.password.equals(encode(password))) {
 			throw new AlreadySamePasswordException();
 		}
 	}

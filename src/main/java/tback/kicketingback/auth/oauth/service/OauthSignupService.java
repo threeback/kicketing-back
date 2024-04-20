@@ -22,8 +22,8 @@ public class OauthSignupService implements SignUpService {
 
 	@Override
 	public void signUp(SignUpRequest signUpRequest) {
-		User user = User.of(signUpRequest.email(), encode(signUpRequest.password()), signUpRequest.name());
+		User user = User.of(signUpRequest.email(), signUpRequest.password(), signUpRequest.name());
 		userRepository.save(user);
-		smtpService.sendRandomPassword(signUpRequest.email(), signUpRequest.password());
+		smtpService.sendRandomPassword(user.getEmail(), user.getPassword());
 	}
 }

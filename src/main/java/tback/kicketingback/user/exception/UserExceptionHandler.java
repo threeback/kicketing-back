@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import tback.kicketingback.global.AbstractExceptionHandler;
+import tback.kicketingback.global.exception.AbstractExceptionHandler;
 import tback.kicketingback.user.exception.exceptions.AlreadyEmailAuthCompleteException;
 import tback.kicketingback.user.exception.exceptions.AlreadySamePasswordException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;

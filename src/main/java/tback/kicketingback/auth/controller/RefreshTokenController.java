@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import tback.kicketingback.auth.exception.exceptions.ExpiredTokenException;
 import tback.kicketingback.auth.exception.exceptions.InvalidJwtTokenException;
 import tback.kicketingback.auth.jwt.JwtTokenExtractor;
@@ -41,7 +42,7 @@ public class RefreshTokenController {
 
 	@PostMapping("/refresh")
 	public ResponseEntity<Void> refreshAccessToken(
-		@RequestBody final String refreshToken,
+		@RequestBody @Valid final String refreshToken,
 		HttpServletResponse response
 	) {
 		String extractedRefreshToken = jwtTokenExtractor.extractRefreshToken(refreshToken);

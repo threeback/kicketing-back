@@ -37,7 +37,7 @@ public class UserSignInTest {
 	@BeforeEach
 	void initRepository() {
 		ConcurrentHashMap concurrentHashMap = new ConcurrentHashMap();
-		concurrentHashMap.put("test@test.com", User.of("test@test.com", encode("1234"), "test"));
+		concurrentHashMap.put("test@test.com", User.of("test@test.com", "1234", "test"));
 		signInService = new SignInService(new FakeUserRepository(concurrentHashMap), jwtTokenProvider, redisRepository);
 		redisRepository.deleteValues("test@test.com");
 	}
