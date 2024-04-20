@@ -16,9 +16,8 @@ import tback.kicketingback.auth.dto.TokenResponse;
 import tback.kicketingback.auth.oauth.dto.OauthUser;
 import tback.kicketingback.auth.oauth.dto.RequestCallBack;
 import tback.kicketingback.auth.oauth.service.OauthClientService;
+import tback.kicketingback.auth.oauth.service.OauthSignInService;
 import tback.kicketingback.auth.oauth.util.PasswordUtil;
-import tback.kicketingback.user.signin.dto.SignInRequest;
-import tback.kicketingback.user.signin.service.SignInService;
 import tback.kicketingback.user.signup.dto.request.SignUpRequest;
 import tback.kicketingback.user.signup.service.SignUpService;
 
@@ -33,14 +32,14 @@ public class OauthSignInController {
 
 	private final SignUpService oauthSignupService;
 
-	private final SignInService signInService;
+	private final OauthSignInService oauthSignInService;
 
 	public OauthSignInController(OauthClientService oauthClientService,
 		@Qualifier("OauthSignupService") SignUpService oauthSignupService,
-		SignInService signInService) {
+		OauthSignInService oauthSignInService) {
 		this.oauthClientService = oauthClientService;
 		this.oauthSignupService = oauthSignupService;
-		this.signInService = signInService;
+		this.oauthSignInService = oauthSignInService;
 	}
 
 	@PostMapping("/{domain}")
@@ -59,7 +58,7 @@ public class OauthSignInController {
 			oauthSignupService.signUp(new SignUpRequest(oauthUser.name(), oauthUser.email(), password));
 		}
 
-		TokenResponse tokenResponse = signInService.signInUser(new SignInRequest(oauthUser.email(), password));
+		TokenResponse tokenResponse = oauthSignInService.signInUser(oauthUser.email());
 
 		ResponseCookie accessTokenCookie = ResponseCookie.from(HttpHeaders.AUTHORIZATION, tokenResponse.accessToken())
 			.httpOnly(true)
