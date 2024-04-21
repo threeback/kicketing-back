@@ -84,7 +84,7 @@ public class UserExceptionHandler extends AbstractExceptionHandler {
 	}
 
 	@ExceptionHandler(EmailAuthIncompleteException.class)
-	public ResponseEntity<String> emailAuthIncompleteException(PasswordEncodeException exception) {
+	public ResponseEntity<String> emailAuthIncompleteException(EmailAuthIncompleteException exception) {
 		return getBadRequestResponseEntity(exception.getMessage());
 	}
 
