@@ -2,8 +2,6 @@ package tback.kicketingback.auth.oauth.controller;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,14 +58,7 @@ public class OauthSignInController {
 
 		TokenResponse tokenResponse = oauthSignInService.signInUser(oauthUser.email());
 
-		ResponseCookie accessTokenCookie = ResponseCookie.from(HttpHeaders.AUTHORIZATION, tokenResponse.accessToken())
-			.httpOnly(true)
-			.secure(true)
-			.path("/")
-			.maxAge(EXPIRATION_TIME)
-			.build();
-
-		response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+		tokenResponse.setAccessToken(response, EXPIRATION_TIME);
 		return ResponseEntity.ok().body(tokenResponse.refreshToken());
 	}
 }
