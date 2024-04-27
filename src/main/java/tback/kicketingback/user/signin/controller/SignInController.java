@@ -15,7 +15,7 @@ import tback.kicketingback.user.signin.dto.SignInRequest;
 import tback.kicketingback.user.signin.service.SignInService;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/user/sign-in")
 @RequiredArgsConstructor
 public class SignInController {
 
@@ -24,7 +24,7 @@ public class SignInController {
 
 	private final SignInService signInService;
 
-	@PostMapping("/sign-in")
+	@PostMapping
 	public ResponseEntity<String> signIn(@RequestBody @Valid SignInRequest signInRequest,
 		HttpServletResponse response) {
 		TokenResponse tokenResponse = signInService.signInUser(signInRequest);

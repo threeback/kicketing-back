@@ -3,6 +3,7 @@ package tback.kicketingback.user.signup.controller;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +34,7 @@ public class SignUpController {
 		this.smtpService = smtpService;
 	}
 
-	@PostMapping("/")
+	@PostMapping
 	public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
 		defaultSignUpService.signUp(
 			new SignUpRequest(signUpRequest.name(), signUpRequest.email(), signUpRequest.password()));
@@ -41,7 +42,7 @@ public class SignUpController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PostMapping("/email/code")
+	@PostMapping("/email-code")
 	public ResponseEntity<Void> emailCode(@RequestBody @Valid EmailCodeRequest emailCodeRequest) {
 		String email = emailCodeRequest.email();
 		signUpEmailAuthService.checkStateAccess(email);
@@ -54,7 +55,7 @@ public class SignUpController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PostMapping("/email/confirm")
+	@PostMapping("/email-confirm")
 	public ResponseEntity<Void> emailConfirm(@RequestBody @Valid EmailConfirmRequest emailConfirmRequest) {
 		signUpEmailAuthService.validateEmailAuthCompletion(emailConfirmRequest.email());
 
