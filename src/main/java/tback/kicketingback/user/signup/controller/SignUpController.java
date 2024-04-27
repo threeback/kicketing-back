@@ -55,7 +55,7 @@ public class SignUpController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PutMapping("/email-confirm")
+	@PostMapping("/email-confirm")
 	public ResponseEntity<Void> emailConfirm(@RequestBody @Valid EmailConfirmRequest emailConfirmRequest) {
 		signUpEmailAuthService.validateEmailAuthCompletion(emailConfirmRequest.email());
 
