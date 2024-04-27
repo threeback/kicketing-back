@@ -1,8 +1,6 @@
 package tback.kicketingback.user.signin.controller;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,17 +25,11 @@ public class SignInController {
 	private final SignInService signInService;
 
 	@PostMapping("/sign-in")
-	public ResponseEntity<String> signIn(@RequestBody @Valid SignInRequest signInRequest, HttpServletResponse response) {
+	public ResponseEntity<String> signIn(@RequestBody @Valid SignInRequest signInRequest,
+		HttpServletResponse response) {
 		TokenResponse tokenResponse = signInService.signInUser(signInRequest);
 
-		ResponseCookie accessTokenCookie = ResponseCookie.from(HttpHeaders.AUTHORIZATION, tokenResponse.accessToken())
-			.httpOnly(true)
-			.secure(true)
-			.path("/")
-			.maxAge(EXPIRATION_TIME)
-			.build();
-
-		response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+		tokenResponse.setAccessToken(response, EXPIRATION_TIME);
 		return ResponseEntity.ok().body(tokenResponse.refreshToken());
 	}
 }
