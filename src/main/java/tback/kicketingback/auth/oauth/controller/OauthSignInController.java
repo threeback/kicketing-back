@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletResponse;
 import tback.kicketingback.auth.dto.TokenResponse;
+import tback.kicketingback.auth.oauth.dto.OauthSignInRequest;
 import tback.kicketingback.auth.oauth.dto.OauthUser;
-import tback.kicketingback.auth.oauth.dto.RequestCallBack;
 import tback.kicketingback.auth.oauth.service.OauthClientService;
 import tback.kicketingback.auth.oauth.service.OauthSignInService;
 import tback.kicketingback.auth.oauth.util.PasswordUtil;
@@ -43,13 +43,13 @@ public class OauthSignInController {
 	@PostMapping("/{domain}")
 	public ResponseEntity<String> loginOAuth(
 		@PathVariable("domain") final String domain,
-		@RequestBody final RequestCallBack requestCallBack,
+		@RequestBody final OauthSignInRequest oauthSignInRequest,
 		HttpServletResponse response
 	) {
 		OauthUser oauthUser = oauthClientService.getOauthUser(
 			domain,
-			requestCallBack.authCode(),
-			requestCallBack.state());
+			oauthSignInRequest.authCode(),
+			oauthSignInRequest.state());
 
 		String password = PasswordUtil.createRandomPassword();
 		if (!oauthClientService.checkOurUser(oauthUser)) {
