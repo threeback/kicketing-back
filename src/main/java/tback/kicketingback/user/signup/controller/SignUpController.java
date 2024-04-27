@@ -33,7 +33,7 @@ public class SignUpController {
 		this.smtpService = smtpService;
 	}
 
-	@PostMapping("/")
+	@PostMapping
 	public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
 		defaultSignUpService.signUp(
 			new SignUpRequest(signUpRequest.name(), signUpRequest.email(), signUpRequest.password()));
