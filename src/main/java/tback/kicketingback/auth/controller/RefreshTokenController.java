@@ -21,7 +21,7 @@ import tback.kicketingback.auth.jwt.JwtTokenType;
 import tback.kicketingback.global.repository.RedisRepository;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/refresh")
 public class RefreshTokenController {
 
 	@Value("${jwt.access.expiration}")
@@ -41,7 +41,7 @@ public class RefreshTokenController {
 		this.redisRepository = refreshRedisRepository;
 	}
 
-	@PostMapping("/refresh")
+	@PostMapping
 	public ResponseEntity<Void> refreshAccessToken(
 		@RequestBody @Valid final RefreshTokenRequest refreshTokenRequest,
 		HttpServletResponse response
