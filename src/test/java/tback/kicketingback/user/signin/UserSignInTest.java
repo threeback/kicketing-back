@@ -1,7 +1,6 @@
 package tback.kicketingback.user.signin;
 
 import static org.assertj.core.api.Assertions.*;
-import static tback.kicketingback.global.encode.PasswordEncoderSHA256.*;
 
 import java.util.concurrent.ConcurrentHashMap;
 
