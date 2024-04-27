@@ -27,6 +27,7 @@ public class InterceptorAuthConfig implements WebMvcConfigurer {
 		registry.addInterceptor(userInterceptor)
 			.order(1)
 			.addPathPatterns("/**")
-			.excludePathPatterns("/", "/api/user/sign-in", "/api/user/sign-up/**", "/api/oauth/**", "/error");
+			.excludePathPatterns("/", "/api/user/sign-in", "/api/user/sign-up/**", "/api/oauth/**", "/error",
+				"/api/refresh");
 	}
 }

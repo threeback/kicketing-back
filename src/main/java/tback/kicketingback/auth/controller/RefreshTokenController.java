@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import tback.kicketingback.auth.dto.RefreshTokenRequest;
 import tback.kicketingback.auth.exception.exceptions.ExpiredTokenException;
 import tback.kicketingback.auth.exception.exceptions.InvalidJwtTokenException;
 import tback.kicketingback.auth.jwt.JwtTokenExtractor;
@@ -42,16 +43,16 @@ public class RefreshTokenController {
 
 	@PostMapping("/refresh")
 	public ResponseEntity<Void> refreshAccessToken(
-		@RequestBody @Valid final String refreshToken,
+		@RequestBody @Valid final RefreshTokenRequest refreshTokenRequest,
 		HttpServletResponse response
 	) {
-		String extractedRefreshToken = jwtTokenExtractor.extractRefreshToken(refreshToken);
+		String extractedRefreshToken = jwtTokenExtractor.extractRefreshToken(refreshTokenRequest.refreshToken());
 		String email = jwtTokenProvider.extractEmailFromRefreshToken(extractedRefreshToken);
 
 		String refreshTokenFromCash = redisRepository.getValues(email)
 			.orElseThrow(() -> new ExpiredTokenException(JwtTokenType.REFRESH_TOKEN));
 
-		if (!refreshTokenFromCash.equals(refreshToken)) {
+		if (!refreshTokenFromCash.equals(refreshTokenRequest.refreshToken())) {
 			redisRepository.deleteValues(email);
 			throw new InvalidJwtTokenException(JwtTokenType.REFRESH_TOKEN);
 		}
