@@ -5,6 +5,6 @@ import tback.kicketingback.auth.jwt.JwtTokenType;
 public class PayloadEmailMissingException extends RuntimeException {
 
 	public PayloadEmailMissingException(JwtTokenType tokenType) {
-		super(tokenType.name() + "JWT 페이로드에 이메일이 없습니다.");
+		super("[%s] JWT 페이로드에 이메일 없음".formatted(tokenType.name()));
 	}
 }
