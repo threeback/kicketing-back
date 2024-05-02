@@ -102,12 +102,16 @@ public class User extends BaseTimeEntity {
 
 	public void changePassword(final String newPassword) {
 		isSamePassword(newPassword);
-		this.password = newPassword;
+		this.password = encode(newPassword);
 	}
 
 	private void isSamePassword(final String password) {
 		if (this.password.equals(encode(password))) {
 			throw new AlreadySamePasswordException();
 		}
+	}
+
+	public void updateAddress(final String newAddress) {
+		this.address = newAddress;
 	}
 }

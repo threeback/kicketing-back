@@ -2,7 +2,9 @@ package tback.kicketingback.user.domain;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static tback.kicketingback.global.encode.PasswordEncoderSHA256.*;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,11 +14,18 @@ import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidNameException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
 import tback.kicketingback.user.exception.exceptions.EmailFormatException;
-import tback.kicketingback.user.signup.service.DefaultSignUpService;
+import tback.kicketingback.user.repository.FakeUserRepository;
+import tback.kicketingback.user.service.UserService;
 
 public class UserTest {
 
-	private DefaultSignUpService defaultSignUpService;
+	private UserService userService;
+	private FakeUserRepository fakeUserRepository;
+
+	@BeforeEach
+	void initBefore() {
+		userService = new UserService(fakeUserRepository);
+	}
 
 	@Test
 	@DisplayName("유저 생성 테스트")
@@ -88,8 +97,37 @@ public class UserTest {
 	public void 비밀번호_변경_테스트() {
 		User user = User.of("test@test.com", "1234abc!@", "test");
 		String newPassword = "1234abc!@1";
-		user.changePassword(newPassword);
+		userService.changePassword(user, newPassword);
 
-		assertThat(user.getPassword()).isEqualTo(newPassword);
+		assertThat(user.getPassword()).isEqualTo(encode(newPassword));
+	}
+
+	@Test
+	@DisplayName("유저 비밀 번호 변경 시 잘못된 형식은 예외를 터트린다.")
+	public void 비밀번호_변경_테스트_잘못된_형식() {
+		User user = User.of("test@test.com", "1234abc!@", "test");
+		String newPassword = "1234abc";
+
+		assertThrows(AuthInvalidPasswordException.class, () -> userService.changePassword(user, newPassword));
+	}
+
+	@Test
+	@DisplayName("주소를 등록할 수 있다.")
+	public void 주소_테스트() {
+		User user = User.of("test@test.com", "1234abc!@", "test");
+		String newAddress = "경성대학교 8호관 321호";
+		userService.updateAddress(user, newAddress);
+		assertThat(user.getAddress()).isEqualTo(newAddress);
+	}
+
+	@Test
+	@DisplayName("등록된 주소를 변경할 수 있다.")
+	public void 주소_변경_테스트() {
+		User user = User.of("test@test.com", "1234abc!@", "test");
+		String defaultAddress = "경성대학교 8호관 321호";
+		String newAddress = "경성대학교 8호관 313호";
+		userService.updateAddress(user, defaultAddress);
+		userService.updateAddress(user, newAddress);
+		assertThat(user.getAddress()).isEqualTo(newAddress);
 	}
 }
