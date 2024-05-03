@@ -13,11 +13,11 @@ public class OauthExceptionHandler extends AbstractExceptionHandler {
 
 	@ExceptionHandler(OAuthResourceAccessFailureException.class)
 	public ResponseEntity<String> OAuthResourceAccessFailureException(OAuthResourceAccessFailureException exception) {
-		return getBadRequestResponseEntity(exception.getMessage());
+		return getBadRequestResponseEntity(exception, exception.getMessage());
 	}
 
 	@ExceptionHandler(UnsupportedOAuthDomainException.class)
 	public ResponseEntity<String> UnsupportedOAuthDomainException(UnsupportedOAuthDomainException exception) {
-		return getBadRequestResponseEntity(exception.getMessage());
+		return getBadRequestResponseEntity(exception, exception.getMessage());
 	}
 }
