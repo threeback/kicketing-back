@@ -18,11 +18,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.auth.exception.exceptions.ExpiredTokenException;
 import tback.kicketingback.auth.exception.exceptions.InvalidJwtTokenException;
 import tback.kicketingback.auth.exception.exceptions.PayloadEmailMissingException;
-import tback.kicketingback.global.repository.RedisRepository;
 
 @Component
 @RequiredArgsConstructor
@@ -72,7 +72,7 @@ public class JwtTokenProvider {
 	private void validateAccessToken(final String token) {
 		try {
 			getAccessTokenParser().parseClaimsJws(token).getBody();
-		} catch (MalformedJwtException | UnsupportedJwtException e) {
+		} catch (MalformedJwtException | UnsupportedJwtException | SignatureException e) {
 			throw new InvalidJwtTokenException(JwtTokenType.ACCESS_TOKEN);
 		} catch (ExpiredJwtException e) {
 			throw new ExpiredTokenException(JwtTokenType.ACCESS_TOKEN);
@@ -112,7 +112,7 @@ public class JwtTokenProvider {
 	private void validateRefreshToken(final String token) {
 		try {
 			getRefreshTokenParser().parseClaimsJws(token).getBody();
-		} catch (MalformedJwtException | UnsupportedJwtException e) {
+		} catch (MalformedJwtException | UnsupportedJwtException | SignatureException e) {
 			throw new InvalidJwtTokenException(JwtTokenType.REFRESH_TOKEN);
 		} catch (ExpiredJwtException e) {
 			throw new ExpiredTokenException(JwtTokenType.REFRESH_TOKEN);
