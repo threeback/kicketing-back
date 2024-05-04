@@ -39,6 +39,9 @@ public class Performance {
 	@Column(nullable = false)
 	private int age;
 
+	@Column(nullable = false)
+	private String imageUrl;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "place_id", nullable = false)
 	private Place place;
