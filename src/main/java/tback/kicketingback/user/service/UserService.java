@@ -36,4 +36,9 @@ public class UserService {
 
 		user.changePassword(password);
 	}
+
+    public void matchPassword(User user, String confirmPassword) {
+        user.validatePassword(confirmPassword);
+    }
+
 }
