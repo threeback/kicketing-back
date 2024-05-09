@@ -1,4 +1,5 @@
 package tback.kicketingback.user.dto;
 
-public record PasswordRequest(String password) {
+public record PasswordRequest(String confirmPassword,
+                              String newPassword) {
 }
