@@ -92,12 +92,15 @@ public class UserTest {
 		assertThrows(AuthInvalidEmailException.class, () -> user.validateEmail("nontest@test.com"));
 	}
 
-	@Test
-	@DisplayName("유저 비밀 번호 변경 테스트")
-	public void 비밀번호_변경_테스트() {
-		User user = User.of("test@test.com", "1234abc!@", "test");
-		String newPassword = "1234abc!@1";
-		userService.changePassword(user, newPassword);
+    @Test
+    @DisplayName("유저 비밀 번호 변경 테스트")
+    public void 비밀번호_변경_테스트() {
+        User user = User.of("test@test.com", "1234abc!@", "test");
+        String confirmPassword = "1234abc!@";
+        String newPassword = "1234abc!@1";
+
+        userService.matchPassword(user, confirmPassword);
+        userService.changePassword(user, newPassword);
 
 		assertThat(user.getPassword()).isEqualTo(encode(newPassword));
 	}
