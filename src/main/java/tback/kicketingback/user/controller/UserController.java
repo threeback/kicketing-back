@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tback.kicketingback.auth.jwt.JwtLogin;
 import tback.kicketingback.user.domain.User;
-import tback.kicketingback.user.dto.AddressRequest;
-import tback.kicketingback.user.dto.InformRequest;
-import tback.kicketingback.user.dto.PasswordRequest;
+import tback.kicketingback.user.dto.request.AddressRequest;
+import tback.kicketingback.user.dto.request.InformRequest;
+import tback.kicketingback.user.dto.request.PasswordRequest;
 import tback.kicketingback.user.service.UserService;
 
 @RestController
@@ -45,5 +45,12 @@ public class UserController {
 
         return ResponseEntity.ok().build();
     }
+
+//    @PutMapping("/name")
+//    public ResponseEntity<Void> setName(@JwtLogin User user, @RequestBody NameRequest nameRequest) {
+//
+//        헤응
+//        return ResponseEntity.ok().build();
+//    }
 
 }
