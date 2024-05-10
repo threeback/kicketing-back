@@ -118,4 +118,15 @@ public class User extends BaseTimeEntity {
     public void updateAddress(final String newAddress) {
         this.address = newAddress;
     }
+
+    public void updateStateRegular(final UserState userState) {
+        this.state = userState.getState();
+    }
+
+    public void updateName(final String newName) {
+        if (!isNameFormat(newName)) {
+            throw new AuthInvalidNameException();
+        }
+        this.name = newName;
+    }
 }

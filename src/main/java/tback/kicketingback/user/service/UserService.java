@@ -5,10 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tback.kicketingback.auth.oauth.util.PasswordUtil;
 import tback.kicketingback.user.domain.User;
+import tback.kicketingback.user.domain.UserState;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
+import tback.kicketingback.user.exception.exceptions.AuthInvalidStateException;
 import tback.kicketingback.user.exception.exceptions.NoSuchUserException;
 import tback.kicketingback.user.repository.UserRepository;
 import tback.kicketingback.user.signup.mail.SmtpService;
+
+import java.util.Objects;
 
 import static tback.kicketingback.auth.oauth.util.PasswordUtil.isPasswordFormat;
 
@@ -39,6 +43,20 @@ public class UserService {
         user.changePassword(password);
     }
 
+    @Transactional
+    public void setRandomPassword(User user, String email) {
+        String newPassword = PasswordUtil.createRandomPassword();
+        smtpService.sendRandomPassword(email, newPassword);
+        user.changePassword(newPassword);
+    }
+
+    @Transactional
+    public void updateName(User user, String newName) {
+        if (!Objects.equals(user.getState(), UserState.OAUTH_USER.getState())) throw new AuthInvalidStateException();
+        user.updateName(newName);
+        user.updateStateRegular(UserState.REGULAR_USER);
+    }
+
     public void matchPassword(User user, String confirmPassword) {
         user.validatePassword(confirmPassword);
     }
@@ -49,10 +67,4 @@ public class UserService {
         user.validateName(name);
     }
 
-    @Transactional
-    public void setRandomPassword(User user, String email) {
-        String newPassword = PasswordUtil.createRandomPassword();
-        smtpService.sendRandomPassword(email, newPassword);
-        user.changePassword(newPassword);
-    }
 }
