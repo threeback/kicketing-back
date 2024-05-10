@@ -142,4 +142,32 @@ public class UserTest {
 
         assertDoesNotThrow(() -> userService.matchInform(user, emailReq, nameReq));
     }
+
+    @Test
+    @DisplayName("OAuth로 가입한 유저는 1회에 한하여 이름을 변경할 수 있다.")
+    public void 이름_변경_테스트() {
+        User user = User.of("test@gmail.com", "1234abc!@", "푸바오", UserState.OAUTH_USER);
+        String newName = "김철수";
+
+        assertDoesNotThrow(() -> userService.updateName(user, newName));
+    }
+
+    @Test
+    @DisplayName("일반회원(Regular)이 이름을 변경하면 예외를 터트린다.")
+    public void 이름_변경_권한_없음() {
+        User user = User.of("test@gmail.com", "1234abc!@", "푸바오", UserState.REGULAR_USER);
+        String newName = "Kevin";
+
+        assertThrows(AuthInvalidStateException.class, () -> userService.updateName(user, newName));
+    }
+
+    @Test
+    @DisplayName("OAuth 가입 유저여도 변경할 이름 형식에 맞지 않으면 예외를 터트린다.")
+    public void 이름_변경_형식_불일치() {
+        User user = User.of("test@gmail.com", "1234abc!@", "푸바오", UserState.OAUTH_USER);
+        String newName = "O M G";
+
+        assertThrows(AuthInvalidNameException.class, () -> userService.updateName(user, newName));
+    }
+
 }
