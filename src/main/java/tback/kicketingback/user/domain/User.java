@@ -14,6 +14,7 @@ import static tback.kicketingback.global.encode.PasswordEncoderSHA256.encode;
 @Getter
 @DynamicInsert
 public class User extends BaseTimeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,20 +37,27 @@ public class User extends BaseTimeEntity {
     protected User() {
     }
 
-    private User(final Long id, final String email, final String password, final String name) {
+    private User(final Long id, final String email, final String password, final String name, final Short state) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.name = name;
-        this.state = 0;
+        this.state = state;
     }
 
     private static final String DEFAULT_EMAIL_REGEX = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
     private static final String DEFAULT_NAME_REGEX = "^[가-힣a-zA-Z]{2,20}$";
 
-    public static User of(final String email, final String password, final String name) {
+    /**
+     * @param email
+     * @param password
+     * @param name
+     * @return
+     * @state Default 는 0으로 설정됨, OAuth 는 1로 설정.
+     */
+    public static User of(final String email, final String password, final String name, UserState userState) {
         validateCreateMember(email, password, name);
-        return new User(null, email, encode(password), name);
+        return new User(null, email, encode(password), name, userState.getState());
     }
 
     private static void validateCreateMember(final String email, final String password, final String name) {
