@@ -15,7 +15,6 @@ import tback.kicketingback.auth.exception.exceptions.TokenExtractionException;
 public class JwtTokenExtractor {
 
 	private static final String ACCESS_TOKEN_HEADER = HttpHeaders.AUTHORIZATION;
-	private static final String REFRESH_TOKEN_HEADER = "Authorization-Refresh";
 
 	public String extractAccessToken(final HttpServletRequest request) {
 		return Optional.ofNullable(request.getCookies())
@@ -26,12 +25,5 @@ public class JwtTokenExtractor {
 				.filter(StringUtils::hasText)
 			)
 			.orElseThrow(() -> new TokenExtractionException(JwtTokenType.ACCESS_TOKEN));
-	}
-
-	public String extractRefreshToken(final String refreshToken) {
-		if (StringUtils.hasText(refreshToken)) {
-			return refreshToken;
-		}
-		throw new TokenExtractionException(JwtTokenType.REFRESH_TOKEN);
 	}
 }

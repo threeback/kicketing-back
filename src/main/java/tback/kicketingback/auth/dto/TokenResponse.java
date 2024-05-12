@@ -11,6 +11,17 @@ public record TokenResponse(String accessToken, String refreshToken) {
 		return new TokenResponse(accessToken, refreshToken);
 	}
 
+	public static void expireAccessToken(HttpServletResponse response) {
+		ResponseCookie accessTokenCookie = ResponseCookie.from(HttpHeaders.AUTHORIZATION, "")
+			.httpOnly(true)
+			.secure(true)
+			.path("/")
+			.maxAge(0)
+			.build();
+
+		response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+	}
+
 	public void setAccessToken(HttpServletResponse response, int expirationTime) {
 		ResponseCookie accessTokenCookie = ResponseCookie.from(HttpHeaders.AUTHORIZATION, accessToken)
 			.httpOnly(true)
