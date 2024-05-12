@@ -11,6 +11,11 @@ java {
     sourceCompatibility = '17'
 }
 
+jar{
+    enabled=true
+    archiveClassifier = ''
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
