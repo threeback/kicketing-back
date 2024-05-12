@@ -1,6 +1,6 @@
 package tback.kicketingback.performance.domain;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
@@ -25,19 +25,19 @@ public class Performance {
 	private String name;
 
 	@Column(nullable = false)
-	private String type;
+	private String genre;
 
 	@Column(nullable = false)
-	private int learningTime;
+	private int length;
 
 	@Column(nullable = false)
-	private LocalDateTime startDate;
+	private LocalDate startDate;
 
 	@Column(nullable = false)
-	private LocalDateTime endDate;
+	private LocalDate endDate;
 
 	@Column(nullable = false)
-	private int age;
+	private int ageLimit;
 
 	@Column(nullable = false)
 	private String imageUrl;

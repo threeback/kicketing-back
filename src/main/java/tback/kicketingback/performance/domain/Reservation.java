@@ -1,30 +1,60 @@
 package tback.kicketingback.performance.domain;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.UuidGenerator;
+import org.springframework.data.annotation.CreatedDate;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
+import tback.kicketingback.performance.domain.type.DiscountType;
 import tback.kicketingback.user.domain.User;
 
 @Entity
 @Getter
+@DynamicInsert
 public class Reservation {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@UuidGenerator
+	private UUID id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "performance_id", nullable = false)
-	private Performance performance;
+	@JoinColumn(name = "on_stage_id", nullable = false)
+	private OnStage onStage;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "seat_id", nullable = false)
+	private Seat seat;
+
+	@CreatedDate
+	@Column(nullable = false)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	@Comment("예약일")
+	private LocalDateTime createdAt;
+
+	@Column(nullable = false)
+	private String orderNumber;
+
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private DiscountType discountType;
 
 	protected Reservation() {
 	}

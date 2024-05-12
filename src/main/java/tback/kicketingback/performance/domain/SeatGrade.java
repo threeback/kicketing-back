@@ -13,26 +13,21 @@ import jakarta.persistence.ManyToOne;
 import tback.kicketingback.performance.domain.type.Grade;
 
 @Entity
-public class Seat {
+public class SeatGrade {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "on_stage_id", nullable = false)
+	private OnStage onStage;
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Grade grade;
 
 	@Column(nullable = false)
-	private String seatRow;
+	private int price;
 
-	@Column(nullable = false)
-	private int seatCol;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "place_id", nullable = false)
-	private Place place;
-
-	protected Seat() {
-	}
 }
