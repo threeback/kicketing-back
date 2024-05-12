@@ -51,7 +51,7 @@ public class UserExceptionHandler extends AbstractExceptionHandler {
 
 	@ExceptionHandler(EmailDuplicatedException.class)
 	public ResponseEntity<String> emailDuplicatedException(EmailDuplicatedException exception) {
-		return getBadRequestResponseEntity(exception, exception.getMessage());
+		return getConflictResponseEntity(exception, exception.getMessage());
 	}
 
 	@ExceptionHandler(AuthInvalidNameException.class)
