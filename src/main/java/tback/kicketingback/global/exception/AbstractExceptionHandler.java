@@ -22,4 +22,9 @@ public abstract class AbstractExceptionHandler {
 		log.info("{}: {} response send because of Forbidden: {}", this.getClass(), exception.getClass(), message);
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 	}
+
+	protected final ResponseEntity<String> getConflictResponseEntity(final Exception exception, final String message) {
+		log.info("{}: {} response send because of Conflict: {}", this.getClass(), exception.getClass(), message);
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+	}
 }

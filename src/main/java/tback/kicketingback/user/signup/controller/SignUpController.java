@@ -3,13 +3,13 @@ package tback.kicketingback.user.signup.controller;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import tback.kicketingback.email.service.EmailAuthService;
+import tback.kicketingback.user.service.UserService;
 import tback.kicketingback.user.signup.dto.request.EmailCodeRequest;
 import tback.kicketingback.user.signup.dto.request.EmailConfirmRequest;
 import tback.kicketingback.user.signup.dto.request.SignUpRequest;
@@ -24,14 +24,16 @@ public class SignUpController {
 	private final SignUpService defaultSignUpService;
 	private final EmailAuthService signUpEmailAuthService;
 	private final SmtpService smtpService;
+	private final UserService userService;
 
 	public SignUpController(
 		@Qualifier("DefaultSignUpService") SignUpService defaultSignUpService,
 		EmailAuthService signUpEmailAuthService,
-		SmtpService smtpService) {
+		SmtpService smtpService, UserService userService) {
 		this.defaultSignUpService = defaultSignUpService;
 		this.signUpEmailAuthService = signUpEmailAuthService;
 		this.smtpService = smtpService;
+		this.userService = userService;
 	}
 
 	@PostMapping
@@ -45,6 +47,7 @@ public class SignUpController {
 	@PostMapping("/email-code")
 	public ResponseEntity<Void> emailCode(@RequestBody @Valid EmailCodeRequest emailCodeRequest) {
 		String email = emailCodeRequest.email();
+		userService.checkEmailDuplication(email);
 		signUpEmailAuthService.checkStateAccess(email);
 
 		String code = NumberCodeUtil.createRandomCode6();

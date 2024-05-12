@@ -13,6 +13,7 @@ import tback.kicketingback.user.domain.User;
 import tback.kicketingback.user.domain.UserState;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidStateException;
+import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
 import tback.kicketingback.user.exception.exceptions.NoSuchUserException;
 import tback.kicketingback.user.repository.UserRepository;
 import tback.kicketingback.user.signup.mail.SmtpService;
@@ -28,6 +29,12 @@ public class UserService {
 
 		return userRepository.findByEmail(email)
 			.orElseThrow(NoSuchUserException::new);
+	}
+
+	public void checkEmailDuplication(final String email) {
+		if (userRepository.existsByEmail(email)) {
+			throw new EmailDuplicatedException();
+		}
 	}
 
 	@Transactional
