@@ -1,7 +1,6 @@
 package tback.kicketingback.user.signup.service;
 
 import static tback.kicketingback.auth.oauth.util.PasswordUtil.*;
-import static tback.kicketingback.global.encode.PasswordEncoderSHA256.*;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.email.service.EmailAuthService;
 import tback.kicketingback.user.domain.User;
+import tback.kicketingback.user.domain.UserState;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
 import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
 import tback.kicketingback.user.repository.UserRepository;
@@ -30,7 +30,8 @@ public class DefaultSignUpService implements SignUpService {
 
 		emailAuthService.validateEmailAuthAttempt(signUpRequest.email());
 
-		User user = User.of(signUpRequest.email(), signUpRequest.password(), signUpRequest.name());
+		User user = User.of(signUpRequest.email(), signUpRequest.password(), signUpRequest.name(),
+			UserState.REGULAR_USER);
 		if (userRepository.existsByEmail(signUpRequest.email())) {
 			throw new EmailDuplicatedException();
 		}

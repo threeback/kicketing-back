@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import tback.kicketingback.email.service.EmailAuthService;
 import tback.kicketingback.global.repository.RedisRepository;
 import tback.kicketingback.user.domain.User;
+import tback.kicketingback.user.domain.UserState;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
 import tback.kicketingback.user.exception.exceptions.EmailAuthIncompleteException;
 import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
@@ -70,7 +71,7 @@ public class SignupTest {
 	@Test
 	@DisplayName("유저 이메일 중복이면 예외가 발생한다.")
 	public void 이메일_중복일_경우_예외() {
-		map.put("test@test.com", User.of(TEST_EMAIL, "123456a!!", "beach"));
+		map.put("test@test.com", User.of(TEST_EMAIL, "123456a!!", "beach", UserState.REGULAR_USER));
 		emailAuthService.saveCode(TEST_EMAIL, "access");
 
 		assertThrows(EmailDuplicatedException.class,

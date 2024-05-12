@@ -10,6 +10,7 @@ import tback.kicketingback.user.exception.exceptions.AlreadySamePasswordExceptio
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidNameException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
+import tback.kicketingback.user.exception.exceptions.AuthInvalidStateException;
 import tback.kicketingback.user.exception.exceptions.EmailAuthIncompleteException;
 import tback.kicketingback.user.exception.exceptions.EmailCreateException;
 import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
@@ -90,6 +91,11 @@ public class UserExceptionHandler extends AbstractExceptionHandler {
 
 	@ExceptionHandler(NoSuchUserException.class)
 	public ResponseEntity<String> noSuchUserException(NoSuchUserException exception) {
+		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(AuthInvalidStateException.class)
+	public ResponseEntity<String> authInvalidStateException(AuthInvalidStateException exception) {
 		return getBadRequestResponseEntity(exception, exception.getMessage());
 	}
 }

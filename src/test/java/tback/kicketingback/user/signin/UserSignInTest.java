@@ -15,6 +15,7 @@ import tback.kicketingback.auth.dto.TokenResponse;
 import tback.kicketingback.auth.jwt.JwtTokenProvider;
 import tback.kicketingback.global.repository.RedisRepository;
 import tback.kicketingback.user.domain.User;
+import tback.kicketingback.user.domain.UserState;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
 import tback.kicketingback.user.exception.exceptions.NoSuchUserException;
 import tback.kicketingback.user.repository.FakeUserRepository;
@@ -36,7 +37,7 @@ public class UserSignInTest {
 	@BeforeEach
 	void initRepository() {
 		ConcurrentHashMap concurrentHashMap = new ConcurrentHashMap();
-		concurrentHashMap.put("test@test.com", User.of("test@test.com", "1234", "test"));
+		concurrentHashMap.put("test@test.com", User.of("test@test.com", "1234", "test", UserState.REGULAR_USER));
 		signInService = new SignInService(new FakeUserRepository(concurrentHashMap), jwtTokenProvider, redisRepository);
 		redisRepository.deleteValues("test@test.com");
 	}
