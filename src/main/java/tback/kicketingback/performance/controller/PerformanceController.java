@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import tback.kicketingback.performance.domain.Performance;
 import tback.kicketingback.performance.dto.GetPerformancesRequest;
 import tback.kicketingback.performance.dto.GetPerformancesResponse;
+import tback.kicketingback.performance.dto.PerformanceDTO;
 import tback.kicketingback.performance.service.PerformanceService;
 
 @RestController
@@ -34,7 +35,10 @@ public class PerformanceController {
 		@Valid @ModelAttribute GetPerformancesRequest getPerformancesRequest
 	) {
 		List<Performance> performances = performanceService.getPerformances(genre, getPerformancesRequest);
+		List<PerformanceDTO> performanceDTOs = performances.stream()
+			.map(PerformanceDTO::of)
+			.toList();
 
-		return ResponseEntity.ok().body(new GetPerformancesResponse(performances));
+		return ResponseEntity.ok().body(new GetPerformancesResponse(performanceDTOs));
 	}
 }
