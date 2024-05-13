@@ -24,7 +24,7 @@ import tback.kicketingback.user.domain.User;
 
 @Entity
 @Getter
-정public class Reservation {
+public class Reservation {
 
 	@Id
 	@UuidGenerator
