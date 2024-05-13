@@ -6,19 +6,19 @@ import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanc
 @Getter
 public class GetPerformancesSize {
 
-	private final int size;
+	private final int anInt;
 
 	public static GetPerformancesSize of(int size) {
 		return new GetPerformancesSize(size);
 	}
 
-	private GetPerformancesSize(int size) {
-		validatePerformanceSize(size);
-		this.size = size;
+	private GetPerformancesSize(int anInt) {
+		validatePerformanceSize(anInt);
+		this.anInt = anInt;
 	}
 
 	private void validatePerformanceSize(int size) {
-		if (10 <= size && size <= 50) {
+		if (size < 10 || size > 50) {
 			throw new InvalidGetPerformanceSizeException(size);
 		}
 	}
