@@ -1,5 +1,6 @@
 package tback.kicketingback.performance.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import tback.kicketingback.performance.domain.type.Genre;
 import tback.kicketingback.performance.dto.DateUnit;
 import tback.kicketingback.performance.dto.GetPerformancesRequest;
 import tback.kicketingback.performance.dto.GetPerformancesSize;
+import tback.kicketingback.performance.dto.Range;
 import tback.kicketingback.performance.repository.PerformanceRepository;
 
 @Service
@@ -18,21 +20,26 @@ public class PerformanceService {
 
 	private final PerformanceRepository performanceRepository;
 
-	public List<Performance> getPerformances(String genre, GetPerformancesRequest getPerformancesRequest) {
+	public List<Performance> getPerformances(
+		String genre,
+		GetPerformancesRequest getPerformancesRequest,
+		LocalDate localDate
+	) {
 		Genre targetGenre = Genre.of(genre);
 		DateUnit dateUnit = DateUnit.of(getPerformancesRequest.dateUnit());
+		Range range = dateUnit.getRangeCalculator().apply(localDate);
 		GetPerformancesSize getPerformancesSize = GetPerformancesSize.of(getPerformancesRequest.size());
 
 		if (targetGenre.equals(Genre.NONE)) {
 			return performanceRepository.getRankingPerformances(
-				dateUnit,
+				range,
 				getPerformancesSize
 			);
 		}
 
 		return performanceRepository.getGenreRankingPerformances(
 			targetGenre,
-			dateUnit,
+			range,
 			getPerformancesSize);
 	}
 }

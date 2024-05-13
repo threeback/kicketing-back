@@ -12,7 +12,6 @@ import tback.kicketingback.performance.domain.QOnStage;
 import tback.kicketingback.performance.domain.QPerformance;
 import tback.kicketingback.performance.domain.QReservation;
 import tback.kicketingback.performance.domain.type.Genre;
-import tback.kicketingback.performance.dto.DateUnit;
 import tback.kicketingback.performance.dto.GetPerformancesSize;
 import tback.kicketingback.performance.dto.Range;
 
@@ -30,8 +29,7 @@ public class PerformanceRepository {
 		this.reservation = QReservation.reservation;
 	}
 
-	public List<Performance> getGenreRankingPerformances(Genre genre, DateUnit dateUnit, GetPerformancesSize getSize) {
-		Range range = dateUnit.getRangeSupplier().get();
+	public List<Performance> getGenreRankingPerformances(Genre genre, Range range, GetPerformancesSize getSize) {
 		int size = getSize.getAnInt();
 
 		return queryFactory.select(performance)
@@ -46,8 +44,7 @@ public class PerformanceRepository {
 			.fetch();
 	}
 
-	public List<Performance> getRankingPerformances(DateUnit dateUnit, GetPerformancesSize getSize) {
-		Range range = dateUnit.getRangeSupplier().get();
+	public List<Performance> getRankingPerformances(Range range, GetPerformancesSize getSize) {
 		int size = getSize.getAnInt();
 
 		return queryFactory.select(performance)

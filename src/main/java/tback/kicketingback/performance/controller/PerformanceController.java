@@ -1,5 +1,6 @@
 package tback.kicketingback.performance.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -30,14 +31,12 @@ public class PerformanceController {
 	 * @return
 	 */
 	@GetMapping("/performances/{genre}")
-	public ResponseEntity<GetPerformancesResponse> getPerformances(
-		@PathVariable("genre") String genre,
-		@Valid @ModelAttribute GetPerformancesRequest getPerformancesRequest
-	) {
-		List<Performance> performances = performanceService.getPerformances(genre, getPerformancesRequest);
-		List<PerformanceDTO> performanceDTOs = performances.stream()
-			.map(PerformanceDTO::of)
-			.toList();
+	public ResponseEntity<GetPerformancesResponse> getPerformances(@PathVariable("genre") String genre,
+		@Valid @ModelAttribute GetPerformancesRequest getPerformancesRequest) {
+		List<Performance> performances =
+			performanceService.getPerformances(genre, getPerformancesRequest, LocalDate.now());
+		
+		List<PerformanceDTO> performanceDTOs = performances.stream().map(PerformanceDTO::of).toList();
 
 		return ResponseEntity.ok().body(new GetPerformancesResponse(performanceDTOs));
 	}
