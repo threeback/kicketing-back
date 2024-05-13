@@ -24,15 +24,14 @@ import tback.kicketingback.user.domain.User;
 
 @Entity
 @Getter
-@DynamicInsert
-public class Reservation {
+정public class Reservation {
 
 	@Id
 	@UuidGenerator
 	private UUID id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name = "user_id")
 	private User user;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -43,16 +42,15 @@ public class Reservation {
 	@JoinColumn(name = "seat_id", nullable = false)
 	private Seat seat;
 
-	@CreatedDate
-	@Column(nullable = false)
+	@Column
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	@Comment("예약일")
-	private LocalDateTime createdAt;
+	private LocalDateTime orderedAt;
 
-	@Column(nullable = false)
+	@Column
 	private String orderNumber;
 
-	@Column(nullable = false)
+	@Column
 	@Enumerated(EnumType.STRING)
 	private DiscountType discountType;
 
