@@ -25,14 +25,14 @@ public class PerformanceService {
 
 		if (targetGenre.equals(Genre.NONE)) {
 			return performanceRepository.getRankingPerformances(
-				dateUnit.getRangeSupplier().get(),
-				getPerformancesSize.getSize()
+				dateUnit,
+				getPerformancesSize
 			);
 		}
 
 		return performanceRepository.getGenreRankingPerformances(
 			targetGenre,
-			dateUnit.getRangeSupplier().get(),
-			getPerformancesSize.getSize());
+			dateUnit,
+			getPerformancesSize);
 	}
 }
