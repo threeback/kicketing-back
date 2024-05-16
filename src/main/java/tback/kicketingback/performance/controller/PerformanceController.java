@@ -12,10 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import tback.kicketingback.performance.domain.Performance;
 import tback.kicketingback.performance.dto.GetPerformancesRequest;
 import tback.kicketingback.performance.dto.GetPerformancesResponse;
-import tback.kicketingback.performance.dto.PerformanceDTO;
+import tback.kicketingback.performance.dto.SimplePerformancePlaceDTO;
 import tback.kicketingback.performance.service.PerformanceService;
 
 @RestController
@@ -33,11 +32,10 @@ public class PerformanceController {
 	@GetMapping("/performances/{genre}")
 	public ResponseEntity<GetPerformancesResponse> getPerformances(@PathVariable("genre") String genre,
 		@Valid @ModelAttribute GetPerformancesRequest getPerformancesRequest) {
-		List<Performance> performances =
+		List<SimplePerformancePlaceDTO> simplePerformancePlaceDTOS =
 			performanceService.getPerformances(genre, getPerformancesRequest, LocalDate.now());
-		
-		List<PerformanceDTO> performanceDTOs = performances.stream().map(PerformanceDTO::of).toList();
 
-		return ResponseEntity.ok().body(new GetPerformancesResponse(performanceDTOs));
+		GetPerformancesResponse getPerformancesResponse = new GetPerformancesResponse(simplePerformancePlaceDTOS);
+		return ResponseEntity.ok().body(getPerformancesResponse);
 	}
 }

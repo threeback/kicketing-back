@@ -6,12 +6,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import tback.kicketingback.performance.domain.Performance;
 import tback.kicketingback.performance.domain.type.Genre;
 import tback.kicketingback.performance.dto.DateUnit;
 import tback.kicketingback.performance.dto.GetPerformancesRequest;
 import tback.kicketingback.performance.dto.GetPerformancesSize;
 import tback.kicketingback.performance.dto.Range;
+import tback.kicketingback.performance.dto.SimplePerformancePlaceDTO;
 import tback.kicketingback.performance.repository.PerformanceRepository;
 
 @Service
@@ -20,7 +20,7 @@ public class PerformanceService {
 
 	private final PerformanceRepository performanceRepository;
 
-	public List<Performance> getPerformances(
+	public List<SimplePerformancePlaceDTO> getPerformances(
 		String genre,
 		GetPerformancesRequest getPerformancesRequest,
 		LocalDate localDate
