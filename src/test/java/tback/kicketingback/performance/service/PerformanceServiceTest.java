@@ -11,8 +11,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import tback.kicketingback.performance.domain.Performance;
 import tback.kicketingback.performance.dto.GetPerformancesRequest;
+import tback.kicketingback.performance.dto.SimplePerformancePlaceDTO;
 
 @SpringBootTest
 class PerformanceServiceTest {
@@ -23,19 +23,19 @@ class PerformanceServiceTest {
 	@Test
 	@DisplayName("[정상] 장르가 NONE이면 장르를 가리지 않고 검색")
 	void getPerformancesByNone() {
-		List<Performance> performances = performanceService.getPerformances("none",
+		List<SimplePerformancePlaceDTO> simplePerformancePlaceDTOS = performanceService.getPerformances("none",
 			new GetPerformancesRequest("day", 10), LocalDate.now());
 
-		Assertions.assertThat(performances.size()).isGreaterThanOrEqualTo(0);
+		Assertions.assertThat(simplePerformancePlaceDTOS.size()).isGreaterThanOrEqualTo(0);
 	}
 
 	@ParameterizedTest
 	@ValueSource(strings = {"NONE", "CONCERT", "MUSICAL", "CLASSIC", "THEATER"})
 	@DisplayName("[정상] 장르를 선택해 검색")
 	void getPerformancesByGenreName(String GenreName) {
-		List<Performance> performances = performanceService.getPerformances(GenreName,
+		List<SimplePerformancePlaceDTO> simplePerformancePlaceDTOS = performanceService.getPerformances(GenreName,
 			new GetPerformancesRequest("day", 10), LocalDate.now());
 
-		Assertions.assertThat(performances.size()).isGreaterThanOrEqualTo(0);
+		Assertions.assertThat(simplePerformancePlaceDTOS.size()).isGreaterThanOrEqualTo(0);
 	}
 }
