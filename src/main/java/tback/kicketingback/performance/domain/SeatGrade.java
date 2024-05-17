@@ -20,8 +20,8 @@ public class SeatGrade {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "on_stage_id", nullable = false)
-	private OnStage onStage;
+	@JoinColumn(name = "performance_id", nullable = false)
+	private Performance performance;
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
