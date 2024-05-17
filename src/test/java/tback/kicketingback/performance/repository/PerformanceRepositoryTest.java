@@ -31,7 +31,7 @@ class PerformanceRepositoryTest {
 		int size = 20;
 		Range range = DateUnit.WEEK.getRangeCalculator().apply(LocalDate.now());
 		List<SimplePerformancePlaceDTO> rankingPerformances
-			= performanceRepository.getRankingPerformances(range, GetPerformancesSize.of(size));
+			= performanceRepository.findRankingPerformances(range, GetPerformancesSize.of(size));
 
 		assertThat(rankingPerformances).isNotNull();
 	}
@@ -41,7 +41,7 @@ class PerformanceRepositoryTest {
 	@DisplayName("[정상] [장르 지정X] 개수를 정해 공연 목록 검색")
 	void getRankingPerformanceBySize(int size) {
 		Range range = DateUnit.WEEK.getRangeCalculator().apply(LocalDate.now());
-		List<SimplePerformancePlaceDTO> rankingPerformances = performanceRepository.getRankingPerformances(range,
+		List<SimplePerformancePlaceDTO> rankingPerformances = performanceRepository.findRankingPerformances(range,
 			GetPerformancesSize.of(size));
 
 		assertThat(rankingPerformances).isNotNull();
@@ -56,7 +56,7 @@ class PerformanceRepositoryTest {
 		int size = 10;
 		Range range = dateUnit.getRangeCalculator().apply(LocalDate.now());
 		List<SimplePerformancePlaceDTO> rankingPerformances
-			= performanceRepository.getRankingPerformances(range, GetPerformancesSize.of(size));
+			= performanceRepository.findRankingPerformances(range, GetPerformancesSize.of(size));
 
 		assertThat(rankingPerformances).isNotNull();
 	}
@@ -67,7 +67,7 @@ class PerformanceRepositoryTest {
 		int size = 20;
 		Range range = DateUnit.WEEK.getRangeCalculator().apply(LocalDate.now());
 
-		List<SimplePerformancePlaceDTO> genreRankingPerformances = performanceRepository.getGenreRankingPerformances(
+		List<SimplePerformancePlaceDTO> genreRankingPerformances = performanceRepository.findGenreRankingPerformances(
 			Genre.MUSICAL, range, GetPerformancesSize.of(size));
 
 		assertThat(genreRankingPerformances).isNotNull();
@@ -79,7 +79,7 @@ class PerformanceRepositoryTest {
 	void getRankingPerformanceByGenreAndSize(int size) {
 		Range range = DateUnit.WEEK.getRangeCalculator().apply(LocalDate.now());
 
-		List<SimplePerformancePlaceDTO> genreRankingPerformances = performanceRepository.getGenreRankingPerformances(
+		List<SimplePerformancePlaceDTO> genreRankingPerformances = performanceRepository.findGenreRankingPerformances(
 			Genre.THEATER, range, GetPerformancesSize.of(size));
 
 		assertThat(genreRankingPerformances).isNotNull();
@@ -94,7 +94,7 @@ class PerformanceRepositoryTest {
 		int size = 10;
 		Range range = dateUnit.getRangeCalculator().apply(LocalDate.now());
 
-		List<SimplePerformancePlaceDTO> genreRankingPerformances = performanceRepository.getGenreRankingPerformances(
+		List<SimplePerformancePlaceDTO> genreRankingPerformances = performanceRepository.findGenreRankingPerformances(
 			Genre.CLASSIC, range, GetPerformancesSize.of(size));
 
 		assertThat(genreRankingPerformances).isNotNull();
@@ -106,7 +106,7 @@ class PerformanceRepositoryTest {
 	void getRankingPerformanceByGenre(Genre genre) {
 		int size = 10;
 		Range range = DateUnit.WEEK.getRangeCalculator().apply(LocalDate.now());
-		List<SimplePerformancePlaceDTO> genreRankingPerformances = performanceRepository.getGenreRankingPerformances(
+		List<SimplePerformancePlaceDTO> genreRankingPerformances = performanceRepository.findGenreRankingPerformances(
 			genre, range, GetPerformancesSize.of(size));
 
 		assertThat(genreRankingPerformances).isNotNull();

@@ -1,6 +1,6 @@
 package tback.kicketingback.performance.dto;
 
-public record SimplePlaceDTO(
+public record PlaceDTO(
 	Long id,
 	String name,
 	String address,

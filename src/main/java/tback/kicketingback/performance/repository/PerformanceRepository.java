@@ -14,10 +14,10 @@ import tback.kicketingback.performance.domain.QPlace;
 import tback.kicketingback.performance.domain.QReservation;
 import tback.kicketingback.performance.domain.type.Genre;
 import tback.kicketingback.performance.dto.GetPerformancesSize;
+import tback.kicketingback.performance.dto.PlaceDTO;
 import tback.kicketingback.performance.dto.Range;
 import tback.kicketingback.performance.dto.SimplePerformanceDTO;
 import tback.kicketingback.performance.dto.SimplePerformancePlaceDTO;
-import tback.kicketingback.performance.dto.SimplePlaceDTO;
 
 @Repository
 public class PerformanceRepository {
@@ -35,7 +35,7 @@ public class PerformanceRepository {
 		this.place = QPlace.place;
 	}
 
-	public List<SimplePerformancePlaceDTO> getGenreRankingPerformances(Genre genre, Range range,
+	public List<SimplePerformancePlaceDTO> findGenreRankingPerformances(Genre genre, Range range,
 		GetPerformancesSize getSize) {
 		int size = getSize.getAnInt();
 
@@ -47,7 +47,7 @@ public class PerformanceRepository {
 					performance.startDate,
 					performance.endDate,
 					performance.imageUrl),
-				Projections.constructor(SimplePlaceDTO.class,
+				Projections.constructor(PlaceDTO.class,
 					place.id,
 					place.name,
 					place.address,
@@ -65,7 +65,7 @@ public class PerformanceRepository {
 			.fetch();
 	}
 
-	public List<SimplePerformancePlaceDTO> getRankingPerformances(Range range, GetPerformancesSize getSize) {
+	public List<SimplePerformancePlaceDTO> findRankingPerformances(Range range, GetPerformancesSize getSize) {
 		int size = getSize.getAnInt();
 
 		return queryFactory.select(Projections.constructor(SimplePerformancePlaceDTO.class,
@@ -76,7 +76,7 @@ public class PerformanceRepository {
 					performance.startDate,
 					performance.endDate,
 					performance.imageUrl),
-				Projections.constructor(SimplePlaceDTO.class,
+				Projections.constructor(PlaceDTO.class,
 					place.id,
 					place.name,
 					place.address,

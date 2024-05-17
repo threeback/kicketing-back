@@ -31,13 +31,13 @@ public class PerformanceService {
 		GetPerformancesSize getPerformancesSize = GetPerformancesSize.of(getPerformancesRequest.size());
 
 		if (targetGenre.equals(Genre.NONE)) {
-			return performanceRepository.getRankingPerformances(
+			return performanceRepository.findRankingPerformances(
 				range,
 				getPerformancesSize
 			);
 		}
 
-		return performanceRepository.getGenreRankingPerformances(
+		return performanceRepository.findGenreRankingPerformances(
 			targetGenre,
 			range,
 			getPerformancesSize);
