@@ -1,6 +1,7 @@
 package tback.kicketingback.performance.repository;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
@@ -12,12 +13,17 @@ import tback.kicketingback.performance.domain.QOnStage;
 import tback.kicketingback.performance.domain.QPerformance;
 import tback.kicketingback.performance.domain.QPlace;
 import tback.kicketingback.performance.domain.QReservation;
+import tback.kicketingback.performance.domain.QStar;
+import tback.kicketingback.performance.domain.QStarsIn;
 import tback.kicketingback.performance.domain.type.Genre;
 import tback.kicketingback.performance.dto.GetPerformancesSize;
+import tback.kicketingback.performance.dto.PerformanceDTO;
+import tback.kicketingback.performance.dto.PerformancePlaceDTO;
 import tback.kicketingback.performance.dto.PlaceDTO;
 import tback.kicketingback.performance.dto.Range;
 import tback.kicketingback.performance.dto.SimplePerformanceDTO;
 import tback.kicketingback.performance.dto.SimplePerformancePlaceDTO;
+import tback.kicketingback.performance.dto.StarDTO;
 
 @Repository
 public class PerformanceRepository {
@@ -26,6 +32,8 @@ public class PerformanceRepository {
 	private final QOnStage onStage;
 	private final QReservation reservation;
 	private final QPlace place;
+	private final QStarsIn starsIn;
+	private final QStar star;
 
 	public PerformanceRepository(EntityManager em) {
 		this.queryFactory = new JPAQueryFactory(em);
@@ -33,6 +41,8 @@ public class PerformanceRepository {
 		this.onStage = QOnStage.onStage;
 		this.reservation = QReservation.reservation;
 		this.place = QPlace.place;
+		this.starsIn = QStarsIn.starsIn;
+		this.star = QStar.star;
 	}
 
 	public List<SimplePerformancePlaceDTO> findGenreRankingPerformances(Genre genre, Range range,
@@ -90,6 +100,42 @@ public class PerformanceRepository {
 			.groupBy(performance)
 			.orderBy(reservation.id.count().desc())
 			.limit(size)
+			.fetch();
+	}
+
+	public PerformancePlaceDTO findPerformanceAndPlaceInfo(UUID performanceUUID) {
+		return queryFactory.select(Projections.constructor(PerformancePlaceDTO.class,
+				Projections.constructor(PerformanceDTO.class,
+					performance.id,
+					performance.name,
+					performance.genre,
+					performance.length,
+					performance.startDate,
+					performance.endDate,
+					performance.ageLimit,
+					performance.imageUrl,
+					performance.place.id),
+				Projections.constructor(PlaceDTO.class,
+					place.id,
+					place.name,
+					place.address,
+					place.hall)))
+			.from(performance)
+			.join(place).on(performance.place.id.eq(place.id))
+			.where(performance.id.eq(performanceUUID))
+			.fetchOne();
+	}
+
+	public List<StarDTO> findStarsIn(UUID performanceUUID) {
+		return queryFactory.select(Projections.constructor(StarDTO.class,
+				star.id,
+				star.name,
+				star.birthdate,
+				star.sex,
+				star.imageURL))
+			.from(starsIn)
+			.join(star).on(star.id.eq(starsIn.star.id))
+			.where(starsIn.performance.id.eq(performanceUUID))
 			.fetch();
 	}
 }

@@ -9,9 +9,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Getter;
 import tback.kicketingback.performance.domain.type.Sex;
 
 @Entity
+@Getter
 public class Star {
 
 	@Id
