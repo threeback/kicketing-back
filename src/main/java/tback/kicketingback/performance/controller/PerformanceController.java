@@ -21,6 +21,7 @@ import tback.kicketingback.performance.dto.GetPerformancesRequest;
 import tback.kicketingback.performance.dto.GetPerformancesResponse;
 import tback.kicketingback.performance.dto.SimpleOnStageDTO;
 import tback.kicketingback.performance.dto.SimplePerformancePlaceDTO;
+import tback.kicketingback.performance.service.OnStageService;
 import tback.kicketingback.performance.service.PerformanceService;
 
 @RestController
@@ -30,6 +31,7 @@ import tback.kicketingback.performance.service.PerformanceService;
 public class PerformanceController {
 
 	private final PerformanceService performanceService;
+	private final OnStageService onStageService;
 
 	/**
 	 * @param genre(path variable): none[장르 지정 안함], concert, musical, classic, theater
@@ -55,12 +57,11 @@ public class PerformanceController {
 		return ResponseEntity.ok(performance);
 	}
 
-
 	@GetMapping("/performance/{uuid}/bookable-dates")
 	public ResponseEntity<?> getBookableDates(
 		@PathVariable("uuid") UUID performanceUUID,
 		@Valid @ModelAttribute GetBookableDatesRequest getBookableDatesRequest) {
-		List<SimpleOnStageDTO> bookableDates = performanceService.getBookableDates(performanceUUID,
+		List<SimpleOnStageDTO> bookableDates = onStageService.getBookableDates(performanceUUID,
 			getBookableDatesRequest);
 
 		GetBookableDatesResponse getBookableDatesResponse = new GetBookableDatesResponse(bookableDates);
