@@ -139,4 +139,12 @@ public class PerformanceRepositoryCustom {
 			.where(starsIn.performance.id.eq(performanceUUID))
 			.fetch();
 	}
+
+	public boolean findPerformance(UUID performanceUUID, Long onStageId) {
+		Long count = queryFactory.select(onStage.id.count())
+			.from(onStage)
+			.where(onStage.id.eq(onStageId).and(onStage.performance.id.eq(performanceUUID)))
+			.fetchOne();
+		return count > 0;
+	}
 }

@@ -11,6 +11,7 @@ import tback.kicketingback.performance.exception.exceptions.DuplicateSeatSelecti
 import tback.kicketingback.performance.exception.exceptions.InvalidGenreException;
 import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceDateUnitException;
 import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceSizeException;
+import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceUUIDException;
 
 @RestControllerAdvice
@@ -47,5 +48,10 @@ public class PerformanceExceptionHandler extends AbstractExceptionHandler {
 		AlreadySelectedSeatException exception) {
 		return getBadRequestResponseEntity(exception,
 			new AlreadySelectedSeatResponse(exception.getMessage(), exception.getSeatRowCol()));
+	}
+
+	@ExceptionHandler(InvalidPerformanceException.class)
+	public ResponseEntity<String> invalidPerformanceException(InvalidPerformanceException exception) {
+		return getBadRequestResponseEntity(exception, exception.getMessage());
 	}
 }
