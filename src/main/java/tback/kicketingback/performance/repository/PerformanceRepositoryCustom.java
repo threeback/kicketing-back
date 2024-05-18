@@ -27,7 +27,7 @@ import tback.kicketingback.performance.dto.SimplePerformancePlaceDTO;
 import tback.kicketingback.performance.dto.StarDTO;
 
 @Repository
-public class PerformanceRepository {
+public class PerformanceRepositoryCustom {
 	private final JPAQueryFactory queryFactory;
 	private final QPerformance performance;
 	private final QOnStage onStage;
@@ -36,7 +36,7 @@ public class PerformanceRepository {
 	private final QStarsIn starsIn;
 	private final QStar star;
 
-	public PerformanceRepository(EntityManager em) {
+	public PerformanceRepositoryCustom(EntityManager em) {
 		this.queryFactory = new JPAQueryFactory(em);
 		this.performance = QPerformance.performance;
 		this.onStage = QOnStage.onStage;
