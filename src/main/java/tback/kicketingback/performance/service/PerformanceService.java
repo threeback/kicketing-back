@@ -52,10 +52,8 @@ public class PerformanceService {
 	}
 
 	public DetailPerformanceDTO getPerformance(UUID performanceUUID) {
-		PerformancePlaceDTO performancePlaceDTO = performanceRepository.findPerformanceAndPlaceInfo(performanceUUID);
-		if (performancePlaceDTO == null) {
-			throw new InvalidPerformanceUUIDException(performanceUUID);
-		}
+		PerformancePlaceDTO performancePlaceDTO = performanceRepository.findPerformanceAndPlaceInfo(performanceUUID)
+			.orElseThrow(() -> new InvalidPerformanceUUIDException(performanceUUID));
 
 		List<SeatGradeDTO> seatGradeDTOS = seatGradeRepository.findSeatGradesByPerformanceId(performanceUUID).stream()
 			.map(seatGrade ->

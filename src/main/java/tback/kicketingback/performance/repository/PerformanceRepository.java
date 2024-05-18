@@ -1,6 +1,7 @@
 package tback.kicketingback.performance.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
@@ -103,8 +104,8 @@ public class PerformanceRepository {
 			.fetch();
 	}
 
-	public PerformancePlaceDTO findPerformanceAndPlaceInfo(UUID performanceUUID) {
-		return queryFactory.select(Projections.constructor(PerformancePlaceDTO.class,
+	public Optional<PerformancePlaceDTO> findPerformanceAndPlaceInfo(UUID performanceUUID) {
+		return Optional.ofNullable(queryFactory.select(Projections.constructor(PerformancePlaceDTO.class,
 				Projections.constructor(PerformanceDTO.class,
 					performance.id,
 					performance.name,
@@ -123,7 +124,7 @@ public class PerformanceRepository {
 			.from(performance)
 			.join(place).on(performance.place.id.eq(place.id))
 			.where(performance.id.eq(performanceUUID))
-			.fetchOne();
+			.fetchOne());
 	}
 
 	public List<StarDTO> findStarsIn(UUID performanceUUID) {
