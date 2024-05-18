@@ -8,6 +8,7 @@ import tback.kicketingback.global.exception.AbstractExceptionHandler;
 import tback.kicketingback.performance.exception.exceptions.InvalidGenreException;
 import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceDateUnitException;
 import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceSizeException;
+import tback.kicketingback.performance.exception.exceptions.InvalidOnStageIDException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceUUIDException;
 
 @RestControllerAdvice
@@ -31,6 +32,11 @@ public class PerformanceExceptionHandler extends AbstractExceptionHandler {
 
 	@ExceptionHandler(InvalidPerformanceUUIDException.class)
 	public ResponseEntity<String> invalidPerformanceUUIDException(InvalidPerformanceUUIDException exception) {
+		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(InvalidOnStageIDException.class)
+	public ResponseEntity<String> invalidOnStageIDException(InvalidOnStageIDException exception) {
 		return getBadRequestResponseEntity(exception, exception.getMessage());
 	}
 }
