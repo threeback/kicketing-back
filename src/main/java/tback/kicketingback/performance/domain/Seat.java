@@ -10,9 +10,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Getter;
 import tback.kicketingback.performance.domain.type.Grade;
 
 @Entity
+@Getter
 public class Seat {
 
 	@Id
