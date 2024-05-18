@@ -55,6 +55,7 @@ public class PerformanceController {
 		return ResponseEntity.ok(performance);
 	}
 
+
 	@GetMapping("/performance/{uuid}/bookable-dates")
 	public ResponseEntity<?> getBookableDates(
 		@PathVariable("uuid") UUID performanceUUID,
