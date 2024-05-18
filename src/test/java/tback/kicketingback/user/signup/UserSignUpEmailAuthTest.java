@@ -38,9 +38,10 @@ public class UserSignUpEmailAuthTest {
 	@Test
 	@DisplayName("이미 이메일 인증을 완료하면 예외를 던진다.")
 	public void 이미_이메일_인증_완료() {
-		EmailCodeRequest emailCodeRequest = new EmailCodeRequest(TEST_EMAIL);
+		String mail = "qwer1234@test.co.kr";
+		EmailCodeRequest emailCodeRequest = new EmailCodeRequest(mail);
 
-		signupRedisRepository.setValues(TEST_EMAIL, "access");
+		signupRedisRepository.setValues(mail, "access");
 
 		assertThatThrownBy(() -> signUpController.emailCode(emailCodeRequest))
 			.isInstanceOf(AlreadyEmailAuthCompleteException.class);

@@ -6,12 +6,25 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import tback.kicketingback.global.exception.AbstractExceptionHandler;
 import tback.kicketingback.performance.exception.exceptions.InvalidGenreException;
+import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceDateUnitException;
+import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceSizeException;
 
 @RestControllerAdvice
 public class PerformanceExceptionHandler extends AbstractExceptionHandler {
 
 	@ExceptionHandler(InvalidGenreException.class)
 	public ResponseEntity<String> invalidGenreException(InvalidGenreException exception) {
+		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(InvalidGetPerformanceDateUnitException.class)
+	public ResponseEntity<String> invalidGetPerformanceDateUnitException(
+		InvalidGetPerformanceDateUnitException exception) {
+		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(InvalidGetPerformanceSizeException.class)
+	public ResponseEntity<String> invalidGetPerformanceSizeException(InvalidGetPerformanceSizeException exception) {
 		return getBadRequestResponseEntity(exception, exception.getMessage());
 	}
 }
