@@ -11,6 +11,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import tback.kicketingback.performance.domain.QReservation;
 import tback.kicketingback.performance.domain.QSeat;
+import tback.kicketingback.performance.dto.SeatReservationDTO;
 import tback.kicketingback.performance.dto.SimpleSeatDTO;
 import tback.kicketingback.user.domain.QUser;
 
@@ -39,6 +40,15 @@ public class ReservationRepositoryCustom {
 			.where(reservation.onStage.id.eq(onStageId)
 				.and(reservation.user.id.isNull()
 					.or(seat.lockExpiredTime.before(LocalDateTime.now()).and(reservation.orderNumber.isNull()))))
+			.fetch();
+	}
+
+	public List<SeatReservationDTO> findSeats(List<Long> seatsIds) {
+		return queryFactory.select(Projections.constructor(SeatReservationDTO.class,
+				seat, reservation))
+			.from(reservation)
+			.join(seat).on(reservation.seat.id.eq(seat.id)
+				.and(seat.id.in(seatsIds)))
 			.fetch();
 	}
 }
