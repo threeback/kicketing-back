@@ -14,7 +14,7 @@ import tback.kicketingback.performance.dto.DetailPerformanceDTO;
 import tback.kicketingback.performance.dto.GetBookableDatesRequest;
 import tback.kicketingback.performance.dto.GetPerformancesRequest;
 import tback.kicketingback.performance.dto.GetPerformancesSize;
-import tback.kicketingback.performance.dto.OnStageDTO;
+import tback.kicketingback.performance.dto.SimpleOnStageDTO;
 import tback.kicketingback.performance.dto.PerformancePlaceDTO;
 import tback.kicketingback.performance.dto.Range;
 import tback.kicketingback.performance.dto.SeatGradeDTO;
@@ -73,14 +73,14 @@ public class PerformanceService {
 			seatGradeDTOS, starsDTOS);
 	}
 
-	public List<OnStageDTO> getBookableDates(UUID performanceUUID, GetBookableDatesRequest getBookableDatesRequest) {
+	public List<SimpleOnStageDTO> getBookableDates(UUID performanceUUID, GetBookableDatesRequest getBookableDatesRequest) {
 		List<OnStage> onStages = onStageRepository.findByPerformance_IdAndDateTimeBetween(
 			performanceUUID,
 			getBookableDatesRequest.startDate().atStartOfDay(),
 			getBookableDatesRequest.endDate().atStartOfDay()
 		);
 		return onStages.stream()
-			.map(onStage -> new OnStageDTO(onStage.getId(), onStage.getDateTime().toLocalDate(), onStage.getRound()))
+			.map(onStage -> new SimpleOnStageDTO(onStage.getId(), onStage.getDateTime().toLocalDate(), onStage.getRound()))
 			.toList();
 	}
 }
