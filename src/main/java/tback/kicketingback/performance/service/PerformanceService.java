@@ -17,6 +17,7 @@ import tback.kicketingback.performance.dto.Range;
 import tback.kicketingback.performance.dto.SeatGradeDTO;
 import tback.kicketingback.performance.dto.SimplePerformancePlaceDTO;
 import tback.kicketingback.performance.dto.StarDTO;
+import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceUUIDException;
 import tback.kicketingback.performance.repository.PerformanceRepository;
 import tback.kicketingback.performance.repository.SeatGradeRepository;
 
@@ -52,6 +53,10 @@ public class PerformanceService {
 
 	public DetailPerformanceDTO getPerformance(UUID performanceUUID) {
 		PerformancePlaceDTO performancePlaceDTO = performanceRepository.findPerformanceAndPlaceInfo(performanceUUID);
+		if (performancePlaceDTO == null) {
+			throw new InvalidPerformanceUUIDException(performanceUUID);
+		}
+
 		List<SeatGradeDTO> seatGradeDTOS = seatGradeRepository.findSeatGradesByPerformanceId(performanceUUID).stream()
 			.map(seatGrade ->
 				new SeatGradeDTO(seatGrade.getId(),
