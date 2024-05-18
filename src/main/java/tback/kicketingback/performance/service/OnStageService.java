@@ -11,6 +11,7 @@ import tback.kicketingback.performance.dto.DateUnit;
 import tback.kicketingback.performance.dto.GetBookableDatesRequest;
 import tback.kicketingback.performance.dto.Range;
 import tback.kicketingback.performance.dto.SimpleOnStageDTO;
+import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceUUIDException;
 import tback.kicketingback.performance.repository.OnStageRepository;
 
 @Service
@@ -28,6 +29,10 @@ public class OnStageService {
 			range.start().atStartOfDay(),
 			range.end().atStartOfDay()
 		);
+
+		if (onStages.isEmpty()) {
+			throw new InvalidPerformanceUUIDException(performanceUUID);
+		}
 
 		return onStages.stream()
 			.map(this::convertToSimpleOnStageDTO)
