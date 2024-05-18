@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.performance.dto.DetailPerformanceDTO;
+import tback.kicketingback.performance.dto.GetBookableDatesRequest;
+import tback.kicketingback.performance.dto.GetBookableDatesResponse;
 import tback.kicketingback.performance.dto.GetPerformancesRequest;
 import tback.kicketingback.performance.dto.GetPerformancesResponse;
+import tback.kicketingback.performance.dto.OnStageDTO;
 import tback.kicketingback.performance.dto.SimplePerformancePlaceDTO;
 import tback.kicketingback.performance.service.PerformanceService;
 
@@ -50,5 +53,16 @@ public class PerformanceController {
 		DetailPerformanceDTO performance = performanceService.getPerformance(performanceUUID);
 
 		return ResponseEntity.ok(performance);
+	}
+
+	@GetMapping("/performance/{uuid}/bookable-dates")
+	public ResponseEntity<?> getBookableDates(
+		@PathVariable("uuid") UUID performanceUUID,
+		@Valid @ModelAttribute GetBookableDatesRequest getBookableDatesRequest) {
+		List<OnStageDTO> bookableDates = performanceService.getBookableDates(performanceUUID,
+			getBookableDatesRequest);
+
+		GetBookableDatesResponse getBookableDatesResponse = new GetBookableDatesResponse(bookableDates);
+		return ResponseEntity.ok(getBookableDatesResponse);
 	}
 }
