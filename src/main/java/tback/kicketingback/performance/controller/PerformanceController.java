@@ -2,6 +2,7 @@ package tback.kicketingback.performance.controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.performance.dto.DetailPerformanceDTO;
 import tback.kicketingback.performance.dto.GetPerformancesRequest;
@@ -45,9 +45,10 @@ public class PerformanceController {
 
 	@GetMapping("/performance/{uuid}")
 	public ResponseEntity<DetailPerformanceDTO> getPerformance(
-		@PathVariable("uuid") @Size(min = 36, max = 36, message = "유효하지 않은 공연 uuid") String performanceUUID) {
+		@PathVariable("uuid") UUID performanceUUID
+	) {
 		DetailPerformanceDTO performance = performanceService.getPerformance(performanceUUID);
-		
+
 		return ResponseEntity.ok(performance);
 	}
 }

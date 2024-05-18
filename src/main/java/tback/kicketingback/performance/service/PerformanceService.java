@@ -50,18 +50,16 @@ public class PerformanceService {
 			getPerformancesSize);
 	}
 
-	public DetailPerformanceDTO getPerformance(String performanceUUID) {
-		UUID uuid = UUID.fromString(performanceUUID);
-
-		PerformancePlaceDTO performancePlaceDTO = performanceRepository.findPerformanceAndPlaceInfo(uuid);
-		List<SeatGradeDTO> seatGradeDTOS = seatGradeRepository.findSeatGradesByPerformanceId(uuid).stream()
+	public DetailPerformanceDTO getPerformance(UUID performanceUUID) {
+		PerformancePlaceDTO performancePlaceDTO = performanceRepository.findPerformanceAndPlaceInfo(performanceUUID);
+		List<SeatGradeDTO> seatGradeDTOS = seatGradeRepository.findSeatGradesByPerformanceId(performanceUUID).stream()
 			.map(seatGrade ->
 				new SeatGradeDTO(seatGrade.getId(),
 					seatGrade.getPerformance().getId(),
 					seatGrade.getGrade(),
 					seatGrade.getPrice()))
 			.toList();
-		List<StarDTO> starsDTOS = performanceRepository.findStarsIn(uuid);
+		List<StarDTO> starsDTOS = performanceRepository.findStarsIn(performanceUUID);
 
 		return new DetailPerformanceDTO(
 			performancePlaceDTO.performanceDTO(),
