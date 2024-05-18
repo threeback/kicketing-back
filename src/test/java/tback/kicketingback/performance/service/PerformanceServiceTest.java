@@ -54,8 +54,8 @@ class PerformanceServiceTest {
 		List<SimpleOnStageDTO> simpleOnStageDTOS = performanceService.getBookableDates(performanceUUID, new GetBookableDatesRequest(startDate));
 
 		for (SimpleOnStageDTO dto : simpleOnStageDTOS) {
-			assertThat(dto.dateTime()).isAfterOrEqualTo(startDate);
-			assertThat(dto.dateTime()).isBeforeOrEqualTo(endDate);
+			assertThat(dto.dateTime()).isAfterOrEqualTo(startDate.atStartOfDay());
+			assertThat(dto.dateTime()).isBeforeOrEqualTo(endDate.atStartOfDay());
 		}
 	}
 }

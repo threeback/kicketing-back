@@ -94,7 +94,7 @@ public class PerformanceService {
 	private SimpleOnStageDTO convertToSimpleOnStageDTO(OnStage onStage) {
 		return new SimpleOnStageDTO(
 			onStage.getId(),
-			onStage.getDateTime().toLocalDate(),
+			onStage.getDateTime(),
 			onStage.getRound()
 		);
 	}
