@@ -22,14 +22,14 @@ import tback.kicketingback.performance.dto.SimplePerformancePlaceDTO;
 import tback.kicketingback.performance.dto.StarDTO;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceUUIDException;
 import tback.kicketingback.performance.repository.OnStageRepository;
-import tback.kicketingback.performance.repository.PerformanceRepository;
+import tback.kicketingback.performance.repository.PerformanceRepositoryCustom;
 import tback.kicketingback.performance.repository.SeatGradeRepository;
 
 @Service
 @RequiredArgsConstructor
 public class PerformanceService {
 
-	private final PerformanceRepository performanceRepository;
+	private final PerformanceRepositoryCustom performanceRepositoryCustom;
 	private final SeatGradeRepository seatGradeRepository;
 	private final OnStageRepository onStageRepository;
 
@@ -44,20 +44,20 @@ public class PerformanceService {
 		GetPerformancesSize getPerformancesSize = GetPerformancesSize.of(getPerformancesRequest.size());
 
 		if (targetGenre.equals(Genre.NONE)) {
-			return performanceRepository.findRankingPerformances(
+			return performanceRepositoryCustom.findRankingPerformances(
 				range,
 				getPerformancesSize
 			);
 		}
 
-		return performanceRepository.findGenreRankingPerformances(
+		return performanceRepositoryCustom.findGenreRankingPerformances(
 			targetGenre,
 			range,
 			getPerformancesSize);
 	}
 
 	public DetailPerformanceDTO getPerformance(UUID performanceUUID) {
-		PerformancePlaceDTO performancePlaceDTO = performanceRepository.findPerformanceAndPlaceInfo(performanceUUID)
+		PerformancePlaceDTO performancePlaceDTO = performanceRepositoryCustom.findPerformanceAndPlaceInfo(performanceUUID)
 			.orElseThrow(() -> new InvalidPerformanceUUIDException(performanceUUID));
 
 		List<SeatGradeDTO> seatGradeDTOS = seatGradeRepository.findSeatGradesByPerformanceId(performanceUUID).stream()
@@ -67,7 +67,7 @@ public class PerformanceService {
 					seatGrade.getGrade(),
 					seatGrade.getPrice()))
 			.toList();
-		List<StarDTO> starsDTOS = performanceRepository.findStarsIn(performanceUUID);
+		List<StarDTO> starsDTOS = performanceRepositoryCustom.findStarsIn(performanceUUID);
 
 		return new DetailPerformanceDTO(
 			performancePlaceDTO.performanceDTO(),
