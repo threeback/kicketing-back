@@ -1,10 +1,10 @@
 package tback.kicketingback.performance.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record SimpleOnStageDTO(
 	Long id,
-	LocalDate dateTime,
+	LocalDateTime dateTime,
 	int round
 ) {
 }
