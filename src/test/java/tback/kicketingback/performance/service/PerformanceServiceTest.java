@@ -1,7 +1,11 @@
 package tback.kicketingback.performance.service;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +15,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import tback.kicketingback.performance.dto.GetBookableDatesRequest;
 import tback.kicketingback.performance.dto.GetPerformancesRequest;
+import tback.kicketingback.performance.dto.SimpleOnStageDTO;
 import tback.kicketingback.performance.dto.SimplePerformancePlaceDTO;
 
 @SpringBootTest
@@ -26,7 +32,7 @@ class PerformanceServiceTest {
 		List<SimplePerformancePlaceDTO> simplePerformancePlaceDTOS = performanceService.getPerformances("none",
 			new GetPerformancesRequest("day", 10), LocalDate.now());
 
-		Assertions.assertThat(simplePerformancePlaceDTOS.size()).isGreaterThanOrEqualTo(0);
+		assertThat(simplePerformancePlaceDTOS.size()).isGreaterThanOrEqualTo(0);
 	}
 
 	@ParameterizedTest
@@ -36,6 +42,22 @@ class PerformanceServiceTest {
 		List<SimplePerformancePlaceDTO> simplePerformancePlaceDTOS = performanceService.getPerformances(GenreName,
 			new GetPerformancesRequest("day", 10), LocalDate.now());
 
-		Assertions.assertThat(simplePerformancePlaceDTOS.size()).isGreaterThanOrEqualTo(0);
+		assertThat(simplePerformancePlaceDTOS.size()).isGreaterThanOrEqualTo(0);
+	}
+
+	@Test
+	@DisplayName("[정상] UUID로 예매 가능한 공연 날짜 제공")
+	void getBookableDates() {
+		UUID performanceUUID = UUID.fromString("069939e9-dfed-46b5-832e-996cd737584a");
+		LocalDate startDate = LocalDate.of(2024, 5, 1);
+		LocalDate endDate = LocalDate.of(2024, 6, 1);
+		GetBookableDatesRequest request = new GetBookableDatesRequest(startDate, endDate);
+		List<SimpleOnStageDTO> simpleOnStageDTOS = performanceService.getBookableDates(performanceUUID, request);
+
+		for (SimpleOnStageDTO dto : simpleOnStageDTOS) {
+			assertThat(dto.dateTime()).isAfterOrEqualTo(startDate);
+			assertThat(dto.dateTime()).isBeforeOrEqualTo(endDate);
+		}
 	}
 }
+
