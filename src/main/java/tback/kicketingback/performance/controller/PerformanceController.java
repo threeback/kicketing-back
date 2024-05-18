@@ -19,7 +19,7 @@ import tback.kicketingback.performance.dto.GetBookableDatesRequest;
 import tback.kicketingback.performance.dto.GetBookableDatesResponse;
 import tback.kicketingback.performance.dto.GetPerformancesRequest;
 import tback.kicketingback.performance.dto.GetPerformancesResponse;
-import tback.kicketingback.performance.dto.OnStageDTO;
+import tback.kicketingback.performance.dto.SimpleOnStageDTO;
 import tback.kicketingback.performance.dto.SimplePerformancePlaceDTO;
 import tback.kicketingback.performance.service.PerformanceService;
 
@@ -59,7 +59,7 @@ public class PerformanceController {
 	public ResponseEntity<?> getBookableDates(
 		@PathVariable("uuid") UUID performanceUUID,
 		@Valid @ModelAttribute GetBookableDatesRequest getBookableDatesRequest) {
-		List<OnStageDTO> bookableDates = performanceService.getBookableDates(performanceUUID,
+		List<SimpleOnStageDTO> bookableDates = performanceService.getBookableDates(performanceUUID,
 			getBookableDatesRequest);
 
 		GetBookableDatesResponse getBookableDatesResponse = new GetBookableDatesResponse(bookableDates);
