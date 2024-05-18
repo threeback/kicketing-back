@@ -57,7 +57,8 @@ public class PerformanceService {
 	}
 
 	public DetailPerformanceDTO getPerformance(UUID performanceUUID) {
-		PerformancePlaceDTO performancePlaceDTO = performanceRepositoryCustom.findPerformanceAndPlaceInfo(performanceUUID)
+		PerformancePlaceDTO performancePlaceDTO = performanceRepositoryCustom.findPerformanceAndPlaceInfo(
+				performanceUUID)
 			.orElseThrow(() -> new InvalidPerformanceUUIDException(performanceUUID));
 
 		List<SeatGradeDTO> seatGradeDTOS = seatGradeRepository.findSeatGradesByPerformanceId(performanceUUID).stream()
@@ -75,14 +76,26 @@ public class PerformanceService {
 			seatGradeDTOS, starsDTOS);
 	}
 
-	public List<SimpleOnStageDTO> getBookableDates(UUID performanceUUID, GetBookableDatesRequest getBookableDatesRequest) {
+	public List<SimpleOnStageDTO> getBookableDates(UUID performanceUUID,
+		GetBookableDatesRequest getBookableDatesRequest) {
+		Range range = DateUnit.of("month").getRangeCalculator().apply(getBookableDatesRequest.startDate());
+
 		List<OnStage> onStages = onStageRepository.findByPerformance_IdAndDateTimeBetween(
 			performanceUUID,
-			getBookableDatesRequest.startDate().atStartOfDay(),
-			getBookableDatesRequest.endDate().atStartOfDay()
+			range.start().atStartOfDay(),
+			range.end().atStartOfDay()
 		);
+
 		return onStages.stream()
-			.map(onStage -> new SimpleOnStageDTO(onStage.getId(), onStage.getDateTime().toLocalDate(), onStage.getRound()))
+			.map(this::convertToSimpleOnStageDTO)
 			.toList();
+	}
+
+	private SimpleOnStageDTO convertToSimpleOnStageDTO(OnStage onStage) {
+		return new SimpleOnStageDTO(
+			onStage.getId(),
+			onStage.getDateTime().toLocalDate(),
+			onStage.getRound()
+		);
 	}
 }

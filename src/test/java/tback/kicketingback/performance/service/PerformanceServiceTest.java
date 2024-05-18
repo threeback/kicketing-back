@@ -50,9 +50,8 @@ class PerformanceServiceTest {
 	void getBookableDates() {
 		UUID performanceUUID = UUID.fromString("069939e9-dfed-46b5-832e-996cd737584a");
 		LocalDate startDate = LocalDate.of(2024, 5, 1);
-		LocalDate endDate = LocalDate.of(2024, 6, 1);
-		GetBookableDatesRequest request = new GetBookableDatesRequest(startDate, endDate);
-		List<SimpleOnStageDTO> simpleOnStageDTOS = performanceService.getBookableDates(performanceUUID, request);
+		LocalDate endDate = LocalDate.of(2024, 5, 31);
+		List<SimpleOnStageDTO> simpleOnStageDTOS = performanceService.getBookableDates(performanceUUID, new GetBookableDatesRequest(startDate));
 
 		for (SimpleOnStageDTO dto : simpleOnStageDTOS) {
 			assertThat(dto.dateTime()).isAfterOrEqualTo(startDate);
