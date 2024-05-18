@@ -73,27 +73,4 @@ public class PerformanceService {
 			performancePlaceDTO.placeDTO(),
 			seatGradeDTOS, starsDTOS);
 	}
-
-	public List<SimpleOnStageDTO> getBookableDates(UUID performanceUUID,
-		GetBookableDatesRequest getBookableDatesRequest) {
-		Range range = DateUnit.of("month").getRangeCalculator().apply(getBookableDatesRequest.startDate());
-
-		List<OnStage> onStages = onStageRepository.findByPerformance_IdAndDateTimeBetween(
-			performanceUUID,
-			range.start().atStartOfDay(),
-			range.end().atStartOfDay()
-		);
-
-		return onStages.stream()
-			.map(this::convertToSimpleOnStageDTO)
-			.toList();
-	}
-
-	private SimpleOnStageDTO convertToSimpleOnStageDTO(OnStage onStage) {
-		return new SimpleOnStageDTO(
-			onStage.getId(),
-			onStage.getDateTime(),
-			onStage.getRound()
-		);
-	}
 }
