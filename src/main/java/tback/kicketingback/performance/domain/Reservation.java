@@ -53,6 +53,9 @@ public class Reservation {
 	@Column
 	@Enumerated(EnumType.STRING)
 	private DiscountType discountType;
+	
+	@Column
+	private LocalDateTime lockExpiredTime;
 
 	protected Reservation() {
 	}

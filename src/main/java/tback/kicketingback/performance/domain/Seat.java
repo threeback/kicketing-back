@@ -1,7 +1,5 @@
 package tback.kicketingback.performance.domain;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -34,9 +32,6 @@ public class Seat {
 
 	@Column(nullable = false)
 	private int seatCol;
-
-	@Column
-	private LocalDateTime lockExpiredTime;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "place_id", nullable = false)
