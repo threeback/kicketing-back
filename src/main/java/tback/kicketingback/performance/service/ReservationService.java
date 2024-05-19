@@ -35,7 +35,7 @@ public class ReservationService {
 	private final PerformanceRepositoryCustom performanceRepositoryCustom;
 
 	public GetSeatInfoResponse getSeatInfo(UUID performanceUUID, Long onStageId) {
-		if (performanceRepositoryCustom.findPerformance(performanceUUID, onStageId)) {
+		if (!performanceRepositoryCustom.isExistPerformance(performanceUUID, onStageId)) {
 			throw new InvalidPerformanceException();
 		}
 		List<SimpleSeatDTO> onStageSeats = reservationRepositoryCustom.findOnStageSeats(onStageId)

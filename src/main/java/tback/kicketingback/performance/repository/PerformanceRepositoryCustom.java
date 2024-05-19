@@ -140,7 +140,7 @@ public class PerformanceRepositoryCustom {
 			.fetch();
 	}
 
-	public boolean findPerformance(UUID performanceUUID, Long onStageId) {
+	public boolean isExistPerformance(UUID performanceUUID, Long onStageId) {
 		Long count = queryFactory.select(onStage.id.count())
 			.from(onStage)
 			.where(onStage.id.eq(onStageId).and(onStage.performance.id.eq(performanceUUID)))
