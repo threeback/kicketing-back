@@ -1,11 +1,14 @@
 package tback.kicketingback.performance.repository;
 
+import static tback.kicketingback.performance.domain.QOnStage.*;
+
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.persistence.EntityManager;
@@ -30,11 +33,16 @@ public class ReservationRepositoryCustom {
 		List<SeatGradeCount> gradeCountList = queryFactory
 			.select(Projections.constructor(SeatGradeCount.class,
 				seat.grade,
-				reservation.id.count()))
-			.from(reservation)
-			.join(reservation.seat, seat)
-			.where(reservation.onStage.id.eq(onStageId)
-				.and(reservation.orderNumber.isNull()))
+				reservation.id.count().coalesce(0L)))
+			.from(seat)
+			.leftJoin(reservation).on(
+				reservation.seat.id.eq(seat.id)
+					.and(reservation.onStage.id.eq(onStageId))
+					.and(reservation.orderNumber.isNull().or(reservation.orderNumber.isNull())))
+			.where(JPAExpressions.selectOne()
+				.from(onStage)
+				.where(onStage.id.eq(onStageId))
+				.exists())
 			.groupBy(seat.grade)
 			.fetch();
 
