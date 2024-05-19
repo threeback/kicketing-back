@@ -37,12 +37,13 @@ public class ReservationController {
 		return ResponseEntity.ok(seatInfo);
 	}
 
-	@PostMapping
+	@PostMapping("/{onStageId}")
 	public ResponseEntity<Void> lockOnStageSeats(
 		@JwtLogin User user,
+		@PathVariable("onStageId") Long onStageId,
 		@RequestBody @Valid LockOnStageSeatsRequest lockOnStageSeatsRequest
 	) {
-		reservationService.lockSeats(lockOnStageSeatsRequest.seatIds(), user);
+		reservationService.lockSeats(onStageId, lockOnStageSeatsRequest.seatIds(), user);
 		return ResponseEntity.ok().build();
 	}
 }

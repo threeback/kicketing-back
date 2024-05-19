@@ -53,8 +53,9 @@ public class ReservationService {
 	}
 
 	@Transactional(isolation = Isolation.SERIALIZABLE)
-	public void lockSeats(List<Long> seatIds, User user) {
-		List<SeatReservationDTO> seatReservationDTOS = reservationRepositoryCustom.findSeats(seatIds);
+	public void lockSeats(Long onStageId, List<Long> seatIds, User user) {
+		List<SeatReservationDTO> seatReservationDTOS = reservationRepositoryCustom.findSeats(onStageId, seatIds);
+		System.out.println("seatReservationDTOS = " + seatReservationDTOS);
 
 		if (seatIds.size() != seatReservationDTOS.size()) {
 			throw new InvalidSeatIdException();
@@ -63,14 +64,16 @@ public class ReservationService {
 
 		seatReservationDTOS.forEach(seatReservationDTO -> {
 			seatReservationDTO.reservation().setUser(user);
-			seatReservationDTO.seat().setLockExpiredTime(LocalDateTime.now().plusMinutes(lockTime));
+			seatReservationDTO.reservation().setLockExpiredTime(LocalDateTime.now().plusMinutes(lockTime));
 		});
 	}
 
 	private void checkSelected(List<SeatReservationDTO> seatReservationDTOS) {
 		List<Seat> reservedSeats = seatReservationDTOS.stream()
 			.filter(seatReservationDTO -> seatReservationDTO.reservation().getOrderNumber() != null ||
-				(seatReservationDTO.seat().getLockExpiredTime().isAfter(LocalDateTime.now())))
+				(seatReservationDTO.reservation().getUser().getId() != null &&
+					(seatReservationDTO.reservation().getLockExpiredTime() != null &&
+						seatReservationDTO.reservation().getLockExpiredTime().isAfter(LocalDateTime.now()))))
 			.map(SeatReservationDTO::seat)
 			.toList();
 		if (!reservedSeats.isEmpty()) {

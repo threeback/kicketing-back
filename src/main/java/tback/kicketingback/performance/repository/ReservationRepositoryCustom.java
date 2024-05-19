@@ -39,19 +39,22 @@ public class ReservationRepositoryCustom {
 			.from(reservation)
 			.join(seat).on(reservation.seat.id.eq(seat.id))
 			.where(reservation.onStage.id.eq(onStageId)
-				.and(reservation.user.id.isNull()
-					.or(seat.lockExpiredTime.before(LocalDateTime.now()).and(reservation.orderNumber.isNull()))))
+				.and(reservation.orderNumber.isNull()
+					.and(reservation.user.id.isNull()
+						.or(reservation.lockExpiredTime.isNotNull()
+							.and(reservation.lockExpiredTime.before(LocalDateTime.now()))))))
 			.fetch();
 		return Optional.ofNullable(seatDTOS.isEmpty() ? null : seatDTOS);
 	}
 
-	public List<SeatReservationDTO> findSeats(List<Long> seatsIds) {
+	public List<SeatReservationDTO> findSeats(Long onStageId, List<Long> seatsIds) {
 		return queryFactory.select(
 				Projections.constructor(SeatReservationDTO.class,
 					seat, reservation))
 			.from(reservation)
 			.join(seat).on(reservation.seat.id.eq(seat.id)
 				.and(seat.id.in(seatsIds)))
+			.where(reservation.onStage.id.eq(onStageId))
 			.fetch();
 	}
 }
