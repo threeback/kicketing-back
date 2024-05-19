@@ -4,9 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.hibernate.annotations.Comment;
-import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.UuidGenerator;
-import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -53,6 +51,9 @@ public class Reservation {
 	@Column
 	@Enumerated(EnumType.STRING)
 	private DiscountType discountType;
+	
+	@Column
+	private LocalDateTime lockExpiredTime;
 
 	protected Reservation() {
 	}
