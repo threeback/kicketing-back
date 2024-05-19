@@ -13,6 +13,8 @@ import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanc
 import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceSizeException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceUUIDException;
+import tback.kicketingback.performance.exception.exceptions.InvalidSeatIdException;
+import tback.kicketingback.performance.exception.exceptions.NoAvailableSeatsException;
 
 @RestControllerAdvice
 public class PerformanceExceptionHandler extends AbstractExceptionHandler {
@@ -52,6 +54,16 @@ public class PerformanceExceptionHandler extends AbstractExceptionHandler {
 
 	@ExceptionHandler(InvalidPerformanceException.class)
 	public ResponseEntity<String> invalidPerformanceException(InvalidPerformanceException exception) {
+		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(NoAvailableSeatsException.class)
+	public ResponseEntity<String> noAvailableSeatsException(NoAvailableSeatsException exception) {
+		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(InvalidSeatIdException.class)
+	public ResponseEntity<String> invalidSeatIdException(InvalidSeatIdException exception) {
 		return getBadRequestResponseEntity(exception, exception.getMessage());
 	}
 }

@@ -18,7 +18,7 @@ public class AlreadySelectedSeatException extends RuntimeException {
 
 	public static AlreadySelectedSeatException of(List<Seat> seats) {
 		List<SeatRowCol> rowCols = seats.stream()
-			.map(seat -> new SeatRowCol(seat.getSeatRow(), seat.getSeatCol()))
+			.map(seat -> new SeatRowCol(seat.getSeatCol(), seat.getSeatRow()))
 			.toList();
 		return new AlreadySelectedSeatException(rowCols);
 	}

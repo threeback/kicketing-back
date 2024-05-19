@@ -17,6 +17,8 @@ import tback.kicketingback.performance.dto.SeatReservationDTO;
 import tback.kicketingback.performance.dto.SimpleSeatDTO;
 import tback.kicketingback.performance.exception.exceptions.AlreadySelectedSeatException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceException;
+import tback.kicketingback.performance.exception.exceptions.InvalidSeatIdException;
+import tback.kicketingback.performance.exception.exceptions.NoAvailableSeatsException;
 import tback.kicketingback.performance.repository.PerformanceRepositoryCustom;
 import tback.kicketingback.performance.repository.ReservationRepositoryCustom;
 import tback.kicketingback.performance.repository.SeatGradeRepository;
@@ -36,7 +38,8 @@ public class ReservationService {
 		if (performanceRepositoryCustom.findPerformance(performanceUUID, onStageId)) {
 			throw new InvalidPerformanceException();
 		}
-		List<SimpleSeatDTO> onStageSeats = reservationRepositoryCustom.findOnStageSeats(onStageId);
+		List<SimpleSeatDTO> onStageSeats = reservationRepositoryCustom.findOnStageSeats(onStageId)
+			.orElseThrow(NoAvailableSeatsException::new);
 
 		List<SeatGradeDTO> seatGradeDTOS = seatGradeRepository.findSeatGradesByPerformanceId(performanceUUID).stream()
 			.map(seatGrade ->
@@ -53,6 +56,9 @@ public class ReservationService {
 	public void lockSeats(List<Long> seatIds, User user) {
 		List<SeatReservationDTO> seatReservationDTOS = reservationRepositoryCustom.findSeats(seatIds);
 
+		if (seatIds.size() != seatReservationDTOS.size()) {
+			throw new InvalidSeatIdException();
+		}
 		checkSelected(seatReservationDTOS);
 
 		seatReservationDTOS.forEach(seatReservationDTO -> {

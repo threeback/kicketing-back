@@ -2,6 +2,7 @@ package tback.kicketingback.performance.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -29,8 +30,8 @@ public class ReservationRepositoryCustom {
 		this.user = QUser.user;
 	}
 
-	public List<SimpleSeatDTO> findOnStageSeats(Long onStageId) {
-		return queryFactory.select(Projections.constructor(SimpleSeatDTO.class,
+	public Optional<List<SimpleSeatDTO>> findOnStageSeats(Long onStageId) {
+		List<SimpleSeatDTO> seatDTOS = queryFactory.select(Projections.constructor(SimpleSeatDTO.class,
 				seat.id,
 				seat.grade,
 				seat.seatRow,
@@ -41,11 +42,13 @@ public class ReservationRepositoryCustom {
 				.and(reservation.user.id.isNull()
 					.or(seat.lockExpiredTime.before(LocalDateTime.now()).and(reservation.orderNumber.isNull()))))
 			.fetch();
+		return Optional.ofNullable(seatDTOS.isEmpty() ? null : seatDTOS);
 	}
 
 	public List<SeatReservationDTO> findSeats(List<Long> seatsIds) {
-		return queryFactory.select(Projections.constructor(SeatReservationDTO.class,
-				seat, reservation))
+		return queryFactory.select(
+				Projections.constructor(SeatReservationDTO.class,
+					seat, reservation))
 			.from(reservation)
 			.join(seat).on(reservation.seat.id.eq(seat.id)
 				.and(seat.id.in(seatsIds)))
