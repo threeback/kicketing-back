@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.auth.jwt.JwtLogin;
+import tback.kicketingback.performance.dto.MyReservationsResponse;
 import tback.kicketingback.user.domain.User;
 import tback.kicketingback.user.dto.request.AddressRequest;
 import tback.kicketingback.user.dto.request.InformRequest;
@@ -28,6 +29,14 @@ public class UserController {
 	public ResponseEntity<UserResponse> getUser(@JwtLogin User user) {
 
 		return ResponseEntity.ok(UserResponse.of(user));
+	}
+
+	@GetMapping("/my-reservation/all")
+	public ResponseEntity<MyReservationsResponse> getMyReservationAll(@JwtLogin User user) {
+
+		MyReservationsResponse myReservations = new MyReservationsResponse(userService.myReservations(user.getId()));
+
+		return ResponseEntity.ok(myReservations);
 	}
 
 	@PatchMapping("/new-address")
