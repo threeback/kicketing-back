@@ -11,4 +11,6 @@ import tback.kicketingback.performance.domain.OnStage;
 public interface OnStageRepository extends JpaRepository<OnStage, Long> {
 
 	List<OnStage> findByPerformance_IdAndDateTimeBetween(UUID id, LocalDateTime startDate, LocalDateTime endDate);
+
+	boolean existsByPerformance_Id(UUID performanceUUID);
 }
