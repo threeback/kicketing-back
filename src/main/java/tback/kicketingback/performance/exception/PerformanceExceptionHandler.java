@@ -5,10 +5,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import tback.kicketingback.global.exception.AbstractExceptionHandler;
+import tback.kicketingback.performance.dto.AlreadySelectedSeatResponse;
+import tback.kicketingback.performance.exception.exceptions.AlreadySelectedSeatException;
+import tback.kicketingback.performance.exception.exceptions.DuplicateSeatSelectionException;
 import tback.kicketingback.performance.exception.exceptions.InvalidGenreException;
 import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceDateUnitException;
 import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceSizeException;
+import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceUUIDException;
+import tback.kicketingback.performance.exception.exceptions.InvalidSeatIdException;
+import tback.kicketingback.performance.exception.exceptions.NoAvailableSeatsException;
 
 @RestControllerAdvice
 public class PerformanceExceptionHandler extends AbstractExceptionHandler {
@@ -31,6 +37,33 @@ public class PerformanceExceptionHandler extends AbstractExceptionHandler {
 
 	@ExceptionHandler(InvalidPerformanceUUIDException.class)
 	public ResponseEntity<String> invalidPerformanceUUIDException(InvalidPerformanceUUIDException exception) {
+		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(DuplicateSeatSelectionException.class)
+	public ResponseEntity<String> duplicateSeatSelectionException(DuplicateSeatSelectionException exception) {
+		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(AlreadySelectedSeatException.class)
+	public ResponseEntity<AlreadySelectedSeatResponse> alreadySelectedSeatException(
+		AlreadySelectedSeatException exception) {
+		return getBadRequestResponseEntity(exception,
+			new AlreadySelectedSeatResponse(exception.getMessage(), exception.getSeatRowCol()));
+	}
+
+	@ExceptionHandler(InvalidPerformanceException.class)
+	public ResponseEntity<String> invalidPerformanceException(InvalidPerformanceException exception) {
+		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(NoAvailableSeatsException.class)
+	public ResponseEntity<String> noAvailableSeatsException(NoAvailableSeatsException exception) {
+		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(InvalidSeatIdException.class)
+	public ResponseEntity<String> invalidSeatIdException(InvalidSeatIdException exception) {
 		return getBadRequestResponseEntity(exception, exception.getMessage());
 	}
 }
