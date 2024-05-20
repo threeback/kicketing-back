@@ -1,9 +1,10 @@
 package tback.kicketingback.performance.service;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.time.LocalDate;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,7 +27,7 @@ class PerformanceServiceTest {
 		List<SimplePerformancePlaceDTO> simplePerformancePlaceDTOS = performanceService.getPerformances("none",
 			new GetPerformancesRequest("day", 10), LocalDate.now());
 
-		Assertions.assertThat(simplePerformancePlaceDTOS.size()).isGreaterThanOrEqualTo(0);
+		assertThat(simplePerformancePlaceDTOS.size()).isGreaterThanOrEqualTo(0);
 	}
 
 	@ParameterizedTest
@@ -36,6 +37,7 @@ class PerformanceServiceTest {
 		List<SimplePerformancePlaceDTO> simplePerformancePlaceDTOS = performanceService.getPerformances(GenreName,
 			new GetPerformancesRequest("day", 10), LocalDate.now());
 
-		Assertions.assertThat(simplePerformancePlaceDTOS.size()).isGreaterThanOrEqualTo(0);
+		assertThat(simplePerformancePlaceDTOS.size()).isGreaterThanOrEqualTo(0);
 	}
 }
+

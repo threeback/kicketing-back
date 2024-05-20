@@ -11,6 +11,7 @@ import tback.kicketingback.performance.exception.exceptions.DuplicateSeatSelecti
 import tback.kicketingback.performance.exception.exceptions.InvalidGenreException;
 import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceDateUnitException;
 import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceSizeException;
+import tback.kicketingback.performance.exception.exceptions.InvalidOnStageIDException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceUUIDException;
 import tback.kicketingback.performance.exception.exceptions.InvalidSeatIdException;
@@ -40,6 +41,11 @@ public class PerformanceExceptionHandler extends AbstractExceptionHandler {
 		return getBadRequestResponseEntity(exception, exception.getMessage());
 	}
 
+	@ExceptionHandler(InvalidOnStageIDException.class)
+	public ResponseEntity<String> invalidOnStageIDException(InvalidOnStageIDException exception) {
+		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+  
 	@ExceptionHandler(DuplicateSeatSelectionException.class)
 	public ResponseEntity<String> duplicateSeatSelectionException(DuplicateSeatSelectionException exception) {
 		return getBadRequestResponseEntity(exception, exception.getMessage());

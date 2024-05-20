@@ -4,12 +4,12 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
+import tback.kicketingback.performance.dto.SeatGradeCount;
+import tback.kicketingback.performance.exception.exceptions.InvalidOnStageIDException;
 import tback.kicketingback.performance.dto.GetSeatInfoResponse;
 import tback.kicketingback.performance.exception.exceptions.AlreadySelectedSeatException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceException;
@@ -23,10 +23,26 @@ class ReservationServiceTest {
 
 	@Autowired
 	private ReservationService reservationService;
-
-	@Autowired
+  
+  @Autowired
 	private UserRepository userRepository;
 
+
+  @Test
+	@DisplayName("[예외] 존재 하지 않는 공연을 조회할 경우")
+	void getUnorderedReservationsCountByGrade() {
+		assertThatThrownBy(() -> reservationService.getUnorderedReservationsCountByGrade(0L))
+			.isInstanceOf(InvalidOnStageIDException.class);
+	}
+
+	@Test
+	@DisplayName("[정상] 예매 가능한 좌석수 제공")
+	void getBookableSeats() {
+		List<SeatGradeCount> unorderedReservationsCountByGrade = reservationService.getUnorderedReservationsCountByGrade(
+			1L);
+
+		assertThat(unorderedReservationsCountByGrade.size()).isGreaterThanOrEqualTo(0);
+  }
 	@Test
 	@DisplayName("[실패] 공연 uuid와 OnStage Id가 연관이 없을 때")
 	void getSeatInfoByMismatchPerformanceUUIDAndOnStageId() {
