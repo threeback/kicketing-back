@@ -55,7 +55,6 @@ public class ReservationService {
 	@Transactional(isolation = Isolation.SERIALIZABLE)
 	public void lockSeats(Long onStageId, List<Long> seatIds, User user) {
 		List<SeatReservationDTO> seatReservationDTOS = reservationRepositoryCustom.findSeats(onStageId, seatIds);
-		System.out.println("seatReservationDTOS = " + seatReservationDTOS);
 
 		if (seatIds.size() != seatReservationDTOS.size()) {
 			throw new InvalidSeatIdException();
