@@ -18,6 +18,11 @@ public abstract class AbstractExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 	}
 
+	protected final <T> ResponseEntity<T> getBadRequestResponseEntity(final Exception exception, final T info) {
+		log.info("{}: {} response send because of Bad Request: {}", this.getClass(), exception.getClass(), info);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(info);
+	}
+
 	protected final ResponseEntity<String> getForbiddenResponseEntity(final Exception exception, final String message) {
 		log.info("{}: {} response send because of Forbidden: {}", this.getClass(), exception.getClass(), message);
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
