@@ -1,5 +1,6 @@
 package tback.kicketingback.performance.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,28 +23,29 @@ public class OnStageService {
 
 	public List<SimpleOnStageDTO> getBookableDates(UUID performanceUUID,
 		GetBookableDatesRequest getBookableDatesRequest) {
-		Range range = DateUnit.of("month").getRangeCalculator().apply(getBookableDatesRequest.startDate());
+		LocalDate startDate = getBookableDatesRequest.startDate();
+		Range range = calculateRange(startDate);
 
 		List<OnStage> onStages = onStageRepository.findByPerformance_IdAndDateTimeBetween(
 			performanceUUID,
-			range.start().atStartOfDay(),
+			startDate.atStartOfDay(),
 			range.end().atStartOfDay()
 		);
 
-		if (onStages.isEmpty()) {
+		if (onStages.isEmpty() && performanceNotOnStageExists(performanceUUID)) {
 			throw new InvalidPerformanceUUIDException(performanceUUID);
 		}
 
 		return onStages.stream()
-			.map(this::convertToSimpleOnStageDTO)
+			.map(SimpleOnStageDTO::from)
 			.toList();
 	}
 
-	private SimpleOnStageDTO convertToSimpleOnStageDTO(OnStage onStage) {
-		return new SimpleOnStageDTO(
-			onStage.getId(),
-			onStage.getDateTime(),
-			onStage.getRound()
-		);
+	private Range calculateRange(LocalDate startDate) {
+		return DateUnit.of("month").getRangeCalculator().apply(startDate);
+	}
+
+	private boolean performanceNotOnStageExists(UUID performanceUUID) {
+		return !onStageRepository.existsByPerformance_Id(performanceUUID);
 	}
 }
