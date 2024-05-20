@@ -4,9 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.hibernate.annotations.Comment;
-import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.UuidGenerator;
-import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -19,11 +17,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
+import lombok.Setter;
 import tback.kicketingback.performance.domain.type.DiscountType;
 import tback.kicketingback.user.domain.User;
 
 @Entity
 @Getter
+@Setter
 public class Reservation {
 
 	@Id
@@ -53,6 +53,9 @@ public class Reservation {
 	@Column
 	@Enumerated(EnumType.STRING)
 	private DiscountType discountType;
+	
+	@Column
+	private LocalDateTime lockExpiredTime;
 
 	protected Reservation() {
 	}
