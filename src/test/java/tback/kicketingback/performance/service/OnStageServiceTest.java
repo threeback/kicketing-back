@@ -42,4 +42,14 @@ public class OnStageServiceTest {
 			assertThat(dto.dateTime()).isBeforeOrEqualTo(endDate.atStartOfDay());
 		}
 	}
+
+	@Test
+	@DisplayName("[정상] 존재하는 공연이지만 공연 가능한 날짜가 없을때 빈리스트 반환")
+	void getBookableDatesWithEmptyList() {
+		UUID performanceUUID = UUID.fromString("069939e9-dfed-46b5-832e-996cd737584a");
+		LocalDate startDate = LocalDate.of(2024, 5, 10);
+		List<SimpleOnStageDTO> simpleOnStageDTOS = onStageService.getBookableDates(performanceUUID, new GetBookableDatesRequest(startDate));
+
+		assertThat(simpleOnStageDTOS).isEmpty();
+	}
 }
