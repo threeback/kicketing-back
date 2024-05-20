@@ -7,17 +7,21 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import tback.kicketingback.performance.domain.OnStage;
 import tback.kicketingback.performance.domain.type.Genre;
 import tback.kicketingback.performance.dto.DateUnit;
 import tback.kicketingback.performance.dto.DetailPerformanceDTO;
+import tback.kicketingback.performance.dto.GetBookableDatesRequest;
 import tback.kicketingback.performance.dto.GetPerformancesRequest;
 import tback.kicketingback.performance.dto.GetPerformancesSize;
+import tback.kicketingback.performance.dto.SimpleOnStageDTO;
 import tback.kicketingback.performance.dto.PerformancePlaceDTO;
 import tback.kicketingback.performance.dto.Range;
 import tback.kicketingback.performance.dto.SeatGradeDTO;
 import tback.kicketingback.performance.dto.SimplePerformancePlaceDTO;
 import tback.kicketingback.performance.dto.StarDTO;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceUUIDException;
+import tback.kicketingback.performance.repository.OnStageRepository;
 import tback.kicketingback.performance.repository.PerformanceRepositoryCustom;
 import tback.kicketingback.performance.repository.SeatGradeRepository;
 
