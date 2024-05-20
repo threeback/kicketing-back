@@ -2,6 +2,7 @@ package tback.kicketingback.performance.repository;
 
 import static tback.kicketingback.performance.domain.QOnStage.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +39,7 @@ public class ReservationRepositoryCustom {
 			.leftJoin(reservation).on(
 				reservation.seat.id.eq(seat.id)
 					.and(reservation.onStage.id.eq(onStageId))
-					.and(reservation.orderNumber.isNull().or(reservation.orderNumber.isNull())))
+					.and(reservation.user.isNull().or(reservation.lockExpiredTime.after(LocalDateTime.now()))))
 			.where(JPAExpressions.selectOne()
 				.from(onStage)
 				.where(onStage.id.eq(onStageId))
