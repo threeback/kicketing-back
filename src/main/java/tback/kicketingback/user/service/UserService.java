@@ -2,6 +2,7 @@ package tback.kicketingback.user.service;
 
 import static tback.kicketingback.auth.oauth.util.PasswordUtil.*;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.springframework.stereotype.Service;
@@ -9,12 +10,14 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.auth.oauth.util.PasswordUtil;
+import tback.kicketingback.performance.dto.DetailReservationDTO;
+import tback.kicketingback.performance.exception.exceptions.NoSuchReservationException;
+import tback.kicketingback.performance.repository.ReservationRepositoryCustom;
 import tback.kicketingback.user.domain.User;
 import tback.kicketingback.user.domain.UserState;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidStateException;
 import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
-import tback.kicketingback.user.exception.exceptions.NoSuchUserException;
 import tback.kicketingback.user.repository.UserRepository;
 import tback.kicketingback.user.signup.mail.SmtpService;
 
@@ -23,13 +26,8 @@ import tback.kicketingback.user.signup.mail.SmtpService;
 public class UserService {
 
 	private final UserRepository userRepository;
+	private final ReservationRepositoryCustom reservationRepositoryCustom;
 	private final SmtpService smtpService;
-
-	public User findUser(final String email) {
-
-		return userRepository.findByEmail(email)
-			.orElseThrow(NoSuchUserException::new);
-	}
 
 	public void checkEmailDuplication(final String email) {
 		if (userRepository.existsByEmail(email)) {
@@ -76,4 +74,14 @@ public class UserService {
 		user.validateName(name);
 	}
 
+	public List<DetailReservationDTO> myReservations(Long userId) {
+
+		List<DetailReservationDTO> reservations = reservationRepositoryCustom.myReservations(userId);
+
+		if (reservations.isEmpty()) {
+			throw new NoSuchReservationException();
+		}
+
+		return reservations;
+	}
 }

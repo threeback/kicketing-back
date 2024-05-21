@@ -16,6 +16,7 @@ import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceEx
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceUUIDException;
 import tback.kicketingback.performance.exception.exceptions.InvalidSeatIdException;
 import tback.kicketingback.performance.exception.exceptions.NoAvailableSeatsException;
+import tback.kicketingback.performance.exception.exceptions.NoSuchReservationException;
 
 @RestControllerAdvice
 public class PerformanceExceptionHandler extends AbstractExceptionHandler {
@@ -70,6 +71,11 @@ public class PerformanceExceptionHandler extends AbstractExceptionHandler {
 
 	@ExceptionHandler(InvalidSeatIdException.class)
 	public ResponseEntity<String> invalidSeatIdException(InvalidSeatIdException exception) {
+		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(NoSuchReservationException.class)
+	public ResponseEntity<String> noSuchReservationException(NoSuchReservationException exception) {
 		return getBadRequestResponseEntity(exception, exception.getMessage());
 	}
 }
