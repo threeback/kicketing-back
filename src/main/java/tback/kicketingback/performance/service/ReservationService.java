@@ -10,14 +10,14 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import tback.kicketingback.performance.dto.SeatGradeCount;
-import tback.kicketingback.performance.exception.exceptions.InvalidOnStageIDException;
 import tback.kicketingback.performance.domain.Seat;
 import tback.kicketingback.performance.dto.GetSeatInfoResponse;
+import tback.kicketingback.performance.dto.SeatGradeCount;
 import tback.kicketingback.performance.dto.SeatGradeDTO;
 import tback.kicketingback.performance.dto.SeatReservationDTO;
 import tback.kicketingback.performance.dto.SimpleSeatDTO;
 import tback.kicketingback.performance.exception.exceptions.AlreadySelectedSeatException;
+import tback.kicketingback.performance.exception.exceptions.InvalidOnStageIDException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceException;
 import tback.kicketingback.performance.exception.exceptions.InvalidSeatIdException;
 import tback.kicketingback.performance.exception.exceptions.NoAvailableSeatsException;
@@ -32,7 +32,7 @@ public class ReservationService {
 
 	@Value("${reservation-policy.lock-time}")
 	private int lockTime;
-  
+
 	private final SeatGradeRepository seatGradeRepository;
 	private final ReservationRepositoryCustom reservationRepositoryCustom;
 	private final PerformanceRepositoryCustom performanceRepositoryCustom;
@@ -47,7 +47,6 @@ public class ReservationService {
 		List<SeatGradeDTO> seatGradeDTOS = seatGradeRepository.findSeatGradesByPerformanceId(performanceUUID).stream()
 			.map(seatGrade ->
 				new SeatGradeDTO(seatGrade.getId(),
-					seatGrade.getPerformance().getId(),
 					seatGrade.getGrade(),
 					seatGrade.getPrice()))
 			.toList();
@@ -55,12 +54,12 @@ public class ReservationService {
 		return new GetSeatInfoResponse(onStageSeats, seatGradeDTOS);
 	}
 
-  @Transactional(readOnly = true)
+	@Transactional(readOnly = true)
 	public List<SeatGradeCount> getUnorderedReservationsCountByGrade(Long onStageId) {
 		return reservationRepositoryCustom.getUnorderedReservationsCountByGrade(onStageId)
 			.orElseThrow(() -> new InvalidOnStageIDException(onStageId));
-  }
-  
+	}
+
 	@Transactional(isolation = Isolation.SERIALIZABLE)
 	public void lockSeats(Long onStageId, List<Long> seatIds, User user) {
 		List<SeatReservationDTO> seatReservationDTOS = reservationRepositoryCustom.findSeats(onStageId, seatIds);
