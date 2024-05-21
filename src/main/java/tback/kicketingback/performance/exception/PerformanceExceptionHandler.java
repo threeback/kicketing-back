@@ -9,6 +9,7 @@ import tback.kicketingback.performance.dto.AlreadySelectedSeatResponse;
 import tback.kicketingback.performance.exception.exceptions.AlreadySelectedSeatException;
 import tback.kicketingback.performance.exception.exceptions.DuplicateSeatSelectionException;
 import tback.kicketingback.performance.exception.exceptions.InvalidGenreException;
+import tback.kicketingback.performance.exception.exceptions.InvalidGetDiscountTypeException;
 import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceDateUnitException;
 import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceSizeException;
 import tback.kicketingback.performance.exception.exceptions.InvalidOnStageIDException;
@@ -46,7 +47,7 @@ public class PerformanceExceptionHandler extends AbstractExceptionHandler {
 	public ResponseEntity<String> invalidOnStageIDException(InvalidOnStageIDException exception) {
 		return getBadRequestResponseEntity(exception, exception.getMessage());
 	}
-  
+
 	@ExceptionHandler(DuplicateSeatSelectionException.class)
 	public ResponseEntity<String> duplicateSeatSelectionException(DuplicateSeatSelectionException exception) {
 		return getBadRequestResponseEntity(exception, exception.getMessage());
@@ -76,6 +77,11 @@ public class PerformanceExceptionHandler extends AbstractExceptionHandler {
 
 	@ExceptionHandler(NoSuchReservationException.class)
 	public ResponseEntity<String> noSuchReservationException(NoSuchReservationException exception) {
+		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(InvalidGetDiscountTypeException.class)
+	public ResponseEntity<String> invalidGetDiscountTypeException(InvalidGetDiscountTypeException exception) {
 		return getBadRequestResponseEntity(exception, exception.getMessage());
 	}
 }
