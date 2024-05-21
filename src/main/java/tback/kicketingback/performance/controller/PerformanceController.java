@@ -15,10 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.performance.dto.DetailPerformanceDTO;
+import tback.kicketingback.performance.dto.GetBookableDatesRequest;
+import tback.kicketingback.performance.dto.GetBookableDatesResponse;
+import tback.kicketingback.performance.dto.GetBookableSeatsResponse;
 import tback.kicketingback.performance.dto.GetPerformancesRequest;
 import tback.kicketingback.performance.dto.GetPerformancesResponse;
+import tback.kicketingback.performance.dto.SeatGradeCount;
+import tback.kicketingback.performance.dto.SimpleOnStageDTO;
 import tback.kicketingback.performance.dto.SimplePerformancePlaceDTO;
+import tback.kicketingback.performance.service.OnStageService;
 import tback.kicketingback.performance.service.PerformanceService;
+import tback.kicketingback.performance.service.ReservationService;
 
 @RestController
 @RequestMapping("/api")
@@ -27,6 +34,8 @@ import tback.kicketingback.performance.service.PerformanceService;
 public class PerformanceController {
 
 	private final PerformanceService performanceService;
+	private final OnStageService onStageService;
+	private final ReservationService reservationService;
 
 	/**
 	 * @param genre(path variable): none[장르 지정 안함], concert, musical, classic, theater
@@ -50,5 +59,26 @@ public class PerformanceController {
 		DetailPerformanceDTO performance = performanceService.getPerformance(performanceUUID);
 
 		return ResponseEntity.ok(performance);
+	}
+
+	@GetMapping("/performance/{uuid}/bookable-dates")
+	public ResponseEntity<GetBookableDatesResponse> getBookableDates(
+		@PathVariable("uuid") UUID performanceUUID,
+		@Valid @ModelAttribute GetBookableDatesRequest getBookableDatesRequest) {
+		List<SimpleOnStageDTO> bookableDates = onStageService.getBookableDates(performanceUUID,
+			getBookableDatesRequest);
+
+		GetBookableDatesResponse getBookableDatesResponse = new GetBookableDatesResponse(bookableDates);
+		return ResponseEntity.ok(getBookableDatesResponse);
+	}
+
+	@GetMapping("/performance/{onStageId}/bookable-seats")
+	public ResponseEntity<GetBookableSeatsResponse> getBookableSeats(
+		@PathVariable("onStageId") Long onStageID
+	) {
+		List<SeatGradeCount> seatGradeCounts = reservationService.getUnorderedReservationsCountByGrade(onStageID);
+
+		GetBookableSeatsResponse getBookableSeatsResponse = new GetBookableSeatsResponse(seatGradeCounts);
+		return ResponseEntity.ok(getBookableSeatsResponse);
 	}
 }
