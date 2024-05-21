@@ -3,6 +3,7 @@ package tback.kicketingback.user.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,13 +26,13 @@ public class UserController {
 
 	private final UserService userService;
 
-	@GetMapping("")
+	@GetMapping
 	public ResponseEntity<UserResponse> getUser(@JwtLogin User user) {
 
 		return ResponseEntity.ok(UserResponse.of(user));
 	}
 
-	@GetMapping("/my-reservation/all")
+	@GetMapping("/my-reservation")
 	public ResponseEntity<MyReservationsResponse> getMyReservationAll(@JwtLogin User user) {
 
 		MyReservationsResponse myReservations = new MyReservationsResponse(userService.myReservations(user.getId()));
@@ -39,7 +40,7 @@ public class UserController {
 		return ResponseEntity.ok(myReservations);
 	}
 
-	@PatchMapping("/new-address")
+	@PutMapping("/address")
 	public ResponseEntity<Void> updateAddress(@JwtLogin User user, @RequestBody AddressRequest addressRequest) {
 
 		userService.updateAddress(userService.findUser(user.getEmail()), addressRequest.address());
