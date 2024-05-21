@@ -1,7 +1,5 @@
 package tback.kicketingback.performance.repository;
 
-import static tback.kicketingback.performance.domain.QOnStage.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +25,6 @@ import tback.kicketingback.performance.dto.SeatReservationDTO;
 import tback.kicketingback.performance.dto.SimplePerformanceDTO;
 import tback.kicketingback.performance.dto.SimpleReservationDTO;
 import tback.kicketingback.performance.dto.SimpleSeatDTO;
-import tback.kicketingback.user.domain.QUser;
 
 @Repository
 public class ReservationRepositoryCustom {
@@ -37,7 +34,6 @@ public class ReservationRepositoryCustom {
 	private final QReservation reservation;
 	private final QPlace place;
 	private final QSeat seat;
-	private final QUser user;
 
 	public ReservationRepositoryCustom(EntityManager em) {
 		this.queryFactory = new JPAQueryFactory(em);
@@ -46,7 +42,6 @@ public class ReservationRepositoryCustom {
 		this.reservation = QReservation.reservation;
 		this.place = QPlace.place;
 		this.seat = QSeat.seat;
-    this.user = QUser.user;
 	}
 
 	public Optional<List<SeatGradeCount>> getUnorderedReservationsCountByGrade(Long onStageId) {
