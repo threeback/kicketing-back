@@ -67,7 +67,7 @@ public class ReservationService {
 		if (seatIds.size() != seatReservationDTOS.size()) {
 			throw new InvalidSeatIdException();
 		}
-		checkSelected(seatReservationDTOS);
+		checkSelected(seatReservationDTOS, user);
 
 		seatReservationDTOS.forEach(seatReservationDTO -> {
 			seatReservationDTO.reservation().setUser(user);
@@ -75,10 +75,11 @@ public class ReservationService {
 		});
 	}
 
-	private void checkSelected(List<SeatReservationDTO> seatReservationDTOS) {
+	private void checkSelected(List<SeatReservationDTO> seatReservationDTOS, User user) {
 		List<Seat> reservedSeats = seatReservationDTOS.stream()
 			.filter(seatReservationDTO -> seatReservationDTO.reservation().getOrderNumber() != null ||
 				(seatReservationDTO.reservation().getUser().getId() != null &&
+					!seatReservationDTO.reservation().getUser().getId().equals(user.getId()) &&
 					(seatReservationDTO.reservation().getLockExpiredTime() != null &&
 						seatReservationDTO.reservation().getLockExpiredTime().isAfter(LocalDateTime.now()))))
 			.map(SeatReservationDTO::seat)
