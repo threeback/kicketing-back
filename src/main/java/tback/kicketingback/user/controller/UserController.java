@@ -43,7 +43,7 @@ public class UserController {
 	@PutMapping("/address")
 	public ResponseEntity<Void> updateAddress(@JwtLogin User user, @RequestBody AddressRequest addressRequest) {
 
-		userService.updateAddress(userService.findUser(user.getEmail()), addressRequest.address());
+		userService.updateAddress(user, addressRequest.address());
 
 		return ResponseEntity.ok().build();
 	}
@@ -52,7 +52,7 @@ public class UserController {
 	public ResponseEntity<Void> changePassword(@JwtLogin User user, @RequestBody PasswordRequest passwordRequest) {
 
 		userService.matchPassword(user, passwordRequest.confirmPassword());
-		userService.changePassword(userService.findUser(user.getEmail()), passwordRequest.newPassword());
+		userService.changePassword(user, passwordRequest.newPassword());
 
 		return ResponseEntity.ok().build();
 	}
@@ -69,7 +69,7 @@ public class UserController {
 	@PutMapping("/name")
 	public ResponseEntity<Void> updateName(@JwtLogin User user, @RequestBody NameRequest nameRequest) {
 
-		userService.updateName(userService.findUser(user.getEmail()), nameRequest.name());
+		userService.updateName(user, nameRequest.name());
 
 		return ResponseEntity.ok().build();
 	}
