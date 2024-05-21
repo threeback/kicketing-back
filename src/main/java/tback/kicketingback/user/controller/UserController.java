@@ -2,7 +2,7 @@ package tback.kicketingback.user.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,7 +48,7 @@ public class UserController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PatchMapping("/new-password")
+	@PutMapping("/password")
 	public ResponseEntity<Void> changePassword(@JwtLogin User user, @RequestBody PasswordRequest passwordRequest) {
 
 		userService.matchPassword(user, passwordRequest.confirmPassword());
@@ -57,7 +57,7 @@ public class UserController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PatchMapping("/confirm")
+	@PostMapping("/password-recovery")
 	public ResponseEntity<Void> matchInform(@JwtLogin User user, @RequestBody InformRequest informRequest) {
 
 		userService.matchInform(user, informRequest.email(), informRequest.name());
@@ -66,7 +66,7 @@ public class UserController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PatchMapping("/name")
+	@PutMapping("/name")
 	public ResponseEntity<Void> updateName(@JwtLogin User user, @RequestBody NameRequest nameRequest) {
 
 		userService.updateName(userService.findUser(user.getEmail()), nameRequest.name());
