@@ -29,7 +29,7 @@ public class UserController {
 	@GetMapping
 	public ResponseEntity<UserResponse> getUser(@JwtLogin User user) {
 
-		return ResponseEntity.ok(UserResponse.of(user));
+		return ResponseEntity.ok(UserResponse.from(user));
 	}
 
 	@GetMapping("/my-reservation")

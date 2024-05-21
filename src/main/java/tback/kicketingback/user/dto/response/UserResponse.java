@@ -7,7 +7,7 @@ public record UserResponse(String email, String name, String address) {
 		this(user.getEmail(), user.getName(), user.getAddress());
 	}
 
-	public static UserResponse of(User user) {
+	public static UserResponse from(User user) {
 		return new UserResponse(user);
 	}
 }
