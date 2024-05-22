@@ -13,11 +13,13 @@ import tback.kicketingback.performance.exception.exceptions.InvalidGetDiscountTy
 import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceDateUnitException;
 import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceSizeException;
 import tback.kicketingback.performance.exception.exceptions.InvalidOnStageIDException;
+import tback.kicketingback.performance.exception.exceptions.InvalidPayRequestException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceUUIDException;
 import tback.kicketingback.performance.exception.exceptions.InvalidSeatIdException;
 import tback.kicketingback.performance.exception.exceptions.NoAvailableSeatsException;
 import tback.kicketingback.performance.exception.exceptions.NoSuchReservationException;
+import tback.kicketingback.performance.exception.exceptions.PaymentServerErrorException;
 
 @RestControllerAdvice
 public class PerformanceExceptionHandler extends AbstractExceptionHandler {
@@ -83,5 +85,15 @@ public class PerformanceExceptionHandler extends AbstractExceptionHandler {
 	@ExceptionHandler(InvalidGetDiscountTypeException.class)
 	public ResponseEntity<String> invalidGetDiscountTypeException(InvalidGetDiscountTypeException exception) {
 		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(InvalidPayRequestException.class)
+	public ResponseEntity<String> invalidPayRequestException(InvalidPayRequestException exception) {
+		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(PaymentServerErrorException.class)
+	public ResponseEntity<String> paymentServerErrorException(PaymentServerErrorException exception) {
+		return getBadGatewayResponseEntity(exception, exception.getMessage());
 	}
 }
