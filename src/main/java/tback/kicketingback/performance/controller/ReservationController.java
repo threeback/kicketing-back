@@ -57,7 +57,7 @@ public class ReservationController {
 		@RequestBody @Valid CompleteReservationRequest completeReservationRequest
 	) {
 		DiscountType discountType = DiscountType.of(completeReservationRequest.discountType());
-		// reservationService.validatePayment();
+
 		reservationService.completeReservation(
 			onStageId,
 			orderNumber,

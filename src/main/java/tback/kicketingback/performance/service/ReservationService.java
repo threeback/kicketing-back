@@ -5,23 +5,32 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.performance.domain.Seat;
 import tback.kicketingback.performance.domain.type.DiscountType;
 import tback.kicketingback.performance.dto.GetSeatInfoResponse;
+import tback.kicketingback.performance.dto.PaymentRequest;
 import tback.kicketingback.performance.dto.SeatGradeCount;
 import tback.kicketingback.performance.dto.SeatGradeDTO;
 import tback.kicketingback.performance.dto.SeatReservationDTO;
 import tback.kicketingback.performance.dto.SimpleSeatDTO;
 import tback.kicketingback.performance.exception.exceptions.AlreadySelectedSeatException;
 import tback.kicketingback.performance.exception.exceptions.InvalidOnStageIDException;
+import tback.kicketingback.performance.exception.exceptions.InvalidPayRequestException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceException;
 import tback.kicketingback.performance.exception.exceptions.InvalidSeatIdException;
 import tback.kicketingback.performance.exception.exceptions.NoAvailableSeatsException;
+import tback.kicketingback.performance.exception.exceptions.PaymentServerErrorException;
 import tback.kicketingback.performance.repository.PerformanceRepositoryCustom;
 import tback.kicketingback.performance.repository.ReservationRepositoryCustom;
 import tback.kicketingback.performance.repository.SeatGradeRepository;
@@ -34,9 +43,13 @@ public class ReservationService {
 	@Value("${reservation-policy.lock-time}")
 	private int lockTime;
 
+	@Value("${payments.custom.url}")
+	private String payUrl;
+
 	private final SeatGradeRepository seatGradeRepository;
 	private final ReservationRepositoryCustom reservationRepositoryCustom;
 	private final PerformanceRepositoryCustom performanceRepositoryCustom;
+	private final RestTemplate restTemplate;
 
 	public GetSeatInfoResponse getSeatInfo(UUID performanceUUID, Long onStageId) {
 		if (!performanceRepositoryCustom.isExistPerformance(performanceUUID, onStageId)) {
@@ -84,6 +97,8 @@ public class ReservationService {
 		checkSelected(seatReservationDTOS, user);
 		checkMySeats(user, seatReservationDTOS);
 
+		validatePayment(orderNumber);
+
 		seatReservationDTOS.forEach(seatReservationDTO -> {
 			seatReservationDTO.reservation().setOrderedAt(LocalDateTime.now());
 			seatReservationDTO.reservation().setOrderNumber(orderNumber);
@@ -91,8 +106,31 @@ public class ReservationService {
 		});
 	}
 
-	public void validatePayment(String orderNumber, int price) {
-		//todo 결제 api 로 오더 넘버랑 금액 보내서 유효한지 확인
+	private void validatePayment(String orderNumber) {
+		HttpHeaders headers = createHeaders();
+		PaymentRequest paymentRequest = new PaymentRequest(orderNumber);
+
+		HttpEntity<PaymentRequest> requestEntity = new HttpEntity<>(paymentRequest, headers);
+
+		try {
+			restTemplate.postForEntity(payUrl, requestEntity, String.class);
+		} catch (HttpClientErrorException e) {
+			handleHttpClientErrorException(e);
+		}
+	}
+
+	private HttpHeaders createHeaders() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		return headers;
+	}
+
+	private void handleHttpClientErrorException(HttpClientErrorException e) {
+		if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+			throw new InvalidPayRequestException();
+		} else if (e.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
+			throw new PaymentServerErrorException();
+		}
 	}
 
 	private List<SeatReservationDTO> getSeatReservationDTOS(Long onStageId, List<Long> seatIds) {
