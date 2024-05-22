@@ -74,7 +74,7 @@ public class ReservationService {
 			.orElseThrow(() -> new InvalidOnStageIDException(onStageId));
 	}
 
-	@Transactional(isolation = Isolation.SERIALIZABLE)
+	@Transactional(isolation = Isolation.READ_COMMITTED)
 	public void lockSeats(Long onStageId, List<Long> seatIds, User user) {
 		List<SeatReservationDTO> seatReservationDTOS = getSeatReservationDTOS(onStageId, seatIds);
 		checkSelected(seatReservationDTOS, user);
@@ -85,7 +85,7 @@ public class ReservationService {
 		});
 	}
 
-	@Transactional(isolation = Isolation.SERIALIZABLE)
+	@Transactional(isolation = Isolation.READ_COMMITTED)
 	public void completeReservation(
 		Long onStageId,
 		String orderNumber,
