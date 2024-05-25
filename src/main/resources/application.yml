@@ -92,10 +92,16 @@ oauth:
 
 reservation-policy:
   lock-time: ${reservation-policy.lock-time}
+  free-lock-time:
+    range:
+      start: ${reservation-policy.free-lock-time.range.start}
+      end: ${reservation-policy.free-lock-time.range.end}
+  cancellable-time: ${reservation-policy.cancellable-time}
 
 payments:
   custom:
-    url: ${payments.custom.url}
+    verify-pay-url: ${payments.custom.verify-pay-url}
+    cancel-pay-url: ${payments.custom.cancel-pay-url}
 
 server:
   ssl:
