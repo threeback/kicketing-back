@@ -33,6 +33,14 @@ public abstract class AbstractExceptionHandler {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
 	}
 
+	protected final ResponseEntity<String> getServerErrorResponseEntity(
+		final Exception exception,
+		final String message
+	) {
+		log.error("{}: {} response send because of ServerError: {}", this.getClass(), exception.getClass(), message);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+	}
+
 	protected final ResponseEntity<String> getBadGatewayResponseEntity(final Exception exception, final String message) {
 		log.info("{}: {} response send because of Bad Gateway: {}", this.getClass(), exception.getClass(), message);
 		return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(message);
