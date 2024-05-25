@@ -11,6 +11,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import tback.kicketingback.performance.domain.QOnStage;
 import tback.kicketingback.performance.domain.QPerformance;
 import tback.kicketingback.performance.domain.QPlace;
@@ -89,6 +90,7 @@ public class ReservationRepositoryCustom {
 			.join(seat).on(reservation.seat.id.eq(seat.id)
 				.and(seat.id.in(seatsIds)))
 			.where(reservation.onStage.id.eq(onStageId))
+			.setLockMode(LockModeType.PESSIMISTIC_WRITE)
 			.fetch();
 	}
 

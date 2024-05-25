@@ -32,4 +32,9 @@ public abstract class AbstractExceptionHandler {
 		log.info("{}: {} response send because of Conflict: {}", this.getClass(), exception.getClass(), message);
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
 	}
+
+	protected final ResponseEntity<String> getBadGatewayResponseEntity(final Exception exception, final String message) {
+		log.info("{}: {} response send because of Bad Gateway: {}", this.getClass(), exception.getClass(), message);
+		return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(message);
+	}
 }
