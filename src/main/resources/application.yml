@@ -8,6 +8,7 @@ spring:
       - classpath:config/application-smtp.properties
       - classpath:config/application-policy.properties
       - classpath:config/application-pay.properties
+      - classpath:config/application-ssl.properties
   datasource:
     url: ${spring.datasource.url}
     username: ${spring.datasource.username}
