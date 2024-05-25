@@ -3,7 +3,9 @@ package tback.kicketingback.user.service;
 import static tback.kicketingback.auth.oauth.util.PasswordUtil.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -11,10 +13,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.auth.oauth.util.PasswordUtil;
 import tback.kicketingback.performance.dto.DetailReservationDTO;
+import tback.kicketingback.performance.dto.SeatDTO;
 import tback.kicketingback.performance.exception.exceptions.NoSuchReservationException;
 import tback.kicketingback.performance.repository.ReservationRepositoryCustom;
 import tback.kicketingback.user.domain.User;
 import tback.kicketingback.user.domain.UserState;
+import tback.kicketingback.user.dto.response.MyReservationsInfoResponse;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidStateException;
 import tback.kicketingback.user.exception.exceptions.EmailDuplicatedException;
@@ -74,7 +78,7 @@ public class UserService {
 		user.validateName(name);
 	}
 
-	public List<DetailReservationDTO> myReservations(Long userId) {
+	public Map<String, MyReservationsInfoResponse> myReservations(Long userId) {
 
 		List<DetailReservationDTO> reservations = reservationRepositoryCustom.myReservations(userId);
 
@@ -82,6 +86,24 @@ public class UserService {
 			throw new NoSuchReservationException();
 		}
 
-		return reservations;
+		return reservations.stream()
+			.collect(Collectors.groupingBy(
+				reservation -> reservation.simpleReservationDTO().orderNumber(),
+				Collectors.collectingAndThen(
+					Collectors.toList(),
+					reservationList -> {
+						List<SeatDTO> seats = reservationList.stream()
+							.map(DetailReservationDTO::seatDTO)
+							.collect(Collectors.toList());
+						return new MyReservationsInfoResponse(
+							seats,
+							reservationList.get(0).simpleReservationDTO(),
+							reservationList.get(0).onStageDTO(),
+							reservationList.get(0).simplePerformanceDTO(),
+							reservationList.get(0).placeDTO()
+						);
+					}
+				)
+			));
 	}
 }

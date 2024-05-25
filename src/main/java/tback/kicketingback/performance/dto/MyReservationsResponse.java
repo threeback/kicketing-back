@@ -1,8 +1,10 @@
 package tback.kicketingback.performance.dto;
 
-import java.util.List;
+import java.util.Map;
+
+import tback.kicketingback.user.dto.response.MyReservationsInfoResponse;
 
 public record MyReservationsResponse(
-	List<DetailReservationDTO> reservations
+	Map<String, MyReservationsInfoResponse> reservations
 ) {
 }

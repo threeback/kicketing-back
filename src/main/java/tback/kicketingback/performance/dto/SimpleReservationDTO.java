@@ -5,6 +5,7 @@ import java.util.UUID;
 
 public record SimpleReservationDTO(
 	UUID id,
-	LocalDateTime orderedAt
+	LocalDateTime orderedAt,
+	String orderNumber
 ) {
 }
