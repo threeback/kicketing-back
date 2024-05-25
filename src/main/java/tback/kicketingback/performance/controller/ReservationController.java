@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.auth.jwt.JwtLogin;
+import tback.kicketingback.performance.domain.type.DiscountType;
+import tback.kicketingback.performance.dto.CompleteReservationRequest;
 import tback.kicketingback.performance.dto.GetSeatInfoResponse;
-import tback.kicketingback.performance.dto.LockOnStageSeatsRequest;
+import tback.kicketingback.performance.dto.SelectSeatsRequest;
 import tback.kicketingback.performance.service.ReservationService;
 import tback.kicketingback.user.domain.User;
 
@@ -41,9 +43,28 @@ public class ReservationController {
 	public ResponseEntity<Void> lockOnStageSeats(
 		@JwtLogin User user,
 		@PathVariable("onStageId") Long onStageId,
-		@RequestBody @Valid LockOnStageSeatsRequest lockOnStageSeatsRequest
+		@RequestBody @Valid SelectSeatsRequest lockOnStageSeatsRequest
 	) {
 		reservationService.lockSeats(onStageId, lockOnStageSeatsRequest.seatIds(), user);
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/{onStageId}/{orderNumber}")
+	public ResponseEntity<Void> completeReservation(
+		@JwtLogin User user,
+		@PathVariable("onStageId") Long onStageId,
+		@PathVariable("orderNumber") String orderNumber,
+		@RequestBody @Valid CompleteReservationRequest completeReservationRequest
+	) {
+		DiscountType discountType = DiscountType.of(completeReservationRequest.discountType());
+
+		reservationService.completeReservation(
+			onStageId,
+			orderNumber,
+			discountType,
+			completeReservationRequest.seatsRequest().seatIds(),
+			user);
+
 		return ResponseEntity.ok().build();
 	}
 }
