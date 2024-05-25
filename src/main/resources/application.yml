@@ -95,3 +95,9 @@ reservation-policy:
 payments:
   custom:
     url: ${payments.custom.url}
+
+server:
+  ssl:
+    key-store: ${server.ssl.key-store}
+    key-store-type: ${server.ssl.key-store-type}
+    key-store-password: ${server.ssl.key-store-password}
