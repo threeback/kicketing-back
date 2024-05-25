@@ -7,6 +7,7 @@ spring:
       - classpath:config/application-redis.properties
       - classpath:config/application-smtp.properties
       - classpath:config/application-policy.properties
+      - classpath:config/application-ssl.properties
   datasource:
     url: ${spring.datasource.url}
     username: ${spring.datasource.username}
@@ -90,3 +91,9 @@ oauth:
 
 reservation-policy:
   lock-time: ${reservation-policy.lock-time}
+
+server:
+  ssl:
+    key-store: ${server.ssl.key-store}
+    key-store-type: ${server.ssl.key-store-type}
+    key-store-password: ${server.ssl.key-store-password}
