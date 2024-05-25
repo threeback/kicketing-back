@@ -94,7 +94,6 @@ public class ReservationService {
 		User user
 	) {
 		List<SeatReservationDTO> seatReservationDTOS = getSeatReservationDTOS(onStageId, seatIds);
-		checkSelected(seatReservationDTOS, user);
 		checkMySeats(user, seatReservationDTOS);
 
 		validatePayment(orderNumber);
@@ -147,7 +146,6 @@ public class ReservationService {
 		List<Seat> reservedSeats = seatReservationDTOS.stream()
 			.filter(seatReservationDTO -> seatReservationDTO.reservation().getOrderNumber() != null ||
 				(seatReservationDTO.reservation().getUser().getId() != null &&
-					!seatReservationDTO.reservation().getUser().getId().equals(user.getId()) &&
 					(seatReservationDTO.reservation().getLockExpiredTime() != null &&
 						seatReservationDTO.reservation().getLockExpiredTime().isAfter(LocalDateTime.now()))))
 			.map(SeatReservationDTO::seat)
@@ -160,7 +158,8 @@ public class ReservationService {
 	private void checkMySeats(User user, List<SeatReservationDTO> seatReservationDTOS) {
 		List<Seat> mySeats = seatReservationDTOS.stream()
 			.filter(seatReservationDTO ->
-				seatReservationDTO.reservation().getUser().getId() != null &&
+				seatReservationDTO.reservation().getOrderNumber() == null &&
+					seatReservationDTO.reservation().getUser().getId() != null &&
 					seatReservationDTO.reservation().getUser().getId().equals(user.getId()) &&
 					seatReservationDTO.reservation().getLockExpiredTime() != null &&
 					seatReservationDTO.reservation().getLockExpiredTime().isAfter(LocalDateTime.now()))
