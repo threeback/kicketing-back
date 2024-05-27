@@ -2,7 +2,6 @@ package tback.kicketingback.performance.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +41,7 @@ import tback.kicketingback.performance.repository.ReservationRepositoryCustom;
 import tback.kicketingback.performance.repository.SeatGradeRepository;
 import tback.kicketingback.performance.repository.SeatRepository;
 import tback.kicketingback.user.domain.User;
+import tback.kicketingback.utils.NumberCodeUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -68,7 +68,6 @@ public class ReservationService {
 	private final ReservationRepositoryCustom reservationRepositoryCustom;
 	private final PerformanceRepositoryCustom performanceRepositoryCustom;
 	private final PaymentService paymentService;
-	private final Random random = new Random();
 
 	public GetSeatInfoResponse getSeatInfo(UUID performanceUUID, Long onStageId) {
 		if (!performanceRepositoryCustom.isExistPerformance(performanceUUID, onStageId)) {
@@ -107,8 +106,7 @@ public class ReservationService {
 		User user) {
 		List<SeatReservationDTO> seatReservationDTOS = getSeatReservationDTOS(onStageId, seatIds);
 		checkMySeats(user, seatReservationDTOS);
-
-		//todo 내가 계산한 금액이랑 같이 보내서 검증해야됨
+		
 		paymentService.verifyPayment(orderNumber);
 
 		seatReservationDTOS.forEach(seatReservationDTO -> {
@@ -220,6 +218,6 @@ public class ReservationService {
 	}
 
 	private LocalDateTime getRandomFreeLockTime() {
-		return LocalDateTime.now().plusMinutes(random.ints(freeLockTimeStart, freeLockTimeEnd).findFirst().getAsInt());
+		return LocalDateTime.now().plusMinutes(NumberCodeUtil.getRandomIntInRange(freeLockTimeStart, freeLockTimeEnd));
 	}
 }
