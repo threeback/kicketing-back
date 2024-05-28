@@ -45,7 +45,7 @@ public class ReservationController {
 		@PathVariable("onStageId") Long onStageId,
 		@RequestBody @Valid SelectSeatsRequest lockOnStageSeatsRequest
 	) {
-		reservationService.lockSeats(onStageId, lockOnStageSeatsRequest.seatIds(), user);
+		reservationService.lockSeats(onStageId, lockOnStageSeatsRequest.getSeatIds(), user);
 		return ResponseEntity.ok().build();
 	}
 
@@ -62,7 +62,7 @@ public class ReservationController {
 			onStageId,
 			orderNumber,
 			discountType,
-			completeReservationRequest.seatsRequest().seatIds(),
+			completeReservationRequest.seatsRequest().getSeatIds(),
 			user);
 
 		return ResponseEntity.ok().build();
