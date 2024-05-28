@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.performance.domain.SearchPerformance;
@@ -21,7 +22,7 @@ public class SearchController {
 	private final SearchService searchService;
 
 	@GetMapping("/performances")
-	public ResponseEntity<List<SearchPerformance>> searchPerformances(@RequestParam @Size(min = 2, message = "검색어는 2글자 이상이어야 합니다.") String name) {
+	public ResponseEntity<List<SearchPerformance>> searchPerformances(@RequestParam @Valid @Size(min = 2, message = "검색어는 2글자 이상이어야 합니다.") String name) {
 		List<SearchPerformance> performances = searchService.searchByName(name);
 		return ResponseEntity.ok()
 			.body(performances);
