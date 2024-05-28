@@ -28,6 +28,6 @@ public class InterceptorAuthConfig implements WebMvcConfigurer {
 			.order(1)
 			.addPathPatterns("/**")
 			.excludePathPatterns("/", "/api/user/sign-in", "/api/user/sign-up/**", "/api/oauth/**", "/error",
-				"/api/refresh", "/api/performances/*", "/api/performance/**");
+				"/api/refresh", "/api/performances/*", "/api/performance/**", "/api/search/**");
 	}
 }
