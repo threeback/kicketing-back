@@ -10,7 +10,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import lombok.RequiredArgsConstructor;
-import tback.kicketingback.performance.dto.PaymentRequest;
+import tback.kicketingback.performance.dto.PaymentCancelRequest;
+import tback.kicketingback.performance.dto.PaymentVerifyRequest;
 import tback.kicketingback.performance.exception.exceptions.InvalidPayCancelRequestException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPayRequestException;
 import tback.kicketingback.performance.exception.exceptions.PaymentCancelServerErrorException;
@@ -27,11 +28,11 @@ public class PaymentService {
 
 	private final RestTemplate restTemplate;
 
-	public void verifyPayment(String orderNumber) {
+	public void verifyPayment(String orderNumber, int price) {
 		HttpHeaders headers = createHeaders();
-		PaymentRequest paymentRequest = new PaymentRequest(orderNumber);
+		PaymentVerifyRequest paymentRequest = new PaymentVerifyRequest(orderNumber, price);
 
-		HttpEntity<PaymentRequest> requestEntity = new HttpEntity<>(paymentRequest, headers);
+		HttpEntity<PaymentVerifyRequest> requestEntity = new HttpEntity<>(paymentRequest, headers);
 
 		try {
 			restTemplate.postForEntity(payUrl, requestEntity, String.class);
@@ -42,9 +43,9 @@ public class PaymentService {
 
 	public void cancelPayment(String orderNumber) {
 		HttpHeaders headers = createHeaders();
-		PaymentRequest paymentRequest = new PaymentRequest(orderNumber);
+		PaymentCancelRequest paymentRequest = new PaymentCancelRequest(orderNumber);
 
-		HttpEntity<PaymentRequest> requestEntity = new HttpEntity<>(paymentRequest, headers);
+		HttpEntity<PaymentCancelRequest> requestEntity = new HttpEntity<>(paymentRequest, headers);
 
 		try {
 			restTemplate.postForEntity(payCancelUrl, requestEntity, String.class);

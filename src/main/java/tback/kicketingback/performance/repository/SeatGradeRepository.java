@@ -10,4 +10,6 @@ import tback.kicketingback.performance.domain.SeatGrade;
 public interface SeatGradeRepository extends JpaRepository<SeatGrade, Long> {
 
 	List<SeatGrade> findSeatGradesByPerformanceId(UUID performanceUUID);
+
+	List<Integer> findPriceByPerformanceId(UUID performanceUUID);
 }
