@@ -1,5 +1,7 @@
 package tback.kicketingback.user.controller;
 
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.auth.jwt.JwtLogin;
+import tback.kicketingback.performance.dto.MyCanceledReservationResponse;
 import tback.kicketingback.performance.dto.MyReservationsResponse;
 import tback.kicketingback.performance.service.ReservationService;
 import tback.kicketingback.user.domain.User;
@@ -19,6 +22,7 @@ import tback.kicketingback.user.dto.request.AddressRequest;
 import tback.kicketingback.user.dto.request.InformRequest;
 import tback.kicketingback.user.dto.request.NameRequest;
 import tback.kicketingback.user.dto.request.PasswordRequest;
+import tback.kicketingback.user.dto.response.CanceledReservationDTO;
 import tback.kicketingback.user.dto.response.UserResponse;
 import tback.kicketingback.user.service.UserService;
 
@@ -87,4 +91,13 @@ public class UserController {
 
 		return ResponseEntity.ok().build();
 	}
+
+	@GetMapping("/my-reservation/canceled")
+	public ResponseEntity<MyCanceledReservationResponse> getMyReservationCanceled(@JwtLogin User user) {
+
+		Map<String, CanceledReservationDTO> canceledReservationDTOMap = userService.myCanceledInfo(user.getId());
+
+		return ResponseEntity.ok(new MyCanceledReservationResponse(canceledReservationDTOMap));
+	}
+
 }
