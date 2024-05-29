@@ -125,15 +125,15 @@ public class UserService {
 								canceledReservation.getSeatCol()))
 							.toList();
 						return new CanceledReservationDTO(
-							canceledReservations.get(0).getId(),
-							canceledReservations.get(0).getCanceledAt(),
-							canceledReservations.get(0).getOrderedAt(),
-							canceledReservations.get(0).getPerformanceName(),
-							canceledReservations.get(0).getImageUrl(),
-							canceledReservations.get(0).getPerformanceDate(),
-							canceledReservations.get(0).getRound(),
-							canceledReservations.get(0).getPlaceName(),
-							canceledReservations.get(0).getHall(),
+							canceledReservationList.get(0).getId(),
+							canceledReservationList.get(0).getCanceledAt(),
+							canceledReservationList.get(0).getOrderedAt(),
+							canceledReservationList.get(0).getPerformanceName(),
+							canceledReservationList.get(0).getImageUrl(),
+							canceledReservationList.get(0).getPerformanceDate(),
+							canceledReservationList.get(0).getRound(),
+							canceledReservationList.get(0).getPlaceName(),
+							canceledReservationList.get(0).getHall(),
 							seats);
 					})));
 	}
