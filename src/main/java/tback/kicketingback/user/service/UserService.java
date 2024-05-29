@@ -12,12 +12,15 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import tback.kicketingback.auth.oauth.util.PasswordUtil;
+import tback.kicketingback.performance.domain.CanceledReservation;
 import tback.kicketingback.performance.dto.DetailReservationDTO;
 import tback.kicketingback.performance.dto.SeatDTO;
 import tback.kicketingback.performance.exception.exceptions.NoSuchReservationException;
+import tback.kicketingback.performance.repository.CanceledReservationRepository;
 import tback.kicketingback.performance.repository.ReservationRepositoryCustom;
 import tback.kicketingback.user.domain.User;
 import tback.kicketingback.user.domain.UserState;
+import tback.kicketingback.user.dto.response.CanceledReservationDTO;
 import tback.kicketingback.user.dto.response.MyReservationsInfoResponse;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidPasswordException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidStateException;
@@ -32,6 +35,7 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final ReservationRepositoryCustom reservationRepositoryCustom;
 	private final SmtpService smtpService;
+	private final CanceledReservationRepository canceledReservationRepository;
 
 	public void checkEmailDuplication(final String email) {
 		if (userRepository.existsByEmail(email)) {
@@ -105,5 +109,31 @@ public class UserService {
 					}
 				)
 			));
+	}
+
+	public Map<String, CanceledReservationDTO> myCanceledInfo(Long userId) {
+		List<CanceledReservation> canceledReservations = canceledReservationRepository.findByUserId(userId);
+
+		return canceledReservations.stream()
+			.collect(Collectors.groupingBy(CanceledReservation::getOrderNumber,
+				Collectors.collectingAndThen(
+					Collectors.toList(),
+					canceledReservationList -> {
+						List<SeatDTO> seats = canceledReservationList.stream()
+							.map(canceledReservation -> new SeatDTO(canceledReservation.getGrade(),
+								canceledReservation.getSeatRow(),
+								canceledReservation.getSeatCol()))
+							.toList();
+						return new CanceledReservationDTO(
+							canceledReservations.get(0).getId(),
+							canceledReservations.get(0).getCanceledAt(),
+							canceledReservations.get(0).getOrderedAt(),
+							canceledReservations.get(0).getPerformanceName(),
+							canceledReservations.get(0).getPerformanceDate(),
+							canceledReservations.get(0).getRound(),
+							canceledReservations.get(0).getPlaceName(),
+							canceledReservations.get(0).getHall(),
+							seats);
+					})));
 	}
 }
