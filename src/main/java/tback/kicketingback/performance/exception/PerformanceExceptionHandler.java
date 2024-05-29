@@ -22,6 +22,7 @@ import tback.kicketingback.performance.exception.exceptions.InvalidReservationDa
 import tback.kicketingback.performance.exception.exceptions.InvalidSeatIdException;
 import tback.kicketingback.performance.exception.exceptions.NoAvailableSeatsException;
 import tback.kicketingback.performance.exception.exceptions.NoSuchReservationException;
+import tback.kicketingback.performance.exception.exceptions.PaymentCancelServerErrorException;
 import tback.kicketingback.performance.exception.exceptions.PaymentServerErrorException;
 import tback.kicketingback.performance.exception.exceptions.UnableCancelException;
 
@@ -116,5 +117,10 @@ public class PerformanceExceptionHandler extends AbstractExceptionHandler {
 	@ExceptionHandler(InvalidPayCancelRequestException.class)
 	public ResponseEntity<String> invalidPayCancelRequestException(InvalidPayCancelRequestException exception) {
 		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(PaymentCancelServerErrorException.class)
+	public ResponseEntity<String> paymentCancelServerErrorException(PaymentCancelServerErrorException exception) {
+		return getBadGatewayResponseEntity(exception, exception.getMessage());
 	}
 }
