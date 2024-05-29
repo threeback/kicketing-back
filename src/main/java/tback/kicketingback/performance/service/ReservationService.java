@@ -70,6 +70,8 @@ public class ReservationService {
 	private final PaymentService paymentService;
 
 	public GetSeatInfoResponse getSeatInfo(UUID performanceUUID, Long onStageId) {
+		checkValidOnStage(onStageId);
+
 		if (!performanceRepositoryCustom.isExistPerformance(performanceUUID, onStageId)) {
 			throw new InvalidPerformanceException();
 		}
@@ -86,12 +88,16 @@ public class ReservationService {
 
 	@Transactional(readOnly = true)
 	public List<SeatGradeCount> getUnorderedReservationsCountByGrade(Long onStageId) {
+		checkValidOnStage(onStageId);
+
 		return reservationRepositoryCustom.getUnorderedReservationsCountByGrade(onStageId)
 			.orElseThrow(() -> new InvalidOnStageIDException(onStageId));
 	}
 
 	@Transactional(isolation = Isolation.READ_COMMITTED)
 	public void lockSeats(Long onStageId, List<Long> seatIds, User user) {
+		checkValidOnStage(onStageId);
+
 		List<SeatReservationDTO> seatReservationDTOS = getSeatReservationDTOS(onStageId, seatIds);
 		checkSelected(seatReservationDTOS, user);
 
@@ -102,8 +108,11 @@ public class ReservationService {
 	}
 	
 	@Transactional(isolation = Isolation.READ_COMMITTED)
-	public void completeReservation(Long onStageId, String orderNumber, DiscountType discountType, List<Long> seatIds,
-		User user) {
+	public void completeReservation(
+		Long onStageId, String orderNumber, DiscountType discountType, List<Long> seatIds, User user
+	) {
+		checkValidOnStage(onStageId);
+
 		List<SeatReservationDTO> seatReservationDTOS = getSeatReservationDTOS(onStageId, seatIds);
 		checkMySeats(user, seatReservationDTOS);
 
@@ -213,7 +222,7 @@ public class ReservationService {
 	}
 
 	private void checkCancellable(OnStage onStage) {
-		if (LocalDateTime.now().plusMinutes(cancellableTime).isBefore(onStage.getDateTime())) {
+		if (LocalDateTime.now().plusMinutes(cancellableTime).isAfter(onStage.getDateTime())) {
 			throw new UnableCancelException();
 		}
 	}
@@ -235,5 +244,14 @@ public class ReservationService {
 			.reduce((acc, cur) -> acc + cur)
 			.get();
 		return price - discountType.getDiscountAmount(price);
+	}
+
+	private void checkValidOnStage(Long onStageId) {
+		OnStage onStage = onStageRepository.findById(onStageId)
+			.orElseThrow(() -> new InvalidOnStageIDException(onStageId));
+
+		if (onStage.getDateTime().isBefore(LocalDateTime.now())) {
+			throw new InvalidOnStageIDException(onStageId);
+		}
 	}
 }
