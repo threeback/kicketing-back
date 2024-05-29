@@ -129,6 +129,7 @@ public class UserService {
 							canceledReservations.get(0).getCanceledAt(),
 							canceledReservations.get(0).getOrderedAt(),
 							canceledReservations.get(0).getPerformanceName(),
+							canceledReservations.get(0).getImageUrl(),
 							canceledReservations.get(0).getPerformanceDate(),
 							canceledReservations.get(0).getRound(),
 							canceledReservations.get(0).getPlaceName(),

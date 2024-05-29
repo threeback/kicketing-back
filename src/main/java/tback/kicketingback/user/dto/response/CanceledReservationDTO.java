@@ -10,6 +10,7 @@ public record CanceledReservationDTO(
 	LocalDateTime canceledAt,
 	LocalDateTime orderedAt,
 	String performanceName,
+	String imageUrl,
 	LocalDateTime performanceDate,
 	int round,
 	String placeName,

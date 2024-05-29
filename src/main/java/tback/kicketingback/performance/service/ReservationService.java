@@ -100,7 +100,7 @@ public class ReservationService {
 			seatReservationDTO.reservation().setLockExpiredTime(LocalDateTime.now().plusMinutes(lockTime));
 		});
 	}
-	
+
 	@Transactional(isolation = Isolation.READ_COMMITTED)
 	public void completeReservation(Long onStageId, String orderNumber, DiscountType discountType, List<Long> seatIds,
 		User user) {
@@ -134,7 +134,7 @@ public class ReservationService {
 		Place place = placeRepository.findById(performance.getPlace().getId()).get();
 		reservationDTOS.stream().map(reservationDTO -> {
 			Seat seat = seatRepository.findById(reservationDTO.getSeatId()).get();
-			return CanceledReservation.of(reservationDTO, user, performance.getName(), onStage, place, seat);
+			return CanceledReservation.of(reservationDTO, user, performance, onStage, place, seat);
 		}).forEach(canceledReservationRepository::save);
 
 		reservations.forEach(reservation -> {

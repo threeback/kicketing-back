@@ -57,6 +57,9 @@ public class CanceledReservation {
 	private String performanceName;
 
 	@Column(nullable = false)
+	private String imageUrl;
+
+	@Column(nullable = false)
 	@Comment("공연일")
 	private LocalDateTime performanceDate;
 
@@ -86,12 +89,14 @@ public class CanceledReservation {
 	private CanceledReservation(
 		User user,
 		String orderNumber, LocalDateTime orderedAt,
-		String performanceName, LocalDateTime performanceDate, int round, String placeName, String hall,
+		String performanceName, String imageUrl, LocalDateTime performanceDate,
+		int round, String placeName, String hall,
 		Grade grade, String seatRow, int seatCol) {
 		this.user = user;
 		this.orderNumber = orderNumber;
 		this.orderedAt = orderedAt;
 		this.performanceName = performanceName;
+		this.imageUrl = imageUrl;
 		this.performanceDate = performanceDate;
 		this.round = round;
 		this.placeName = placeName;
@@ -104,7 +109,7 @@ public class CanceledReservation {
 	public static CanceledReservation of(
 		ReservationDTO reservation,
 		User user,
-		String performanceName,
+		Performance performance,
 		OnStage onStage,
 		Place place,
 		Seat seat
@@ -112,7 +117,9 @@ public class CanceledReservation {
 		return new CanceledReservation(
 			user,
 			reservation.getOrderNumber(), reservation.getOrderedAt(),
-			performanceName, onStage.getDateTime(), onStage.getRound(), place.getName(), place.getHall(),
+			performance.getName(), performance.getImageUrl(),
+			onStage.getDateTime(), onStage.getRound(), place.getName(),
+			place.getHall(),
 			seat.getGrade(), seat.getSeatRow(), seat.getSeatCol()
 		);
 	}
