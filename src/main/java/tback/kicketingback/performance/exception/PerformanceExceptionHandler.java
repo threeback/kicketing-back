@@ -14,6 +14,7 @@ import tback.kicketingback.performance.exception.exceptions.InvalidGetDiscountTy
 import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceDateUnitException;
 import tback.kicketingback.performance.exception.exceptions.InvalidGetPerformanceSizeException;
 import tback.kicketingback.performance.exception.exceptions.InvalidOnStageIDException;
+import tback.kicketingback.performance.exception.exceptions.InvalidPayCancelRequestException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPayRequestException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceException;
 import tback.kicketingback.performance.exception.exceptions.InvalidPerformanceUUIDException;
@@ -21,6 +22,7 @@ import tback.kicketingback.performance.exception.exceptions.InvalidReservationDa
 import tback.kicketingback.performance.exception.exceptions.InvalidSeatIdException;
 import tback.kicketingback.performance.exception.exceptions.NoAvailableSeatsException;
 import tback.kicketingback.performance.exception.exceptions.NoSuchReservationException;
+import tback.kicketingback.performance.exception.exceptions.PaymentCancelServerErrorException;
 import tback.kicketingback.performance.exception.exceptions.PaymentServerErrorException;
 import tback.kicketingback.performance.exception.exceptions.UnableCancelException;
 
@@ -110,5 +112,15 @@ public class PerformanceExceptionHandler extends AbstractExceptionHandler {
 	@ExceptionHandler(UnableCancelException.class)
 	public ResponseEntity<String> unableCancelException(UnableCancelException exception) {
 		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(InvalidPayCancelRequestException.class)
+	public ResponseEntity<String> invalidPayCancelRequestException(InvalidPayCancelRequestException exception) {
+		return getBadRequestResponseEntity(exception, exception.getMessage());
+	}
+
+	@ExceptionHandler(PaymentCancelServerErrorException.class)
+	public ResponseEntity<String> paymentCancelServerErrorException(PaymentCancelServerErrorException exception) {
+		return getBadGatewayResponseEntity(exception, exception.getMessage());
 	}
 }
