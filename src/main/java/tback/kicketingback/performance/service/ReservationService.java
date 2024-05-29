@@ -100,8 +100,7 @@ public class ReservationService {
 			seatReservationDTO.reservation().setLockExpiredTime(LocalDateTime.now().plusMinutes(lockTime));
 		});
 	}
-
-	//Todo 여기임 -------------------------------여러개 실험-----------------------------
+	
 	@Transactional(isolation = Isolation.READ_COMMITTED)
 	public void completeReservation(Long onStageId, String orderNumber, DiscountType discountType, List<Long> seatIds,
 		User user) {

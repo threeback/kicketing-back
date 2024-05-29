@@ -87,6 +87,4 @@ public class UserController {
 
 		return ResponseEntity.ok().build();
 	}
-
-	// Todo : Canceled List.....
 }
