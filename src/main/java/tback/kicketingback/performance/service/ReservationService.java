@@ -100,14 +100,15 @@ public class ReservationService {
 			seatReservationDTO.reservation().setLockExpiredTime(LocalDateTime.now().plusMinutes(lockTime));
 		});
 	}
-
+	
 	@Transactional(isolation = Isolation.READ_COMMITTED)
 	public void completeReservation(Long onStageId, String orderNumber, DiscountType discountType, List<Long> seatIds,
 		User user) {
 		List<SeatReservationDTO> seatReservationDTOS = getSeatReservationDTOS(onStageId, seatIds);
 		checkMySeats(user, seatReservationDTOS);
-		
-		paymentService.verifyPayment(orderNumber);
+
+		int price = calcPrice(discountType, onStageId, seatIds);
+		paymentService.verifyPayment(orderNumber, price);
 
 		seatReservationDTOS.forEach(seatReservationDTO -> {
 			seatReservationDTO.reservation().setOrderedAt(LocalDateTime.now());
@@ -165,7 +166,7 @@ public class ReservationService {
 	private void checkSelected(List<SeatReservationDTO> seatReservationDTOS, User user) {
 		List<Seat> reservedSeats = seatReservationDTOS.stream()
 			.filter(seatReservationDTO -> seatReservationDTO.reservation().getOrderNumber() != null || (
-				seatReservationDTO.reservation().getUser().getId() != null && (
+				seatReservationDTO.reservation().getUser() != null && (
 					seatReservationDTO.reservation().getLockExpiredTime() != null && seatReservationDTO.reservation()
 						.getLockExpiredTime()
 						.isAfter(LocalDateTime.now()))))
@@ -179,7 +180,7 @@ public class ReservationService {
 	private void checkMySeats(User user, List<SeatReservationDTO> seatReservationDTOS) {
 		List<Seat> mySeats = seatReservationDTOS.stream()
 			.filter(seatReservationDTO -> seatReservationDTO.reservation().getOrderNumber() == null
-				&& seatReservationDTO.reservation().getUser().getId() != null && seatReservationDTO.reservation()
+				&& seatReservationDTO.reservation().getUser() != null && seatReservationDTO.reservation()
 				.getUser()
 				.getId()
 				.equals(user.getId()) && seatReservationDTO.reservation().getLockExpiredTime() != null
@@ -219,5 +220,20 @@ public class ReservationService {
 
 	private LocalDateTime getRandomFreeLockTime() {
 		return LocalDateTime.now().plusMinutes(NumberCodeUtil.getRandomIntInRange(freeLockTimeStart, freeLockTimeEnd));
+	}
+
+	private int calcPrice(DiscountType discountType, Long onStageId, List<Long> seatIds) {
+		List<SeatGradeDTO> seatGradeDTOS = reservationRepositoryCustom.findSeatGradeByOnStageId(onStageId);
+		List<Seat> seats = seatRepository.findByIdIn(seatIds);
+
+		int price = seats.stream()
+			.map(seat -> seatGradeDTOS.stream()
+				.filter(seatGradeDTO -> seatGradeDTO.grade().equals(seat.getGrade()))
+				.findFirst()
+				.get()
+				.price())
+			.reduce((acc, cur) -> acc + cur)
+			.get();
+		return price - discountType.getDiscountAmount(price);
 	}
 }

@@ -1,6 +1,6 @@
 package tback.kicketingback.performance.dto;
 
-public record PaymentRequest(
+public record PaymentCancelRequest(
 	String orderNumber
 ) {
 }

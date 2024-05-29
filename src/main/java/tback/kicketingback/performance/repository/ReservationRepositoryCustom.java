@@ -17,11 +17,13 @@ import tback.kicketingback.performance.domain.QPerformance;
 import tback.kicketingback.performance.domain.QPlace;
 import tback.kicketingback.performance.domain.QReservation;
 import tback.kicketingback.performance.domain.QSeat;
+import tback.kicketingback.performance.domain.QSeatGrade;
 import tback.kicketingback.performance.dto.DetailReservationDTO;
 import tback.kicketingback.performance.dto.OnStageDTO;
 import tback.kicketingback.performance.dto.PlaceDTO;
 import tback.kicketingback.performance.dto.SeatDTO;
 import tback.kicketingback.performance.dto.SeatGradeCount;
+import tback.kicketingback.performance.dto.SeatGradeDTO;
 import tback.kicketingback.performance.dto.SeatReservationDTO;
 import tback.kicketingback.performance.dto.SimplePerformanceDTO;
 import tback.kicketingback.performance.dto.SimpleReservationDTO;
@@ -37,6 +39,7 @@ public class ReservationRepositoryCustom {
 	private final QPlace place;
 	private final QSeat seat;
 	private final QUser user;
+	private final QSeatGrade seatGrade;
 
 	public ReservationRepositoryCustom(EntityManager em) {
 		this.queryFactory = new JPAQueryFactory(em);
@@ -46,6 +49,7 @@ public class ReservationRepositoryCustom {
 		this.place = QPlace.place;
 		this.seat = QSeat.seat;
 		this.user = QUser.user;
+		this.seatGrade = QSeatGrade.seatGrade;
 	}
 
 	public Optional<List<SeatGradeCount>> getUnorderedReservationsCountByGrade(Long onStageId) {
@@ -113,8 +117,8 @@ public class ReservationRepositoryCustom {
 					seat.seatCol),
 				Projections.constructor(SimplePerformanceDTO.class,
 					performance.id,
-					performance.name,
 					performance.genre,
+					performance.name,
 					performance.startDate,
 					performance.endDate,
 					performance.imageUrl),
@@ -133,6 +137,18 @@ public class ReservationRepositoryCustom {
 			.orderBy(onStage.dateTime.asc(),
 				onStage.round.asc(),
 				performance.name.asc())
+			.fetch();
+	}
+
+	public List<SeatGradeDTO> findSeatGradeByOnStageId(Long onStageId) {
+		return queryFactory.select(Projections.constructor(SeatGradeDTO.class,
+				seatGrade.id,
+				seatGrade.grade,
+				seatGrade.price))
+			.from(onStage)
+			.join(performance).on(onStage.performance.id.eq(performance.id))
+			.join(seatGrade).on(performance.id.eq(seatGrade.performance.id))
+			.where(onStage.id.eq(onStageId))
 			.fetch();
 	}
 }
