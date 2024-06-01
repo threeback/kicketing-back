@@ -27,7 +27,6 @@ import tback.kicketingback.performance.dto.SeatGradeDTO;
 import tback.kicketingback.performance.dto.SeatReservationDTO;
 import tback.kicketingback.performance.dto.SimplePerformanceDTO;
 import tback.kicketingback.performance.dto.SimpleReservationDTO;
-import tback.kicketingback.performance.dto.SimpleSeatDTO;
 import tback.kicketingback.user.domain.QUser;
 
 @Repository
@@ -72,21 +71,13 @@ public class ReservationRepositoryCustom {
 		return Optional.ofNullable(gradeCountList.isEmpty() ? null : gradeCountList);
 	}
 
-	public Optional<List<SimpleSeatDTO>> findOnStageSeats(Long onStageId) {
-		List<SimpleSeatDTO> seatDTOS = queryFactory.select(Projections.constructor(SimpleSeatDTO.class,
-				seat.id,
-				seat.grade,
-				seat.seatRow,
-				seat.seatCol))
+	public List<SeatReservationDTO> findOnStageSeats(Long onStageId) {
+		return queryFactory.select(Projections.constructor(SeatReservationDTO.class,
+				seat, reservation))
 			.from(reservation)
 			.join(seat).on(reservation.seat.id.eq(seat.id))
-			.where(reservation.onStage.id.eq(onStageId)
-				.and(reservation.orderNumber.isNull()
-					.and(reservation.user.id.isNull()
-						.or(reservation.lockExpiredTime.isNotNull()
-							.and(reservation.lockExpiredTime.before(LocalDateTime.now()))))))
+			.where(reservation.onStage.id.eq(onStageId))
 			.fetch();
-		return Optional.ofNullable(seatDTOS.isEmpty() ? null : seatDTOS);
 	}
 
 	public List<SeatReservationDTO> findSeats(Long onStageId, List<Long> seatsIds) {

@@ -2,7 +2,9 @@ package tback.kicketingback.performance.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -75,15 +77,38 @@ public class ReservationService {
 		if (!performanceRepositoryCustom.isExistPerformance(performanceUUID, onStageId)) {
 			throw new InvalidPerformanceException();
 		}
-		List<SimpleSeatDTO> onStageSeats = reservationRepositoryCustom.findOnStageSeats(onStageId)
-			.orElseThrow(NoAvailableSeatsException::new);
+		List<SeatReservationDTO> seatReservationDTOS = reservationRepositoryCustom.findOnStageSeats(onStageId);
+
+		Map<Boolean, List<SeatReservationDTO>> partitionedSeats = seatReservationDTOS.stream()
+			.collect(
+				Collectors.partitioningBy(
+					seatReservationDTO -> seatReservationDTO.reservation().getOrderNumber() == null
+						&& (seatReservationDTO.reservation().getUser() == null
+						|| (seatReservationDTO.reservation().getLockExpiredTime() != null
+						&& seatReservationDTO.reservation().getLockExpiredTime().isBefore(LocalDateTime.now())))));
+
+		List<SimpleSeatDTO> bookableSeats = partitionedSeats.get(true)
+			.stream()
+			.map(SeatReservationDTO::seat)
+			.map(seat -> new SimpleSeatDTO(seat.getId(), seat.getGrade(), seat.getSeatRow(), seat.getSeatCol()))
+			.toList();
+
+		if (bookableSeats.isEmpty()) {
+			throw new NoAvailableSeatsException();
+		}
+
+		List<SimpleSeatDTO> unbookableSeats = partitionedSeats.get(false)
+			.stream()
+			.map(SeatReservationDTO::seat)
+			.map(seat -> new SimpleSeatDTO(seat.getId(), seat.getGrade(), seat.getSeatRow(), seat.getSeatCol()))
+			.toList();
 
 		List<SeatGradeDTO> seatGradeDTOS = seatGradeRepository.findSeatGradesByPerformanceId(performanceUUID)
 			.stream()
 			.map(seatGrade -> new SeatGradeDTO(seatGrade.getId(), seatGrade.getGrade(), seatGrade.getPrice()))
 			.toList();
 
-		return new GetSeatInfoResponse(onStageSeats, seatGradeDTOS);
+		return new GetSeatInfoResponse(bookableSeats, unbookableSeats, seatGradeDTOS);
 	}
 
 	@Transactional(readOnly = true)
