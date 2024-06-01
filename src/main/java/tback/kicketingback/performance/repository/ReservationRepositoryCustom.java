@@ -60,6 +60,7 @@ public class ReservationRepositoryCustom {
 			.leftJoin(reservation).on(
 				reservation.seat.id.eq(seat.id)
 					.and(reservation.onStage.id.eq(onStageId))
+					.and(reservation.orderNumber.isNull())
 					.and(reservation.user.isNull().or(reservation.lockExpiredTime.before(LocalDateTime.now()))))
 			.where(JPAExpressions.selectOne()
 				.from(onStage)
