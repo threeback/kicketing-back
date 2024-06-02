@@ -78,7 +78,7 @@ class ReservationServiceTest {
 		assertThatCode(() -> {
 			GetSeatInfoResponse seatInfo = reservationService.getSeatInfo(performanceUUID, onStageId);
 			System.out.println("seatInfo = " + seatInfo);
-			assertThat(seatInfo.simpleSeatDTOS().size()).isGreaterThanOrEqualTo(1);
+			assertThat(seatInfo.bookableSeats().size()).isGreaterThanOrEqualTo(1);
 			assertThat(seatInfo.seatGradeDTOS().size()).isGreaterThanOrEqualTo(1);
 		}).doesNotThrowAnyException();
 	}
