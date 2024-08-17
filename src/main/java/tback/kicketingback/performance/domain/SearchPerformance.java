@@ -1,37 +1,45 @@
 package tback.kicketingback.performance.domain;
 
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+import java.time.LocalDate;
+import java.util.UUID;
 
-import jakarta.persistence.Id;
 import lombok.Getter;
 
-@Document(indexName = "performance_index")
 @Getter
 public class SearchPerformance {
 
-	@Id
-	private String id;
+	private UUID id;
 
-	@Field(name = "name", type = FieldType.Text)
 	private String name;
 
-	@Field(name = "genre", type = FieldType.Text)
 	private String genre;
 
-	@Field(name = "imageUrl", type = FieldType.Text)
 	private String imageUrl;
 
-	@Field(name = "startDate", type = FieldType.Date)
-	private String startDate;
+	private LocalDate startDate;
 
-	@Field(name = "endDate", type = FieldType.Date)
-	private String endDate;
+	private LocalDate endDate;
 
-	@Field(name = "placeName", type = FieldType.Text)
 	private String placeName;
 
-	@Field(name = "placeHall", type = FieldType.Text)
 	private String placeHall;
+
+	private SearchPerformance(UUID id, String name, String genre, String imageUrl, LocalDate startDate,
+		LocalDate endDate,
+		String placeName, String placeHall) {
+		this.id = id;
+		this.name = name;
+		this.genre = genre;
+		this.imageUrl = imageUrl;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.placeName = placeName;
+		this.placeHall = placeHall;
+	}
+
+	public static SearchPerformance from(Performance performance) {
+		return new SearchPerformance(performance.getId(), performance.getName(), performance.getGenre(),
+			performance.getImageUrl(), performance.getStartDate(), performance.getEndDate(),
+			performance.getPlace().getName(), performance.getPlace().getHall());
+	}
 }

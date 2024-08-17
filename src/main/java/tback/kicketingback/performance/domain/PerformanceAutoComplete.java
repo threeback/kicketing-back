@@ -1,22 +1,26 @@
 package tback.kicketingback.performance.domain;
 
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+import java.util.UUID;
 
-import jakarta.persistence.Id;
 import lombok.Getter;
 
-@Document(indexName = "performance_index")
 @Getter
 public class PerformanceAutoComplete {
 
-	@Id
-	private String id;
+	private UUID id;
 
-	@Field(name = "name", type = FieldType.Text)
 	private String name;
 
-	@Field(name = "genre", type = FieldType.Text)
 	private String genre;
+
+	private PerformanceAutoComplete(UUID id, String name, String genre) {
+		this.id = id;
+		this.name = name;
+		this.genre = genre;
+	}
+
+	public static PerformanceAutoComplete from(Performance performance) {
+		return new PerformanceAutoComplete(performance.getId(), performance.getName(),
+			performance.getGenre());
+	}
 }
