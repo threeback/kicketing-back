@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import tback.kicketingback.performance.repository.CanceledReservationRepository;
 import tback.kicketingback.performance.repository.ReservationRepositoryCustom;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidEmailException;
 import tback.kicketingback.user.exception.exceptions.AuthInvalidNameException;
@@ -26,10 +27,13 @@ public class UserTest {
 	private FakeUserRepository fakeUserRepository;
 	private ReservationRepositoryCustom reservationRepositoryCustom;
 	private SmtpService smtpService;
+	private CanceledReservationRepository canceledReservationRepository;
 
 	@BeforeEach
 	void initBefore() {
-		userService = new UserService(fakeUserRepository, reservationRepositoryCustom, smtpService);
+		userService = new UserService(
+			fakeUserRepository, reservationRepositoryCustom,
+			smtpService, canceledReservationRepository);
 	}
 
 	@Test
