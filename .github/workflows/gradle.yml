@@ -38,7 +38,7 @@ jobs:
           key: ${{ secrets.GCP_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: "build/libs/*.jar"
-          target: "source"
+          target: "kicketing/backend/source"
           rm: true
 
   CD:
