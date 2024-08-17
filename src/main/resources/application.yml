@@ -8,8 +8,6 @@ spring:
       - classpath:config/application-smtp.properties
       - classpath:config/application-policy.properties
       - classpath:config/application-pay.properties
-      - classpath:config/application-ssl.properties
-      - classpath:config/application-elastic.properties
   datasource:
     url: ${spring.datasource.url}
     username: ${spring.datasource.username}
@@ -51,10 +49,6 @@ spring:
             enable: ${spring.mail.properties.mail.smtp.starttls.enable}
             ssl:
               enable: ${spring.mail.properties.mail.smtp.ssl.enable}
-  elasticsearch:
-    uris: ${spring.elasticsearch.uris}
-    username: ${spring.elasticsearch.username}
-    password: ${spring.elasticsearch.password}
 
 jwt:
   access:
@@ -107,9 +101,3 @@ payments:
   custom:
     verify-pay-url: ${payments.custom.verify-pay-url}
     cancel-pay-url: ${payments.custom.cancel-pay-url}
-
-server:
-  ssl:
-    key-store: ${server.ssl.key-store}
-    key-store-type: ${server.ssl.key-store-type}
-    key-store-password: ${server.ssl.key-store-password}
