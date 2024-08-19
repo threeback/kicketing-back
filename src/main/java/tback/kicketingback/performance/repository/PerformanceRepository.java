@@ -13,8 +13,8 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
 
 	Optional<Performance> findById(UUID uuid);
 
-	List<Performance> findByNameAndGenreIn(String name, List<Genre> genre);
+	List<Performance> findByNameContaining(String name);
 
-	List<Performance> findByName(String name);
+	List<Performance> findByNameContainingAndGenreIn(String name, List<Genre> genres);
 
 }
